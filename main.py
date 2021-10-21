@@ -10,13 +10,6 @@ from PyQt5 import QtCore
 from PyQt5.QtCore import pyqtSlot, QCoreApplication, QThread
 from PyQt5 import uic
 
-# class MainWindow(form1, base1):
-#     def __init__(self):
-#         super(base1, self).__init__()
-#
-#         self.setupUi(self)
-#         self.setWindowTitle("Open Dart")
-
 numberOfPlayers = 0
 maxValue = 0
 app = QApplication([])
@@ -27,10 +20,15 @@ font.setBold(True)
 font.setPointSize(200)
 actualPlayerName.setFont(font)
 LCD = QLCDNumber(5)
+button = QPushButton("Next player")
+next = False
 
+def nextPlayer():
+    global next
+    next = True
 
-class Signaller(QtCore.QObject):
-    emitted = QtCore.pyqtSignal(object)
+button.clicked.connect(nextPlayer)
+
 
 
 class MainWindow(QWidget):
@@ -50,7 +48,7 @@ class MainWindow(QWidget):
 
         self.layout.addWidget(LCD)
 
-        self.layout.addWidget(QPushButton('Next Player'))
+        self.layout.addWidget(button)
 
         # startGame()
         for i in range(int(numberOfPlayers)):
@@ -97,16 +95,6 @@ arduino = serial.Serial(port='/dev/ttyACM0', baudrate=9600, timeout=.1)
 players = []
 
 
-# def startGame():
-# numberOfPlayers = int(input("Podaj ilu graczy: "))
-# maxValue = int(input("Podaj punkty startowe: "))
-
-# for i in range(numberOfPlayers):
-#     print("Nazwa gracza nr ", i + 1)
-#     tempPlayerName = input()
-#     players.append(Player(tempPlayerName, i, maxValue))
-
-
 def write_read(x):
     arduino.write(bytes(x, 'utf-8'))
     time.sleep(0.05)
@@ -116,6 +104,9 @@ def write_read(x):
 
 class Game(QThread):
     def run(self):
+        global next
+
+
         while True:
             for player in players:
                 print("Teraz rzuca ", player.name)
@@ -126,11 +117,19 @@ class Game(QThread):
                 for i in range(3):
                     value = write_read('0')
                     time.sleep(0.1)
+                        
+                    stat = False
 
                     while len(value) <= 0:
                         value = write_read('0')
                         time.sleep(0.1)
+                        if next == True:
+                            stat = True
+                            break
                         continue
+
+                    if stat:
+                        break
 
 
                     value = int(value.decode('UTF-8'))
@@ -156,6 +155,7 @@ class Game(QThread):
                     LCD.display(player.points)
                     # time.sleep(1000)
 
+                next = False
                 print(player.name, " zostalo ", player.points, " do konca")
 
     # startGame()
