@@ -1,4 +1,5 @@
 import React from "react";
+import logo from './logo.png'; 
 
 import {
   StyleSheet,
@@ -7,21 +8,33 @@ import {
   Text,
   TouchableOpacity,
   TextInput,
+  Image,
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { FontAwesome5 } from "@expo/vector-icons";
 import Constants from "expo-constants";
 
+
+
 export default function MomoLogin() {
   return (
     <SafeAreaView style={styles.container}>
       {/* https://docs.expo.io/versions/latest/sdk/status-bar */}
-      <StatusBar style="light" />
+      <StatusBar style="light" />        
 
       <View style={styles.content}>
+        <View style={styles.logoContainer}>
+        <Text style={styles.logoText}>DartPlus</Text>
+        <Image
+                style={styles.img}                      
+                source={logo}
+                
+            />
+ 
+      </View>
         <View style={styles.textWrapper}>
-          <Text style={styles.hiText}>DartPlus</Text>
-          <Text style={styles.userText}>Ziółas to kocur</Text>
+
+          <Text style={styles.userText}></Text>
         </View>
 
         <View style={styles.form}>
@@ -34,23 +47,19 @@ export default function MomoLogin() {
             keyboardType="alfanumeric"
             secureTextEntry={false}
             autoFocus={true}
-            placeholder="Nazwa"
+            placeholder="Name"
             placeholderTextColor="#929292"
           />
 
           {/* https://reactnative.dev/docs/touchableopacity */}
           <TouchableOpacity style={styles.buttonLogin}>
-            <Text style={styles.buttonLoginText}>Dodaj</Text>
+            <Text style={styles.buttonLoginText}>Add</Text>
           </TouchableOpacity>
         </View>
 
         <View style={styles.action}>
           <TouchableOpacity>
-            <Text style={styles.userText}>O nas</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity>
-            <Text style={styles.userText}>Zasady</Text>
+            <Text style={styles.userText}>Powered by chłopaki od Emilki</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -76,18 +85,33 @@ const styles = StyleSheet.create({
     marginTop: 60,
     marginBottom: 30,
   },
-  hiText: {
+  logoText: {
     ...TEXT,
-    fontSize: 40,
+    fontSize: 35,
     lineHeight: 50,
     fontWeight: "bold",
     color: "#121A65",
+    position: 'absolute',
+    alignSelf: 'center',
+    bottom: '50%'
 
   },
+  img: {
+    width: 50,
+    height: 50,
+      position: 'absolute',
+      alignSelf: 'center',
+      bottom: '5%',
+      left: '68%',
+      
+    },
   userText: {
     ...TEXT,
-    fontSize: 16,
-    lineHeight: 30,
+    fontSize: 12,
+    lineHeight: 1100,
+    left: 200,
+    
+    
   },
   form: {
     marginBottom: 30,
@@ -122,6 +146,16 @@ const styles = StyleSheet.create({
   },
   action: {
     flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "center",
   },
+  logoContainer: {
+    // flex:1,
+    // paddingTop:100,
+    // flexDirection: 'row',
+    position: 'absolute',
+        marginTop: 80,
+        left: 0,
+        right: 0,
+  },
+  
 });
