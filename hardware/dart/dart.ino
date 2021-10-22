@@ -1,8 +1,8 @@
 #include <stdint.h>
 #include "config.h"
 
-uint8_t pins_master[NUM_LINES_MASTER] = {2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
-uint8_t pins_slave[NUM_LINES_SLAVE] = {12, 13, A5, A4, A3, A2, A1};
+uint8_t pins_master[NUM_LINES_MASTER] = {2, 3, 4, 5, 11, 10, 9, 8, 7, 6};
+uint8_t pins_slave[NUM_LINES_SLAVE] = {A5, 12, A4, 13, A3, A1, A2};
 
 void setup() {
   Serial.begin(9600);
