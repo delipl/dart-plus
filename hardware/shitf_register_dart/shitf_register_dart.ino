@@ -1,3 +1,8 @@
+#include <stdint.h>
+#include "config.h"
+
+uint8_t pins_slave[NUM_LINES_SLAVE] = {A5, 12, A4, 13, A3, A1, A2};
+
 int tab2point(int i, int j){
   //single
 
@@ -72,44 +77,21 @@ int tab2point(int i, int j){
   return -1;
 }
 //Shift Register Pins
-//Pin connected to latch pin (RCLK) of 74HC595
 #define latchPin  4
-//Pin connected to clock pin (SRCLK) of 74HC595
 #define clockPin 3
-//Pin connected to data pin (SER) of 74HC595
 #define dataPin 2
-byte masterOuputs[6] = {
-  191, // i == 0
-  223, // i == 1
-  239, // i == 2
-  247, // i == 3
-  251, // i == 4
-  253, // i == 5
-};
-
-byte masterOuputsSecond[4] = {
-  191, // i == 0
-  223, // i == 1
-  239, // i == 2
-  247, // i == 3
-};
 
 
-int masterLines =10;
+int masterLines = 10;
 int slaveLines = 7; //Change here to the number of lines of your Slave Layer
-//int matrixMaster[] = {8, 9, 10, 11}; //Put here the pins you connected the lines of your Master Layer 
 int matrixSlave[] = {12, 13, A5, A4, A3, A2, A1}; //Put here the pins you connected the lines of your Slave Layer
+void pushDataOnRegisters (char reg1, char reg2);
 
 void setup() {
     Serial.begin(9600);
-    for(int i = 0; i < slaveLines; i++){
+    for(uint8_t i=0; i<NUM_LINES_SLAVE; i++){
         pinMode(matrixSlave[i], INPUT_PULLUP);
     }
-//   for(int i = 0; i < masterLines; i++){
-//       pinMode(matrixMaster[i], OUTPUT);
-//       digitalWrite(matrixMaster[i], HIGH);
-//   }
-
     
   //Shift Register Pins
   pinMode (latchPin, OUTPUT);
@@ -117,41 +99,38 @@ void setup() {
   pinMode (clockPin, OUTPUT);
 
   //Set master pins high 
-  digitalWrite(latchPin, LOW);
-  shiftOut(dataPin, clockPin, LSBFIRST, 255);
-  shiftOut(dataPin, clockPin, LSBFIRST, 255); 
-  digitalWrite(latchPin, HIGH);
+  pushDataOnRegisters(255, 255); 
 }
 void loop() {
 
-    for(int i = 0; i < masterLines; i++){
+    for(uint8_t i=0; i<NUM_LINES_MASTER; i++){
       if(i < 6){
-        digitalWrite(latchPin, LOW);
-        shiftOut(dataPin, clockPin, LSBFIRST, 255); // Second SHR
-        shiftOut(dataPin, clockPin, LSBFIRST, masterOuputs[i]); // First SHR
-        digitalWrite(latchPin, HIGH); 
+        pushDataOnRegisters(masterOuputs[i], 255);    
       }else{
-        digitalWrite(latchPin, LOW);
-        shiftOut(dataPin, clockPin, LSBFIRST, masterOuputs[i-6]);
-        shiftOut(dataPin, clockPin, LSBFIRST, 255); 
-        digitalWrite(latchPin, HIGH);
+        pushDataOnRegisters(255, masterOuputs[i-6]);  
       }    
-        for(int j = 0; j < slaveLines; j++){
-            if(digitalRead(matrixSlave[j]) == LOW){
-                Serial.print(j);
-                Serial.print(",");
-                Serial.print(i);
-                Serial.print(" ");
+        for(uint8_t j=0; j<NUM_LINES_SLAVE; j++){
+            if(!digitalRead(matrixSlave[j])){
+//                Serial.print(j);
+//                Serial.print(",");
+//                Serial.print(i);
+//                Serial.print(" ");
+                Serial.print("if metode:");
                 Serial.println(tab2point(j,i));
+                Serial.print("Eryk's metode:");
+                Serial.println(GET_LOOKUP_VALUE(i, j));
                 delay(500);
                 break;
             }
         }
-        
-        digitalWrite(latchPin, LOW);
-        shiftOut(dataPin, clockPin, MSBFIRST, 255);
-        shiftOut(dataPin, clockPin, MSBFIRST, 255);
-        digitalWrite(latchPin, HIGH); 
-      
+
+        pushDataOnRegisters(255, 255);      
     } 
+}
+
+void pushDataOnRegisters (char reg1, char reg2){
+  digitalWrite(latchPin, LOW);
+  shiftOut(dataPin, clockPin, LSBFIRST, reg2);
+  shiftOut(dataPin, clockPin, LSBFIRST, reg1);
+  digitalWrite(latchPin, HIGH); 
 }
