@@ -87,19 +87,17 @@ byte masterOuputs[6] = {
   253, // i == 5
 };
 
-byte masterOuputsOff[6] = {
-  64, // i == 0
-  32, // i == 1
-  16, // i == 2
-  8, // i == 3
-  4, // i == 4
-  2, // i == 5
+byte masterOuputsSecond[4] = {
+  191, // i == 0
+  223, // i == 1
+  239, // i == 2
+  247, // i == 3
 };
 
 
 int masterLines =10;
 int slaveLines = 7; //Change here to the number of lines of your Slave Layer
-int matrixMaster[] = {8, 9, 10, 11}; //Put here the pins you connected the lines of your Master Layer 
+//int matrixMaster[] = {8, 9, 10, 11}; //Put here the pins you connected the lines of your Master Layer 
 int matrixSlave[] = {12, 13, A5, A4, A3, A2, A1}; //Put here the pins you connected the lines of your Slave Layer
 
 void setup() {
@@ -107,24 +105,36 @@ void setup() {
     for(int i = 0; i < slaveLines; i++){
         pinMode(matrixSlave[i], INPUT_PULLUP);
     }
-   for(int i = 0; i < masterLines; i++){
-       pinMode(matrixMaster[i], OUTPUT);
-       digitalWrite(matrixMaster[i], HIGH);
-   }
+//   for(int i = 0; i < masterLines; i++){
+//       pinMode(matrixMaster[i], OUTPUT);
+//       digitalWrite(matrixMaster[i], HIGH);
+//   }
+
     
   //Shift Register Pins
   pinMode (latchPin, OUTPUT);
   pinMode (dataPin, OUTPUT);
   pinMode (clockPin, OUTPUT);
+
+  //Set master pins high 
+  digitalWrite(latchPin, LOW);
+  shiftOut(dataPin, clockPin, LSBFIRST, 255);
+  shiftOut(dataPin, clockPin, LSBFIRST, 255); 
+  digitalWrite(latchPin, HIGH);
 }
 void loop() {
+
     for(int i = 0; i < masterLines; i++){
       if(i < 6){
         digitalWrite(latchPin, LOW);
-        shiftOut(dataPin, clockPin, LSBFIRST, masterOuputs[i]);
+        shiftOut(dataPin, clockPin, LSBFIRST, 255); // Second SHR
+        shiftOut(dataPin, clockPin, LSBFIRST, masterOuputs[i]); // First SHR
         digitalWrite(latchPin, HIGH); 
       }else{
-        digitalWrite(matrixMaster[i-6], LOW);
+        digitalWrite(latchPin, LOW);
+        shiftOut(dataPin, clockPin, LSBFIRST, masterOuputs[i-6]);
+        shiftOut(dataPin, clockPin, LSBFIRST, 255); 
+        digitalWrite(latchPin, HIGH);
       }    
         for(int j = 0; j < slaveLines; j++){
             if(digitalRead(matrixSlave[j]) == LOW){
@@ -137,12 +147,11 @@ void loop() {
                 break;
             }
         }
-        if(i < 6){
+        
         digitalWrite(latchPin, LOW);
         shiftOut(dataPin, clockPin, MSBFIRST, 255);
+        shiftOut(dataPin, clockPin, MSBFIRST, 255);
         digitalWrite(latchPin, HIGH); 
-      }else{
-        digitalWrite(matrixMaster[i-6], HIGH);
-      }
+      
     } 
 }
