@@ -10,7 +10,7 @@ def get_db():
 
 def create_tables():
     tables = [
-        """CREATE TABLE IF NOT EXISTS game(
+        """CREATE TABLE IF NOT EXISTS settings(
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 gameStatus BOOLEAN NOT NULL,
                 maxThrow INTEGER NOT NULL,
