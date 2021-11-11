@@ -1,5 +1,7 @@
 from database import get_db
 
+ID = 1  # at this moment we need one game
+
 
 # Insert settings table, that was happend when game has been started.
 def insert_settings(gameStatus, maxThrow, numberOfThrow, startTime, throwingPlayerId, round):
@@ -21,12 +23,21 @@ def get_settings():
 
 
 # Update settings values
-def update_game(gameStatus, maxThrow, numberOfThrow, startTime, throwingPlayerId, round):
-    id = 1 # at this moment we need one game
+def update_settings(gameStatus, maxThrow, numberOfThrow, startTime, throwingPlayerId, round):
     db = get_db()
     cursor = db.cursor()
     statement = "UPDATE settings SET gameStatus = ?, maxThrow = ?, numberOfThrow = ?, " \
-                "startTime = ?, throwingPlayerId = ?, round = ? WHERE id = ?"
+                "startTime = ?, throwingPlayerId = ?, round = ? WHERE ID = ?"
     cursor.execute(statement, [gameStatus, maxThrow, numberOfThrow, startTime, throwingPlayerId, round])
+    db.commit()
+    return True
+
+
+# Delete setting from database
+def delete_settings():
+    db = get_db()
+    cursor = db.cursor()
+    statement = "DELETE FROM settings WHERE ID = ?"
+    cursor.execute(statement, [ID])
     db.commit()
     return True
