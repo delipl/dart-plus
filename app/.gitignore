@@ -1,5 +1,5 @@
-node_modules/
-.expo/
+node_modules/**/*
+.expo/*
 npm-debug.*
 *.jks
 *.p8
@@ -11,3 +11,6 @@ web-build/
 
 # macOS
 .DS_Store
+yarn.lock
+.expo-shared
+
