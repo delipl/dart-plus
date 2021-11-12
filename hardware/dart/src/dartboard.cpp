@@ -29,21 +29,21 @@ Throw Dartboard::ReadThrow(){
             // Pins A7 and A6 in Arduino Nano doesn't have GPIO Input Interface
             if((*this->pins_slave)[j] == A7 || (*this->pins_slave)[i] == A6){
                 
-                if(analogRead(A6) < 720 || analogRead(A7) < 720){
+                if(analogRead(A6) < 500 || analogRead(A7) < 500){
                     Serial.print("i = ");
                     Serial.print(i);
                     Serial.print("\t\t\tj = ");
                     Serial.print(j);
-            Serial.print("\t\tv = ");
-            Serial.print((*this->matrix_lookup)[i][j].value);
-            Serial.print("\t\tx = ");
-            Serial.println((*this->matrix_lookup)[i][j].multiplier);
-            digitalWrite((*this->pins_master)[i], HIGH);
+                    Serial.print("\t\tv = ");
+                    Serial.print((*this->matrix_lookup)[i][j].value);
+                    Serial.print("\t\tx = ");
+                    Serial.println((*this->matrix_lookup)[i][j].multiplier);
+                    digitalWrite((*this->pins_master)[i], HIGH);
                     return (*this->matrix_lookup)[i][j];
                 }
                 continue;
         }
-
+        
         if(!digitalRead((*this->pins_slave)[j])){
             Serial.print("i = ");
             Serial.print(i);

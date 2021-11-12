@@ -14,7 +14,7 @@ void setup() {
 
 void loop() {
     Throw hit = dartboard.ReadThrow();
-    // Serial.println(analogRead(A6));
+
 
     delay(100);
 }
