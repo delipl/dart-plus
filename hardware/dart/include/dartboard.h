@@ -15,26 +15,32 @@
 
 // REMOVE THIS
 #include "config.h"
+
 #include <stdint.h>
-
-#ifndef NUM_LINES_MASTER
-    #define NUM_LINES_MASTER  10
-    #define NUM_LINES_SLAVE  7
-#endif
-
 /**
- * @brief Throw struct describes hit place on dartboard
+ * @brief 
  * 
  */
 struct Throw{
     const uint8_t multiplier;
     const uint8_t value;
     
-
+    bool operator==(const Throw &other) const {
+        return this->multiplier == other.multiplier && this->value == other.value;
+    };
+    
     Throw(const uint8_t &multiplier, const uint8_t &value);
 };
 
+
+
+#ifndef NUM_LINES_MASTER
+    #define NUM_LINES_MASTER  10
+    #define NUM_LINES_SLAVE  7
+#endif
+
 #ifdef MATRIX_10x7 
+// it is possioble to add 6 buttons on 6 collumn
 const Throw SETUP_MATRIX[NUM_LINES_MASTER][NUM_LINES_SLAVE] = {
 // 3x				         2x			        	1x		        		center
 // 0            1           2           3           4           5           6
@@ -46,8 +52,8 @@ const Throw SETUP_MATRIX[NUM_LINES_MASTER][NUM_LINES_SLAVE] = {
   {{3,10 },   	{3,  15},	{2,10},	    {2,15},	    {1,10},		{1,15},		{0, 0}  },
   {{3,20 },	   	{3, 16},	{2,20},	    {2,16},	    {1,20},		{1,16},		{0, 0}  },
   {{3,5 },   	{3,  8},	{2,5 },	    {2, 8},	    {1,5},		{1,8 },		{0, 0}  },
-  {{3,12 },	   	{3, 11},	{2,12},	    {2,11},	    {1,12},		{1,11},		{2,25}  },
-  {{3,9 },   	{3, 14},	{2,10},	    {2,14},	    {1,9},		{1,14},		{1,25}  }
+  {{3,12 },	   	{3, 11},	{2,12},	    {2,11},	    {1,12},		{1,11},		{1,25}  },
+  {{3,9 },   	{3, 14},	{2,10},	    {2,14},	    {1,9},		{1,14},		{2,25}  }
 };
 #else
 const Throw SETUP_MATRIX[0][0];
@@ -76,7 +82,7 @@ public:
      * @brief Read hit dartboard
      * @return Throw hit place
      */
-    Throw ReadThrow();
+    const Throw ReadThrow();
 
     /**
      * @brief Set pinModes
