@@ -20,12 +20,12 @@ class Player{
         uint32_t id;
         const String name;
         const String nick;
-        uint8_t points;
+        uint16_t points;
         uint8_t attemps = 3;
 
-        Player(Dartboard * dartboard,const uint32_t &id, const String &name, const String &nick, const uint8_t &points = 301, const uint8_t &attemps = 3);
+        Player(Dartboard * dartboard,const uint32_t &id, const String &name, const String &nick, const uint16_t &points = 301, const uint8_t &attemps = 3);
 
-        const Throw Throw();
+        const Throw Throwing();
 };
 
 #endif
