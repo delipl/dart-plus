@@ -28,7 +28,23 @@ struct Throw{
     bool operator==(const Throw &other) const {
         return this->multiplier == other.multiplier && this->value == other.value;
     };
-    
+
+    bool operator!=(const Throw &other) const {
+        return this->multiplier != other.multiplier || this->value != other.value;
+    };
+
+    bool operator!() const {
+        return this->multiplier == 0 || this->value == 0;
+    };
+
+    bool operator==(const int &other) const {
+        return this->multiplier*this->value == other;
+    };
+
+    operator String() const{
+        return String("{\n\t\"multiplier\": ") + String(this->multiplier + String(",\n\t\"value\": ")) + String(this->value) + String("\n}");
+    }
+
     Throw(const uint8_t &multiplier, const uint8_t &value);
 };
 

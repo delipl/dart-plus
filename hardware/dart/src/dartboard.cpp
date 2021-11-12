@@ -30,7 +30,6 @@ const Throw Dartboard::ReadThrow(){
             if((*this->pins_slave)[j] == A7 || (*this->pins_slave)[i] == A6){
                 
                 if(analogRead(A6) < 500 || analogRead(A7) < 500){
-                    Serial.println((*this->matrix_lookup)[i][j].multiplier);
                     digitalWrite((*this->pins_master)[i], HIGH);
                     return (*this->matrix_lookup)[i][j];
                 }
@@ -38,7 +37,6 @@ const Throw Dartboard::ReadThrow(){
         }
         
         if(!digitalRead((*this->pins_slave)[j])){
-            Serial.println((*this->matrix_lookup)[i][j].multiplier);
             digitalWrite((*this->pins_master)[i], HIGH);
             return (*this->matrix_lookup)[i][j];
         }
