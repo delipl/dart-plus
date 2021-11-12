@@ -14,7 +14,11 @@ void setup() {
 void loop() {
     auto hit = dartboard.ReadThrow();
     // Serial.print("Sprawdzam");
-    if(hit.multiplier)
-        Serial.println(hit.multiplier*hit.value);
+    if(hit.multiplier){
+        Serial.print(hit.multiplier);
+        Serial.print("\t");
+        Serial.println(hit.value);
+
+    }
     delay(500);
 }
