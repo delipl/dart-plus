@@ -1,111 +1,131 @@
-from database import get_db, Setting, Player
+import pickle
+
+from database import get_db, Game, User, Player
+import pickle as p
 
 
-# Insert settings table, that was happend when game has been started.
-def insert_settings(gameStatus, maxThrow, numberOfThrow, startTime, throwingPlayerId, round):
+def insert_games(gameStatus, maxThrow, numberOfThrow, startTime, throwingUserId, round, setting):
     db = get_db()
     cursor = db.cursor()
-    statement = "INSERT INTO settings(gameStatus, maxThrow, numberOfThrow, startTime, throwingPlayerId, round) VALUES (?, ?, ?, ?, ?, ?)"
-    cursor.execute(statement, [gameStatus, maxThrow, numberOfThrow, startTime, throwingPlayerId, round])
+    players = []
+    statement = "INSERT INTO games(gameStatus, maxThrow, numberOfThrow, startTime, " \
+                "throwingUserId, round, setting, players) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
+    cursor.execute(statement, [gameStatus, maxThrow, numberOfThrow, startTime, throwingUserId, round, p.dumps(setting), p.dumps(players)])
     db.commit()
     return True
 
 
-# Insert player
-def insert_player(name, nick, maxThrow, throws, average, wins, matches):
+def insert_user(name, nick, maxThrow, throws, average, wins, matches):
     db = get_db()
     cursor = db.cursor()
-    statement = "INSERT INTO players(name, nick, maxThrow, throws, average, wins, matches) VALUES (?, ?, ?, ?, ?, ?, ?)"
+    statement = "INSERT INTO users(name, nick, maxThrow, throws, average, wins, matches) VALUES (?, ?, ?, ?, ?, ?, ?)"
     cursor.execute(statement, [name, nick, maxThrow, throws, average, wins, matches])
     db.commit()
     return True
 
 
-# Get all settings
-def get_settings():
-    settings = []
+def get_games():
+    games = []
     db = get_db()
     cursor = db.cursor()
-    query = "SELECT * FROM settings"
+    query = "SELECT * FROM games"
     cursor.execute(query)
     rows = cursor.fetchall()
     for i in rows:
-        setting = Setting(i[0], i[1], i[2], i[3], i[4], i[5], i[6])
-        settings.append(setting.getDictionary())
-    return settings
+        game = Game(i[0], i[1], i[2], i[3], i[4], i[5], i[6], pickle.loads(i[7]), pickle.loads(i[8]))
+        games.append(game.getDictionary())
+    return games
 
 
-# Get all players
-def get_players():
-    players = []
+def get_game(id):
     db = get_db()
     cursor = db.cursor()
-    query = "SELECT * FROM players"
+    query = "SELECT * FROM games WHERE id = ?"
+    cursor.execute(query, [id])
+    rows = cursor.fetchall()
+    if len(rows) is 0:
+        return "Game does not exist!"
+    for i in rows:
+        game = Game(i[0], i[1], i[2], i[3], i[4], i[5], i[6], pickle.loads(i[7]), pickle.loads(i[8]))
+    return game.getDictionary()
+
+
+def get_user(id):
+    db = get_db()
+    cursor = db.cursor()
+    query = "SELECT * FROM users WHERE id = ?"
+    cursor.execute(query, [id])
+    rows = cursor.fetchall()
+    if len(rows) is 0:
+        return "User does not exist!"
+    user = User(rows[0], rows[1], rows[2], rows[3], rows[4], rows[5], rows[6], rows[7])
+    return user.getDictionary()
+
+
+def get_users():
+    users = []
+    db = get_db()
+    cursor = db.cursor()
+    query = "SELECT * FROM users"
     cursor.execute(query)
     rows = cursor.fetchall()
     for i in rows:
-        player = Player(i[0], i[1], i[2], i[3], i[4], i[5], i[6], i[7])
-        players.append(player.getDictionary())
-    return players
+        user = User(i[0], i[1], i[2], i[3], i[4], i[5], i[6], i[7])
+        users.append(user.getDictionary())
+    return users
 
 
-# Update settings values
-def update_settings(id, gameStatus, maxThrow, numberOfThrow, startTime, throwingPlayerId, round):
+def update_games(id, gameStatus, maxThrow, numberOfThrow, startTime, throwingUserId, round, setting, players):
     db = get_db()
     cursor = db.cursor()
-    statement = "UPDATE settings SET gameStatus = ?, maxThrow = ?, numberOfThrow = ?, " \
-                "startTime = ?, throwingPlayerId = ?, round = ? WHERE id = ?"
-    cursor.execute(statement, [gameStatus, maxThrow, numberOfThrow, startTime, throwingPlayerId, round, id])
+    statement = "UPDATE games SET gameStatus = ?, maxThrow = ?, numberOfThrow = ?, " \
+                "startTime = ?, throwingUserId = ?, round = ?, setting = ?, players = ? WHERE id = ?"
+    cursor.execute(statement, [gameStatus, maxThrow, numberOfThrow, startTime, throwingUserId, round, setting, players,id])
     db.commit()
     return True
 
 
-# Update players values
-def update_players(id, name, nick, maxThrow, throws, average, wins, matches):
+def update_users(id, name, nick, maxThrow, throws, average, wins, matches):
     db = get_db()
     cursor = db.cursor()
-    statement = "UPDATE players SET name = ?, nick = ?, maxThrow = ?, " \
+    statement = "UPDATE users SET name = ?, nick = ?, maxThrow = ?, " \
                 "throws = ?, average = ?, wins = ?, matches = ? WHERE id = ?"
     cursor.execute(statement, [name, nick, maxThrow, throws, average, wins, matches, id])
     db.commit()
     return True
 
 
-# Delete setting from database
-def delete_setting(id):
+def delete_game(id):
     db = get_db()
     cursor = db.cursor()
-    statement = "DELETE FROM settings WHERE id = ?"
+    statement = "DELETE FROM games WHERE id = ?"
     cursor.execute(statement, [id])
     db.commit()
     return True
 
 
-# Delete player from database
-def delete_player(id):
+def delete_user(id):
     db = get_db()
     cursor = db.cursor()
-    statement = "DELETE FROM players WHERE id = ?"
+    statement = "DELETE FROM users WHERE id = ?"
     cursor.execute(statement, [id])
     db.commit()
     return True
 
 
-# Delete all setting
-def delete_settings():
+def delete_games():
     db = get_db()
     cursor = db.cursor()
-    statement = "DELETE FROM settings"
+    statement = "DELETE FROM games"
     cursor.execute(statement)
     db.commit()
     return True
 
 
-# Delete all players
-def delete_players():
+def delete_users():
     db = get_db()
     cursor = db.cursor()
-    statement = "DELETE FROM players"
+    statement = "DELETE FROM users"
     cursor.execute(statement)
     db.commit()
     return True

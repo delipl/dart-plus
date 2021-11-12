@@ -1,88 +1,105 @@
+from datetime import datetime
+
 from flask import Flask, jsonify, request
 import controller
-from database import create_tables
-from datetime import datetime
+from database import create_tables, Settings
 
 app = Flask(__name__)
 
 
-# HTTP GET | At /settings list setting db tables
-@app.route('/settings', methods=["GET"])
-def get_settings():
-    return jsonify(controller.get_settings())
+@app.route('/games', methods=["GET"])
+def get_games():
+    return jsonify(controller.get_games())
 
 
-@app.route('/players', methods=["GET"])
-def get_players():
-    return jsonify(controller.get_players())
+@app.route('/users', methods=["GET"])
+def get_users():
+    return jsonify(controller.get_users())
 
 
-# HTTP POST | create new setting/ mean new game start
-@app.route("/settings", methods=["POST"])
-def insert_setting():
-    setting_details = request.json
-    gameStatus = setting_details["gameStatus"]
-    maxThrow = setting_details["maxThrow"]
-    numberOfThrow = setting_details["numberOfThrow"]
+@app.route("/games", methods=["POST"])
+def insert_game():
+    game_details = request.json
+    gameStatus = game_details["gameStatus"]
+    maxThrow = game_details["maxThrow"]
+    numberOfThrow = game_details["numberOfThrow"]
     startTime = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-    throwingPlayerId = setting_details["throwingPlayerId"]
-    round = setting_details["round"]
-    result = controller.insert_settings(gameStatus, maxThrow, numberOfThrow, startTime, throwingPlayerId, round)
+    throwingUserId = game_details["throwingUserId"]
+    round = game_details["round"]
+    setting = game_details["setting"]
+
+    result = controller.insert_games(gameStatus, maxThrow, numberOfThrow, startTime, throwingUserId, round, setting)
     return jsonify(result)
 
 
-# HTTP POST | create new player
-@app.route("/players", methods=["POST"])
-def insert_player():
-    player_details = request.json
-    name = player_details["name"]
-    nick = player_details["nick"]
-    maxThrow = player_details["maxThrow"]
-    throws = player_details["throws"]
-    average = player_details["average"]
-    wins = player_details["wins"]
-    matches = player_details["matches"]
-    result = controller.insert_player(name, nick, maxThrow, throws, average, wins, matches)
+@app.route("/users", methods=["POST"])
+def insert_user():
+    user_details = request.json
+    name = user_details["name"]
+    nick = user_details["nick"]
+    maxThrow = user_details["maxThrow"]
+    throws = user_details["throws"]
+    average = user_details["average"]
+    wins = user_details["wins"]
+    matches = user_details["matches"]
+    result = controller.insert_user(name, nick, maxThrow, throws, average, wins, matches)
     return jsonify(result)
 
 
-@app.route("/settings/<id>", methods=["PUT"])
-def update_setting(id):
-    setting_details = request.json
-    gameStatus = setting_details["gameStatus"]
-    maxThrow = setting_details["maxThrow"]
-    numberOfThrow = setting_details["numberOfThrow"]
-    throwingPlayerId = setting_details["throwingPlayerId"]
-    round = setting_details["round"]
-    result = controller.update_setting(id, gameStatus, maxThrow, numberOfThrow,
-                                       controller.get_settings()[0]["startTime"], throwingPlayerId, round)
+@app.route("/game/<id>", methods=["PUT"])
+def update_game(id):
+    game_details = request.json
+    gameStatus = game_details["gameStatus"]
+    maxThrow = game_details["maxThrow"]
+    numberOfThrow = game_details["numberOfThrow"]
+    throwingUserId = game_details["throwingUserId"]
+    round = game_details["round"]
+    setting = game_details["setting"]
+    result = controller.update_game(id, gameStatus, maxThrow, numberOfThrow,
+                                    controller.get_games()[0]["startTime"], throwingUserId, round, setting)
     return jsonify(result)
 
 
-@app.route("/player/<id>", methods=["PUT"])
-def update_player(id):
-    player_details = request.json
-    name = player_details["name"]
-    nick = player_details["nick"]
-    maxThrow = player_details["maxThrow"]
-    throws = player_details["throws"]
-    average = player_details["average"]
-    wins = player_details["wins"]
-    matches = player_details["matches"]
-    result = controller.update_player(id, name, nick, maxThrow, throws, average, wins, matches)
+@app.route("/game/<id>", methods=["GET"])
+def take_game(id):
+    return jsonify(controller.get_game(id))
+
+
+@app.route("/user/<id>", methods=["GET"])
+def take_user(id):
+    return jsonify(controller.get_user(id))
+
+
+@app.route("/user/<id>", methods=["PUT"])
+def update_user(id):
+    user_details = request.json
+    name = user_details["name"]
+    nick = user_details["nick"]
+    maxThrow = user_details["maxThrow"]
+    throws = user_details["throws"]
+    average = user_details["average"]
+    wins = user_details["wins"]
+    matches = user_details["matches"]
+    result = controller.update_user(id, name, nick, maxThrow, throws, average, wins, matches)
     return jsonify(result)
 
 
-# After end game delete this element
-@app.route("/settings/<id>", methods=["DELETE"])
-def delete_setting(id):
-    result = controller.delete_settings(id)
+@app.route("/games/<id>", methods=["DELETE"])
+def delete_game(id):
+    result = controller.delete_game(id)
+    return jsonify(result)
+
+
+@app.route("/users/<id>", methods=["DELETE"])
+def delete_user(id):
+    result = controller.delete_user(id)
     return jsonify(result)
 
 
 if __name__ == "__main__":
     create_tables()
-    # print(controller.insert_player("Bartosz", "Barto", 180, 33, 36.5, 12, 90))
-    # print(controller.delete_players())
-    # print(controller.insert_settings(1, 132, 12, datetime.now().strftime("%d/%m/%Y %H:%M:%S"), 33, 0))
+    # print(controller.insert_user("Bartosz", "Barto", 180, 33, 36.5, 12, 90))
+    #print(controller.delete_users())
+    #print(controller.delete_games())
+    #print(controller.insert_games(1, 132, 12, datetime.now().strftime("%d/%m/%Y %H:%M:%S"), 33, 0, Settings(2, 301, False, False)))
     app.run(host='0.0.0.0', port=8000, debug=True)
