@@ -4,6 +4,56 @@ Throw::Throw(const uint8_t &multiplier, const uint8_t &value):
  multiplier{multiplier},value{value}
 {}
 
+Throw &Throw::operator=(const Throw &other) {
+    this->multiplier = other.multiplier;
+    this->value = other.value;
+    return *this;
+}
+
+bool Throw::operator==(const Throw &other) const {
+    return this->multiplier == other.multiplier && this->value == other.value;
+}
+
+bool Throw::operator!=(const Throw &other) const {
+    return this->multiplier != other.multiplier || this->value != other.value;
+}
+
+bool Throw::operator!() const {
+    return this->multiplier == 0 || this->value == 0;
+}
+
+bool Throw::operator==(const int &other) const {
+    return this->multiplier*this->value == other;
+}
+
+bool Throw::operator>(const int &other) const{
+    return this->multiplier*this->value > other;
+}
+bool Throw::operator<(const int &other) const{
+    return this->multiplier*this->value < other;
+}
+
+// Throw::operator String() const{
+//     return String("\"throw\": {\n\t\"multiplier\": ") + String(this->multiplier + String(",\n\t\"value\": ")) + String(this->value) + String("\n}");
+// }
+// String operator+(String &prefix, Throw &hit){
+//     return String(prefix + "{\n" + prefix + "\t\"multiplier\": ") + String(hit.multiplier + 
+//         String(",\n" + prefix + "\t\"value\": ")) + String(hit.value) + String("\n "+ prefix + "}");
+// }
+
+String operator+(const String &prefix, const Throw &hit){
+    String x = prefix;
+    if(prefix.substring(0,2) != "\t") x = "";
+    return  prefix + "{\n" + 
+            x + "\t\"multiplier\": " + String(hit.multiplier + String(",\n" + 
+            x + "\t\"value\": ")) + String(hit.value) + String("\n "+ 
+            x + "}");
+
+}
+
+uint16_t operator- (const uint16_t &points, const Throw &hit){
+    return points - hit.multiplier*hit.value;
+}
 
 Dartboard::Dartboard(const uint8_t (*pins_master)[NUM_LINES_MASTER], const uint8_t (*pins_slave)[NUM_LINES_SLAVE]){
     this->pins_master = pins_master;

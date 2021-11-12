@@ -14,6 +14,13 @@
 #include <Arduino.h>
 #include <dartboard.h>
 
+/**
+ * @brief OK - good throw just subtract, END - finish game player has 0 points, ERROR - player throw to much
+ */
+enum ThrowStatus{
+    ThrowStatus_OK, ThrowStatus_END, ThrowStatus_ERROR  
+};
+
 class Player{
     public:
         Dartboard  *dartboard;
@@ -22,10 +29,13 @@ class Player{
         const String nick;
         uint16_t points;
         uint8_t attemps = 3;
+        Throw lastThrow = Throw(0,0);
 
         Player(Dartboard * dartboard,const uint32_t &id, const String &name, const String &nick, const uint16_t &points = 301, const uint8_t &attemps = 3);
 
-        const Throw Throwing();
+        const ThrowStatus Throwing();
 };
+
+String operator+(const String &prefix, const Player &player);
 
 #endif
