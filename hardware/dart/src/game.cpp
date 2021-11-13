@@ -11,34 +11,53 @@ id{id}, amoutOfPlayers{amoutOfPlayers}, startPoints{startPoints}, doubleIn{doubl
 Game::Game(const Settings &set): id{set.id}, settings{set}{
     Vector<Player> vec(this->playerList);
    
-    for(int i = 0; i < settings.amoutOfPlayers; ++i){
+    for(int i = 0; i < settings.amoutOfPlayers; ++i)
         vec.push_back(Player(i, String("Player #") + String(i), settings.startPoints, 0));
-        Serial.println(String("dodaje player do gry: ") + this->playerList[i].id);
-    }
 }
 
 GameStatus Game::Loop(){
-    for(int i = 0; i < this->settings.amoutOfPlayers; ++i){
-        this->playerList[i].attemps = 3;
+    Serial.println("Welcome to Dart-Plus");
+    while(this->status != GameStatus_Finished){
+        for(int i = 0; i < this->settings.amoutOfPlayers; ++i){
+            this->playerList[i].attemps = 3;
+            Serial.println("Throws: " + this->playerList[i].nick);
+            
+            Serial.println("\tPoints: "  + String(this->playerList[i].points));
 
-        while(this->playerList[i].attemps != 0){
-            auto state = this->playerList[i].Throwing();
-            Serial.println(String("player") + this->playerList[i]);
-            if(state == ThrowStatus_ERROR){
-                this->playerList[i].points = this->playerList[i].points + this->playerList[i].lastThrow;
-                this->playerList[i].attemps = 0;
+            while(this->playerList[i].attemps != 0){
+                while(this->status == GameStatus_Pause);
+
+                Serial.println("Let's throw...");
+                // while((state = this->playerList[i].Throwing()) != )
+                auto state = this->playerList[i].Throwing();
+                while(state != ThrowStatus_OK)
+                    state = this->playerList[i].Throwing();
+                Serial.println("Hit!");
+                Serial.println("\t"+this->playerList[i].lastThrow);
+
+                // Serial.println(String("player") + this->playerList[i]);
+                if(state == ThrowStatus_ERROR){
+                    Serial.println("To much");
+                    this->playerList[i].points = this->playerList[i].points + this->playerList[i].lastThrow;
+                    this->playerList[i].attemps = 0;
+                }
+                else if(state == ThrowStatus_END){
+                    Serial.println("Finished");
+                    this->status = GameStatus_Finished;
+                    this->playerList[i].attemps = 0;
+                }
+                else{
+                    Serial.println("OK");
+                    --this->playerList[i].attemps;
+                }
+                delay(100);
             }
-            else if(state == ThrowStatus_END){
-                this->status = GameStatus_Finished;
-                this->playerList[i].attemps = 0;
-            }
-            else{
-                --this->playerList[i].attemps;
-            }
+
+            // if(this->status == GameStatus_Finished){
+            //     Serial.println("Finished OUT");
+            //     break;
+            // }
         }
-
-        if(this->status == GameStatus_Finished)
-            break;
     }
     return this->status;
 }

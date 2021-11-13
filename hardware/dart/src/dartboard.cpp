@@ -67,12 +67,15 @@ Dartboard::Dartboard(const uint8_t (*pins_master)[NUM_LINES_MASTER], const uint8
 
 void Dartboard::Init(){
     for(uint8_t i = 0; i < NUM_LINES_MASTER; ++i) {
+        Serial.println((*this->pins_master)[i]);
         pinMode(((*this->pins_master)[i]), OUTPUT);
         digitalWrite((*this->pins_master)[i], HIGH);
     }
 
-    for(uint8_t i = 0; i < NUM_LINES_SLAVE; ++i)
+    for(uint8_t i = 0; i < NUM_LINES_SLAVE; ++i){
+        Serial.println((*this->pins_slave)[i]);
         pinMode((*this->pins_slave)[i], INPUT_PULLUP);
+    }
 }
 
 const Throw Dartboard::ReadThrow(){
@@ -91,7 +94,6 @@ const Throw Dartboard::ReadThrow(){
         }
         
         if(!digitalRead((*this->pins_slave)[j])){
-            digitalWrite((*this->pins_master)[i], HIGH);
             return (*this->matrix_lookup)[i][j];
         }
     }

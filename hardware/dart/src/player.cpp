@@ -10,6 +10,7 @@ const ThrowStatus Player::Throwing(){
     Throw hit(0,0); 
     while(hit == Throw(0,0)){
         hit = dartboard.ReadThrow();
+        Serial.println("\t" + hit);
     }
     if (hit > this->points)
         return ThrowStatus_ERROR;
