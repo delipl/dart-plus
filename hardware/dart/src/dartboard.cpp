@@ -33,13 +33,27 @@ bool Throw::operator<(const int &other) const{
     return this->multiplier*this->value < other;
 }
 
-// Throw::operator String() const{
-//     return String("\"throw\": {\n\t\"multiplier\": ") + String(this->multiplier + String(",\n\t\"value\": ")) + String(this->value) + String("\n}");
-// }
-// String operator+(String &prefix, Throw &hit){
-//     return String(prefix + "{\n" + prefix + "\t\"multiplier\": ") + String(hit.multiplier + 
-//         String(",\n" + prefix + "\t\"value\": ")) + String(hit.value) + String("\n "+ prefix + "}");
-// }
+size_t Throw::write(uint8_t c){
+        return 1;
+    }
+
+size_t Throw::write(const uint8_t *s, size_t n) {
+    char text[n+1];
+    for(size_t i = 0; i < n; ++i)
+        text[i] = s[i];
+    text[n] = (char)NULL;
+
+    *iter = atoi(text);
+    ++iter;
+    return n;
+};
+// JSON
+StaticJsonDocument<16> Throw::GetJSON() const{
+    StaticJsonDocument<16> doc;
+    doc["multiplier"]   = this->multiplier;
+    doc["value"]        = this->value;
+    return doc;
+}
 
 String operator+(const String &prefix, const Throw &hit){
     String x = prefix;

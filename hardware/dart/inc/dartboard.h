@@ -39,27 +39,9 @@ struct Throw{
 
     Throw(const uint8_t &multiplier, const uint8_t &value);
 
-    size_t write(uint8_t c){
-        return 1;
-    }
-
-    size_t write(const uint8_t *s, size_t n) {
-        char text[n+1];
-        for(size_t i = 0; i < n; ++i)
-            text[i] = s[i];
-        text[n] = (char)NULL;
-
-        *iter = atoi(text);
-        ++iter;
-        return n;
-    };
-    // JSON
-    StaticJsonDocument<16> GetJSON() const{
-        StaticJsonDocument<16> doc;
-        doc["multiplier"]   = this->multiplier;
-        doc["value"]        = this->value;
-        return doc;
-    }
+    size_t write(uint8_t c);
+    size_t write(const uint8_t *s, size_t n);
+    StaticJsonDocument<16> GetJSON() const;
     
 };
 
