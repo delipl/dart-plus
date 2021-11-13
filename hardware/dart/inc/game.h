@@ -10,8 +10,14 @@
  */
 #ifndef GAME_H
 #define GAME_H
+
 #include "player.h"
 #include "Arduino.h"
+#include "Vector.h"
+
+#ifndef MAX_PLAYERS
+    #define MAX_PLAYERS 10
+#endif
 
 enum GameStatus{
     GameStatus_Active, GameStatus_Pause, GameStatus_Save, GameStatus_Finished
@@ -23,10 +29,9 @@ struct Settings{
     const uint16_t startPoints;
     const bool doubleIn;
     const bool doubleOut;
-    uint16_t *playersId;
+    Vector<uint16_t> playersId;
 
-    Settings(const uint16_t &id, const uint8_t &amoutOfPlayers, const uint16_t &startPoints, const bool &doubleIn, const bool &doubleOut, uint16_t playersId[]);
-
+    Settings(const uint16_t &id, const uint8_t &amoutOfPlayers, const uint16_t &startPoints, const bool &doubleIn, const bool &doubleOut, const Vector<uint16_t> &playersId);
 };
 
 class Game{
@@ -36,7 +41,8 @@ class Game{
         GameStatus status = GameStatus_Active;
         uint16_t throwingPlayerId;
         uint16_t round;
-        Player *playerList;
+        Player playerList[MAX_PLAYERS];
+
 
         Game(const Settings &set);
 

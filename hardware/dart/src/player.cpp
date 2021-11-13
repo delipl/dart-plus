@@ -4,6 +4,7 @@ Player::Player(const uint32_t &id, const String &nick, const uint16_t &points, c
 id{id}, nick{nick}, points{points}, attemps{attemps}{
 
 }
+Player::Player():id{0}, nick{"\0"}, points{0}, attemps{0}{}
 
 const ThrowStatus Player::Throwing(){
     Throw hit(0,0); 

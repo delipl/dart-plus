@@ -7,7 +7,7 @@
 #define NUM_LINES_SLAVE         7
 
 #define MATRIX_10x7 true
-
+#define MAX_PLAYERS 20
 
 // array stored in flash memory
 // rows coresponds to order of numbers on dashboard

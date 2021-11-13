@@ -1,15 +1,20 @@
 #include "game.h"
-Settings::Settings(const uint16_t &id, const uint8_t &amoutOfPlayers, const uint16_t &startPoints, const bool &doubleIn, const bool &doubleOut, uint16_t playersId[]):
-id{id}, amoutOfPlayers{amoutOfPlayers}, startPoints{startPoints}, doubleIn{doubleIn}, doubleOut{doubleOut}{
-    this->playersId = (uint16_t*)malloc(sizeof(uint16_t)*amoutOfPlayers);
-    for(int i = 0; i < amoutOfPlayers; ++i)
-        this->playersId[i] = playersId[i];
+Settings::Settings(const uint16_t &id, const uint8_t &amoutOfPlayers, const uint16_t &startPoints, const bool &doubleIn, const bool &doubleOut, const Vector<uint16_t> & playersId):
+id{id}, amoutOfPlayers{amoutOfPlayers}, startPoints{startPoints}, doubleIn{doubleIn}, doubleOut{doubleOut}, playersId{playersId}{
+    for(int i = 0; i < amoutOfPlayers; ++i){
+        // this->playersId.push_back(playersId[i]);
+        Serial.println(String("dodaje player id:") + String(this->playersId[i]));
+        delay(100);
+    }
 }
 
 Game::Game(const Settings &set): id{set.id}, settings{set}{
-    this->playerList = (Player*)malloc(sizeof(Player)*this->settings.amoutOfPlayers);
-    for(int i = 0; i < settings.amoutOfPlayers; ++i)
-        this->playerList[i] = Player(i, String("Player #") + String(i), settings.startPoints, 0);
+    Vector<Player> vec(this->playerList);
+   
+    for(int i = 0; i < settings.amoutOfPlayers; ++i){
+        vec.push_back(Player(i, String("Player #") + String(i), settings.startPoints, 0));
+        Serial.println(String("dodaje player do gry: ") + this->playerList[i].id);
+    }
 }
 
 GameStatus Game::Loop(){
@@ -18,7 +23,7 @@ GameStatus Game::Loop(){
 
         while(this->playerList[i].attemps != 0){
             auto state = this->playerList[i].Throwing();
-            
+            Serial.println(String("player") + this->playerList[i]);
             if(state == ThrowStatus_ERROR){
                 this->playerList[i].points = this->playerList[i].points + this->playerList[i].lastThrow;
                 this->playerList[i].attemps = 0;
