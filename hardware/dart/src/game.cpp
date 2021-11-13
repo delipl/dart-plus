@@ -68,3 +68,32 @@ GameStatus Game::Loop(){
 Game::~Game(){
     delete[] playerList;
 }
+
+String Game::Serialize(){
+    StaticJsonDocument<SIZE_GAME_JSON> doc;
+    doc["id"]               = this->id;
+    doc["status"]           = this->status;
+    doc["throwingPlayerId"] = this->throwingPlayerId;
+    doc["round"]            = this->round;
+    // allocate the memory for the document
+    StaticJsonDocument<100> ar;
+
+    // create an empty array
+    JsonArray array = ar.to<JsonArray>();
+    for(int i = 0; i < this->settings.amountOfPlayers; ++i){
+        array.add(this->playerList[i].Serialize());
+    }
+
+    serializeJson(ar, Serial);
+
+    serializeJson(doc, this->json);
+    return this->json;
+}
+
+void Game::Deserialize(const StaticJsonDocument<SIZE_GAME_JSON> &doc){
+    // serializeJson(doc, this->json);
+    // this->id = doc[0];
+    // strcpy(this->nick, (const char*)doc[1]);
+    // this->points = doc[2];
+    // this->attemps = doc[3];
+}

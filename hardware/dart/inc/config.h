@@ -12,6 +12,7 @@
 
 // MAKE SIZE OF DOCUMENTS
 #define SIZE_PLAYER_JSON 86
+#define SIZE_GAME_JSON 86
 
 // array stored in flash memory
 // rows coresponds to order of numbers on dashboard

@@ -36,6 +36,7 @@ void setup() {
     Serial.println("Creatiing settings...");
     delay(100);
     Game game(set);
+    // Serial.println(game.Serialize());
     delay(100);
     Serial.println("Loading game...");
     for(int i = 0; i < game.settings.amountOfPlayers; ++i){

@@ -38,6 +38,8 @@ struct Settings{
 };
 
 class Game{
+    private:
+        String json;
     public:
         const uint16_t id;
         Settings settings;
@@ -49,6 +51,9 @@ class Game{
 
         Game(const Settings &set);
         ~Game();
+
+        String Serialize();
+        void Deserialize(const StaticJsonDocument<SIZE_GAME_JSON> &doc);
 
         GameStatus Loop();
 };
