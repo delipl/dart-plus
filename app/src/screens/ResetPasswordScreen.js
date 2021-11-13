@@ -25,7 +25,7 @@ export default function ResetPasswordScreen({ navigation }) {
       {/* <Logo /> */}
       <Header>Restore Password</Header>
       <TextInput
-        label="E-mail address"
+        label="Phone"
         returnKeyType="done"
         value={phone.value}
         onChangeText={(text) => setPhone({ value: text, error: '' })}

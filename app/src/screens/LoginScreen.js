@@ -45,6 +45,8 @@ export default function LoginScreen({ navigation }) {
         autoCompleteType="phone"
         textContentType="phoneAddress"
         keyboardType="phone-address"
+        keyboardType="numeric"
+        maxLength={9}
       />
       <TextInput
         label="Password"
