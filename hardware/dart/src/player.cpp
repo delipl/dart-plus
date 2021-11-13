@@ -2,7 +2,7 @@
 
 Player::Player(const uint16_t &id, const String &nick, const uint16_t &points, const uint8_t &attemps):
 id{id}, nick{nick}, points{points}, attemps{attemps}{
-
+    this->json = "";
 }
 Player::Player():id{0}, nick{"\0"}, points{0}, attemps{0}{}
 
@@ -21,18 +21,6 @@ const ThrowStatus Player::Throwing(){
     return ThrowStatus_OK;
 }
 
-String operator+(const String &prefix, const Player &player){
-    String x = prefix;
-    if(prefix.substring(0,2) != "\t") x = "";
-    return  prefix + "\n{\n" +
-            x + "\t\"id\": " + String(player.id) + "\",\n"+
-            x + "\t\"nick\": \"" + player.nick + "\",\n" +
-            x + "\t\"points\": " + String(player.points) + ",\n" +
-            x + "\t\"attemps\": " + String(player.attemps) +  ",\n" + 
-            x + "\t\"lastThrow\": " + ("\t" + player.lastThrow) + 
-            x + "\n}";
-}
-
 Player &Player::operator=(const Player &other){
     this->id = other.id;
     this->nick = other.nick;
@@ -40,4 +28,24 @@ Player &Player::operator=(const Player &other){
     this->attemps = other.attemps;
     this->lastThrow = other.lastThrow;
     return *this;
+}
+
+String Player::Serialize() const{
+    StaticJsonDocument<SIZE_PLAYER_JSON> doc;
+    doc["id"]           = this->id;
+    doc["nick"]         = this->nick;
+    doc["points"]       = this->points;
+    doc["attemps"]      = this->attemps;
+
+    String temp = this->json;
+    serializeJson(doc, temp);
+    return this->json;
+}
+
+void Player::Deserialize(const StaticJsonDocument<SIZE_PLAYER_JSON> &doc){
+    serializeJson(doc, this->json);
+    this->id = doc[0];
+    this->nick = (const char*)doc[1];
+    this->points = doc[2];
+    this->attemps = doc[3];
 }

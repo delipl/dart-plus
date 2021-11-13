@@ -5,9 +5,8 @@
 
 #include "ArduinoJson.h"
 
-uint8_t *ptr;
 #include "dartboard.h"
-Dartboard dartboard(&pins_master, &pins_slave);
+Dartboard dartboard(&pins_master, &pins_slave) PROGMEM;
 
 
 #include "player.h"
@@ -15,7 +14,7 @@ Dartboard dartboard(&pins_master, &pins_slave);
 
 
 
-Player deli(1, "deli");
+
 void setup() {
     Serial.begin(9600);
     Serial.println("\nInitiating dartboard...");
@@ -30,29 +29,46 @@ void setup() {
     playerIds.push_back(16);
     playerIds.push_back(13);
 
-    Throw dupa(0,0);
-    StaticJsonDocument<16> doc;
-    doc["multiplier"] = 255;
-    doc["value"] = 16;
-    //  doc["id"] = 0x5987;
-    // doc["nick"] = "deli";
-    // doc["points"] = 555;
-    // doc["attemps"] = 0;
-    // doc["lastThrow"] = Throw(2, 20)
-
-
-    Serial.println(dupa.Serialize());
-    dupa.Deserialize(doc);
-    Serial.println(dupa.Serialize());
+    StaticJsonDocument<SIZE_PLAYER_JSON> doc;
+    Player deli;
     
+    doc["id"] = 0x5987;
+    doc["nick"] = "deli";
+    doc["points"] = 555;
+    doc["attemps"] = 59;
+    deli.Deserialize(doc);
+    Serial.println(deli.Serialize());
+
     while(1);
-    Settings set(0, playerIds.size() , 301, false, false, playerIds);
-    Serial.println("Creatiing settings...");
-    Game game(set);
-    Serial.println("Loading game...");
+
+    // TODO
+    // doc["lastThrow"] = Throw(2, 20);
+    // doc
+
+    // Throw lol;
+    // StaticJsonDocument<16> doc;
+    // doc["multiplier"] = 13;
+    // doc["value"] = 16;
+    // lol.Deserialize(doc);
+    // serializeJson(doc, lol);
+    // // serializeJson(doc, Serial);
+    // Serial.print("LOL: ");
+    // Serial.println(lol.Serialize());
+
     
-    game.Loop();
-    Serial.println("After LOOP");
+
+    // Serial.println(dupa.Serialize());
+    // dupa.Deserialize(doc);
+    // Serial.println(dupa.Serialize());
+    
+    // while(1);
+    // Settings set(0, playerIds.size() , 301, false, false, playerIds);
+    // Serial.println("Creatiing settings...");
+    // Game game(set);
+    // Serial.println("Loading game...");
+    
+    // game.Loop();
+    // Serial.println("After LOOP");
 }
 
 void loop() {

@@ -8,7 +8,11 @@
 
 #define MATRIX_10x7 true
 #define MAX_PLAYERS 10
-#define NICK_LENGTH 15
+#define NICK_LENGTH 20
+
+// MAKE SIZE OF DOCUMENTS
+#define SIZE_PLAYER_JSON 86
+
 // array stored in flash memory
 // rows coresponds to order of numbers on dashboard
 // columns coresponds to multipliers of rings on dashboard

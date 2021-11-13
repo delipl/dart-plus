@@ -47,12 +47,12 @@ GameStatus Game::Loop(){
                     --this->playerList[i].attemps;
                 }
 
-                StaticJsonDocument<255> doc;
-                doc["id"] = this->playerList[i].id;
-                doc["nick"] = this->playerList[i].nick;
-                doc["points"] = this->playerList[i].points;
-                doc["attemps"] = this->playerList[i].attemps;
-                serializeJsonPretty(doc, Serial);
+                // StaticJsonDocument<255> doc;
+                // doc["id"] = this->playerList[i].id;
+                // doc["nick"] = this->playerList[i].nick;
+                // doc["points"] = this->playerList[i].points;
+                // doc["attemps"] = this->playerList[i].attemps;
+                // serializeJsonPretty(doc, Serial);
 
                 delay(100);
             }

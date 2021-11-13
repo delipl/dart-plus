@@ -24,10 +24,9 @@ enum ThrowStatus {
 
 extern Dartboard dartboard;
 
-
-
-
 class Player{
+    private:
+        String json;
     public:
         uint16_t id;
         String nick;
@@ -38,11 +37,10 @@ class Player{
         Player();
         Player(const uint16_t &id, const String &nick, const uint16_t &points = 301, const uint8_t &attemps = 0);
         Player &operator=(const Player &other);
-
-
         const ThrowStatus Throwing();
-};
 
-String operator+(const String &prefix, const Player &player);
+        String Serialize() const;
+        void Deserialize(const StaticJsonDocument<SIZE_PLAYER_JSON> &doc);
+};
 
 #endif

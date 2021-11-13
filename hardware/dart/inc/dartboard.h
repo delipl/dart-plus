@@ -10,22 +10,20 @@
  */
 #ifndef DARTBOARD_H
 #define DARTBOARD_H
+#include <stdint.h>
 
 #include "Arduino.h"
 #include "ArduinoJson.h"
-
 // REMOVE THIS
 #include "config.h"
 #define JSON_LENGHT
 
-#include <stdint.h>
 /**
  * @brief 
  * 
  */
-extern uint8_t *ptr;
-
-struct Throw{
+class Throw{
+    public:
     uint8_t multiplier;
     uint8_t value;
 
@@ -39,17 +37,7 @@ struct Throw{
 
     Throw(const uint8_t &multiplier, const uint8_t &value);
     Throw(){};
-
-    size_t write(uint8_t c);
-    size_t write(const uint8_t *s, size_t n);
-    
-    String Serialize() const;
-    void Deserialize(const StaticJsonDocument<16> &doc);
-    
 };
-
-String operator+(String &prefix, Throw &hit);
-String operator+(const String &prefix, const Throw &hit);
 uint16_t operator- (const uint16_t &points, const Throw &hit);
 uint16_t operator+ (const uint16_t &points, const Throw &hit);
 
@@ -104,5 +92,7 @@ public:
      */
     void Init();
 };
+
+
 
 #endif
