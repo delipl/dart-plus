@@ -1,14 +1,14 @@
 #include "player.h"
 
-Player::Player(Dartboard * dartboard, const uint32_t &id, const String &name, const String &nick, const uint16_t &points, const uint8_t &attemps):
-dartboard{dartboard}, id{id}, name{name}, nick{nick}, points{points}, attemps{attemps}{
+Player::Player(const uint32_t &id, const String &nick, const uint16_t &points, const uint8_t &attemps):
+id{id}, nick{nick}, points{points}, attemps{attemps}{
 
 }
 
 const ThrowStatus Player::Throwing(){
     Throw hit(0,0); 
     while(hit == Throw(0,0)){
-        hit = dartboard->ReadThrow();
+        hit = dartboard.ReadThrow();
     }
     if (hit > this->points)
         return ThrowStatus_ERROR;
@@ -30,4 +30,13 @@ String operator+(const String &prefix, const Player &player){
             x + "\t\"attemps\": " + String(player.attemps) +  ",\n" + 
             x + "\t\"lastThrow\": " + ("\t" + player.lastThrow) + 
             x + "\n}";
+}
+
+Player &Player::operator=(const Player &other){
+    this->id = other.id;
+    this->nick = other.nick;
+    this->points = other.points;
+    this->attemps = other.attemps;
+    this->lastThrow = other.lastThrow;
+    return *this;
 }

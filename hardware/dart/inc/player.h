@@ -12,6 +12,7 @@
 #define PLAYRER_H
 
 #include <Arduino.h>
+#include <ArduinoJson.h>
 #include <dartboard.h>
 
 /**
@@ -21,17 +22,18 @@ enum ThrowStatus{
     ThrowStatus_OK, ThrowStatus_END, ThrowStatus_ERROR  
 };
 
+extern Dartboard dartboard;
+
 class Player{
     public:
-        Dartboard  *dartboard;
         uint32_t id;
-        const String name;
-        const String nick;
+        String nick;
         uint16_t points;
-        uint8_t attemps = 3;
+        uint8_t attemps = 0;
         Throw lastThrow = Throw(0,0);
 
-        Player(Dartboard * dartboard,const uint32_t &id, const String &name, const String &nick, const uint16_t &points = 301, const uint8_t &attemps = 3);
+        Player(const uint32_t &id, const String &nick, const uint16_t &points = 301, const uint8_t &attemps = 0);
+        Player &operator=(const Player &other);
 
         const ThrowStatus Throwing();
 };

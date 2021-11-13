@@ -55,6 +55,10 @@ uint16_t operator- (const uint16_t &points, const Throw &hit){
     return points - hit.multiplier*hit.value;
 }
 
+uint16_t operator+ (const uint16_t &points, const Throw &hit){
+    return points + hit.multiplier*hit.value;
+}
+
 Dartboard::Dartboard(const uint8_t (*pins_master)[NUM_LINES_MASTER], const uint8_t (*pins_slave)[NUM_LINES_SLAVE]){
     this->pins_master = pins_master;
     this->pins_slave = pins_slave;

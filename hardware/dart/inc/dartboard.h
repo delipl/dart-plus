@@ -12,9 +12,11 @@
 #define DARTBOARD_H
 
 #include "Arduino.h"
+#include "ArduinoJson.h"
 
 // REMOVE THIS
 #include "config.h"
+#define JSON_LENGHT
 
 #include <stdint.h>
 /**
@@ -34,12 +36,22 @@ struct Throw{
     bool operator<(const int &other) const;
 
     Throw(const uint8_t &multiplier, const uint8_t &value);
-    // operator String() const; // JSON output
+    // JSON
+    // String GetJSON() const{
+    //     StaticJsonDocument<10> doc;
+    //     doc["multiplier"]   = this->multiplier;
+    //     doc["value"]        = this->value;
+    //     String x;
+    //     deserializeJson(doc, x);
+    //     return x;
+    // }
     
 };
+
 String operator+(String &prefix, Throw &hit);
 String operator+(const String &prefix, const Throw &hit);
 uint16_t operator- (const uint16_t &points, const Throw &hit);
+uint16_t operator+ (const uint16_t &points, const Throw &hit);
 
 
 
