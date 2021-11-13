@@ -15,7 +15,7 @@ def get_games():
 
 @app.route('/info', methods=["GET"])
 def get_info():
-    return jsonify(controller.get_info(1))
+    return jsonify(controller.get_info(322))
 
 
 @app.route('/users', methods=["GET"])

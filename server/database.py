@@ -84,6 +84,11 @@ class Player:
     def addThrow(self, multiplier, value):
         self.throws.append(Throw(multiplier, value))
 
+    def getLastThrow(self):
+        if len(self.throws) == 0:
+            return Throw(0,0)
+        else:
+            return self.throws[-1]
     def getDictionary(self):
         return {
             "id": self.id,

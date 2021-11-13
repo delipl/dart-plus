@@ -66,7 +66,7 @@ def get_info(id):
     dictionary["nick"] = player.nick
     dictionary["points"] = player.points
     dictionary["attempts"] = 2
-    dictionary["lastThrow"] = player.throw.getScore()
+    dictionary["lastThrow"] = player.getLastThrow().getScore()
     dictionary["players"] = players
     return dictionary
 
