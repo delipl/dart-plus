@@ -24,24 +24,29 @@ enum GameStatus{
 };
 
 struct Settings{
-    const uint16_t id;
-    const uint8_t amoutOfPlayers;
-    const uint16_t startPoints;
-    const bool doubleIn;
-    const bool doubleOut;
-    Vector<uint16_t> playersId;
+    private:
+        uint16_t tab[1];
+    public:
+        const uint16_t id;
+        const uint8_t amoutOfPlayers;
+        const uint16_t startPoints;
+        const bool doubleIn;
+        const bool doubleOut;
+        Vector<uint16_t> playersId;
 
-    Settings(const uint16_t &id, const uint8_t &amoutOfPlayers, const uint16_t &startPoints, const bool &doubleIn, const bool &doubleOut, const Vector<uint16_t> &playersId);
+        Settings(const uint16_t &id, const uint8_t &amoutOfPlayers, const uint16_t &startPoints, const bool &doubleIn, const bool &doubleOut, Vector<uint16_t> &playersId);
 };
 
 class Game{
+    private:
+        Player tab[1];
     public:
         const uint16_t id;
         const Settings settings;
         GameStatus status = GameStatus_Active;
         uint16_t throwingPlayerId;
         uint16_t round;
-        Player playerList[MAX_PLAYERS];
+        Vector<Player> playerList;
 
 
         Game(const Settings &set);

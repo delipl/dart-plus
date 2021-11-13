@@ -14,6 +14,7 @@
 #include <Arduino.h>
 #include <ArduinoJson.h>
 #include <dartboard.h>
+#include <string.h>
 
 /**
  * @brief OK - good throw just subtract, END - finish game player has 0 points, ERROR - player throw to much
@@ -29,17 +30,17 @@ class Player{
         String json;
     public:
         uint16_t id;
-        String nick;
+        char nick[NICK_LENGTH];
         uint16_t points;
         uint8_t attemps = 0;
         Throw lastThrow = Throw(0,0);
 
         Player();
-        Player(const uint16_t &id, const String &nick, const uint16_t &points = 301, const uint8_t &attemps = 0);
+        Player(const uint16_t &id, const char nick[NICK_LENGTH], const uint16_t &points = 301, const uint8_t &attemps = 0);
         Player &operator=(const Player &other);
         const ThrowStatus Throwing();
 
-        String Serialize() const;
+        String Serialize();
         void Deserialize(const StaticJsonDocument<SIZE_PLAYER_JSON> &doc);
 };
 

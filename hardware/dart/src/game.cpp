@@ -1,18 +1,30 @@
 #include "game.h"
-Settings::Settings(const uint16_t &id, const uint8_t &amoutOfPlayers, const uint16_t &startPoints, const bool &doubleIn, const bool &doubleOut, const Vector<uint16_t> & playersId):
+Settings::Settings(const uint16_t &id, const uint8_t &amoutOfPlayers, const uint16_t &startPoints, const bool &doubleIn, const bool &doubleOut, Vector<uint16_t> & playersId):
 id{id}, amoutOfPlayers{amoutOfPlayers}, startPoints{startPoints}, doubleIn{doubleIn}, doubleOut{doubleOut}, playersId{playersId}{
     for(int i = 0; i < amoutOfPlayers; ++i){
-        // this->playersId.push_back(playersId[i]);
         Serial.println(String("dodaje player id:") + String(this->playersId[i]));
         delay(100);
     }
 }
 
-Game::Game(const Settings &set): id{set.id}, settings{set}{
-    Vector<Player> vec(this->playerList);
-   
-    for(int i = 0; i < settings.amoutOfPlayers; ++i)
-        vec.push_back(Player(this->settings.playersId[i], (char*)(this->settings.playersId[i]+48), settings.startPoints, 0));
+Game::Game(const Settings &set): id{set.id}, settings{set}{   
+    this->playerList = Vector<Player>(this->tab);
+    Serial.println(this->settings.amoutOfPlayers);
+    for(int i = 0; i < this->settings.amoutOfPlayers; ++i){
+        this->playerList.push_back( Player(this->settings.playersId[i], String(this->settings.playersId[i]).c_str(), settings.startPoints, 0));
+        // Serial.print("id: ");
+        // Serial.print(this->playerList[i].id);
+        // Serial.print("\tname: ");
+        // Serial.print(this->playerList[i].nick);
+        // Serial.print("\tpoints: ");
+        // Serial.print(this->playerList[i].points);
+        // Serial.print("\attemps: ");
+        // Serial.println(this->playerList[i].attemps);
+        Serial.println(this->playerList[i].Serialize());
+        Serial.println("DUPA");
+        delay(100);
+    }
+
 }
 
 GameStatus Game::Loop(){
@@ -29,8 +41,12 @@ GameStatus Game::Loop(){
 
                 Serial.println("\nLet's throw...");
                 auto state = this->playerList[i].Throwing();
-                while(state != ThrowStatus_OK)
+                while(state != ThrowStatus_OK){
                     state = this->playerList[i].Throwing();
+                    // Serial.println(sizeof(this->playerList[i].Throwing()));
+                }
+                // Serial.println(sizeof(this->playerList[i].Throwing()));
+                Serial.println(this->playerList[i].Serialize());
                 Serial.println("Hit!");
 
                 if(state == ThrowStatus_ERROR){
@@ -47,20 +63,10 @@ GameStatus Game::Loop(){
                     --this->playerList[i].attemps;
                 }
 
-                // StaticJsonDocument<255> doc;
-                // doc["id"] = this->playerList[i].id;
-                // doc["nick"] = this->playerList[i].nick;
-                // doc["points"] = this->playerList[i].points;
-                // doc["attemps"] = this->playerList[i].attemps;
-                // serializeJsonPretty(doc, Serial);
+
 
                 delay(100);
             }
-
-            // if(this->status == GameStatus_Finished){
-            //     Serial.println("Finished OUT");
-            //     break;
-            // }
         }
     }
     return this->status;
