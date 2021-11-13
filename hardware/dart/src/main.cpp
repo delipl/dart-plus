@@ -4,8 +4,12 @@
 #include <stdlib.h>
 
 #include "ArduinoJson.h"
+
+uint8_t *ptr;
 #include "dartboard.h"
 Dartboard dartboard(&pins_master, &pins_slave);
+
+
 #include "player.h"
 #include "game.h"
 
@@ -30,13 +34,16 @@ void setup() {
     StaticJsonDocument<16> doc;
     doc["multiplier"] = 255;
     doc["value"] = 16;
+    //  doc["id"] = 0x5987;
+    // doc["nick"] = "deli";
+    // doc["points"] = 555;
+    // doc["attemps"] = 0;
+    // doc["lastThrow"] = Throw(2, 20)
 
 
-    serializeJson(doc, dupa);
-    Serial.print("\nmultiplier: ");
-    Serial.println(dupa.multiplier);
-
-    serializeJson(dupa.GetJSON(), Serial);
+    Serial.println(dupa.Serialize());
+    dupa.Deserialize(doc);
+    Serial.println(dupa.Serialize());
     
     while(1);
     Settings set(0, playerIds.size() , 301, false, false, playerIds);

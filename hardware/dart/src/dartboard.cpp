@@ -1,7 +1,7 @@
 #include "dartboard.h"
-
+#include "math.h"
 Throw::Throw(const uint8_t &multiplier, const uint8_t &value):
- multiplier{multiplier},value{value}
+    multiplier{multiplier}, value{value}
 {}
 
 Throw &Throw::operator=(const Throw &other) {
@@ -33,27 +33,37 @@ bool Throw::operator<(const int &other) const{
     return this->multiplier*this->value < other;
 }
 
-size_t Throw::write(uint8_t c){
-        return 1;
-    }
-
 size_t Throw::write(const uint8_t *s, size_t n) {
-    char text[n+1];
-    for(size_t i = 0; i < n; ++i)
-        text[i] = s[i];
-    text[n] = (char)NULL;
-
-    *iter = atoi(text);
-    ++iter;
+    uint8_t sum = 0;
+    for(size_t i = 0; i < n; ++i){
+        uint8_t x = ((uint8_t)(s[i] - 48));
+        // why just pow doesnt work
+        for(size_t k = 0; k < n-i-1; ++k)
+            x *= 10;
+        sum += x;
+    }
+    *ptr = sum;
+    ++ptr;
     return n;
 };
+size_t Throw::write(uint8_t c) { return 1;}
 // JSON
-StaticJsonDocument<16> Throw::GetJSON() const{
+
+String Throw::Serialize() const{
     StaticJsonDocument<16> doc;
     doc["multiplier"]   = this->multiplier;
     doc["value"]        = this->value;
-    return doc;
+    String out;
+    serializeJson(doc, out);
+    serializeJson(doc, Serial);
+    return out;
 }
+
+void Throw::Deserialize(const StaticJsonDocument<16> &doc){
+    ptr = (uint8_t*)this;
+    serializeJson(doc, *this);
+}
+
 
 String operator+(const String &prefix, const Throw &hit){
     String x = prefix;
@@ -76,7 +86,6 @@ uint16_t operator+ (const uint16_t &points, const Throw &hit){
 Dartboard::Dartboard(const uint8_t (*pins_master)[NUM_LINES_MASTER], const uint8_t (*pins_slave)[NUM_LINES_SLAVE]){
     this->pins_master = pins_master;
     this->pins_slave = pins_slave;
-    this->matrix_lookup = &SETUP_MATRIX;
 }
 
 void Dartboard::Init(){
@@ -104,13 +113,13 @@ const Throw Dartboard::ReadThrow(){
                 
                 if(analogRead(A6) < 500 || analogRead(A7) < 500){
                     digitalWrite((*this->pins_master)[i], HIGH);
-                    return (*this->matrix_lookup)[i][j];
+                    return SETUP_MATRIX[i][j];
                 }
                 continue;
         }
         
         if(!digitalRead((*this->pins_slave)[j])){
-            return (*this->matrix_lookup)[i][j];
+            return SETUP_MATRIX[i][j];
         }
     }
     digitalWrite((*this->pins_master)[i], HIGH);

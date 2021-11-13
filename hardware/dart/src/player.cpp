@@ -1,6 +1,6 @@
 #include "player.h"
 
-Player::Player(const uint32_t &id, const String &nick, const uint16_t &points, const uint8_t &attemps):
+Player::Player(const uint16_t &id, const String &nick, const uint16_t &points, const uint8_t &attemps):
 id{id}, nick{nick}, points{points}, attemps{attemps}{
 
 }
@@ -14,7 +14,6 @@ const ThrowStatus Player::Throwing(){
     }
     if (hit > this->points)
         return ThrowStatus_ERROR;
-    Serial.println("Usuwam");
     this->points = this->points - hit;
     this->lastThrow = hit;
     if(this->points == 0)

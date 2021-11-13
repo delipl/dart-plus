@@ -12,7 +12,7 @@ Game::Game(const Settings &set): id{set.id}, settings{set}{
     Vector<Player> vec(this->playerList);
    
     for(int i = 0; i < settings.amoutOfPlayers; ++i)
-        vec.push_back(Player(this->settings.playersId[i], String(this->settings.playersId[i]), settings.startPoints, 0));
+        vec.push_back(Player(this->settings.playersId[i], (char*)(this->settings.playersId[i]+48), settings.startPoints, 0));
 }
 
 GameStatus Game::Loop(){

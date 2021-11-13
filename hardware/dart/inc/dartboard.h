@@ -13,7 +13,6 @@
 
 #include "Arduino.h"
 #include "ArduinoJson.h"
-#include "stdlib.h"
 
 // REMOVE THIS
 #include "config.h"
@@ -24,11 +23,12 @@
  * @brief 
  * 
  */
+extern uint8_t *ptr;
+
 struct Throw{
     uint8_t multiplier;
     uint8_t value;
 
-    uint8_t *iter = (uint8_t*)this;    
     Throw &operator=(const Throw &other);
     bool operator==(const Throw &other) const;
     bool operator!=(const Throw &other) const;
@@ -38,10 +38,13 @@ struct Throw{
     bool operator<(const int &other) const;
 
     Throw(const uint8_t &multiplier, const uint8_t &value);
+    Throw(){};
 
     size_t write(uint8_t c);
     size_t write(const uint8_t *s, size_t n);
-    StaticJsonDocument<16> GetJSON() const;
+    
+    String Serialize() const;
+    void Deserialize(const StaticJsonDocument<16> &doc);
     
 };
 
@@ -59,7 +62,7 @@ uint16_t operator+ (const uint16_t &points, const Throw &hit);
 
 #ifdef MATRIX_10x7 
 // it is possioble to add 6 buttons on 6 collumn
-const Throw SETUP_MATRIX[NUM_LINES_MASTER][NUM_LINES_SLAVE] = {
+const Throw SETUP_MATRIX[NUM_LINES_MASTER][NUM_LINES_SLAVE]  ={
 // 3x				         2x			        	1x		        		center
 // 0            1           2           3           4           5           6
   {{3,1 },   	{3,  7}, 	{2,1 },	    {2,7 },	    {1,1},		{1,7 },		{1, 255}  },
@@ -84,14 +87,8 @@ const Throw SETUP_MATRIX[0][0];
  */
 class Dartboard{
 public:
-    /**
-     * @brief Matrix with points place definition
-     */
-    const Throw (*matrix_lookup)[NUM_LINES_MASTER][NUM_LINES_SLAVE];
-
     const uint8_t (*pins_master)[NUM_LINES_MASTER];
     const uint8_t (*pins_slave)[NUM_LINES_SLAVE];
-
 
     Dartboard(const uint8_t (*pins_master)[NUM_LINES_MASTER], const uint8_t (*pins_slave)[NUM_LINES_SLAVE]);
 
