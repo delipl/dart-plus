@@ -13,6 +13,7 @@
 
 #include "Arduino.h"
 #include "ArduinoJson.h"
+#include "stdlib.h"
 
 // REMOVE THIS
 #include "config.h"
@@ -26,7 +27,8 @@
 struct Throw{
     uint8_t multiplier;
     uint8_t value;
-    
+
+    uint8_t *iter = (uint8_t*)this;    
     Throw &operator=(const Throw &other);
     bool operator==(const Throw &other) const;
     bool operator!=(const Throw &other) const;
@@ -36,15 +38,28 @@ struct Throw{
     bool operator<(const int &other) const;
 
     Throw(const uint8_t &multiplier, const uint8_t &value);
+
+    size_t write(uint8_t c){
+        return 1;
+    }
+
+    size_t write(const uint8_t *s, size_t n) {
+        char text[n+1];
+        for(size_t i = 0; i < n; ++i)
+            text[i] = s[i];
+        text[n] = (char)NULL;
+
+        *iter = atoi(text);
+        ++iter;
+        return n;
+    };
     // JSON
-    // String GetJSON() const{
-    //     StaticJsonDocument<10> doc;
-    //     doc["multiplier"]   = this->multiplier;
-    //     doc["value"]        = this->value;
-    //     String x;
-    //     deserializeJson(doc, x);
-    //     return x;
-    // }
+    StaticJsonDocument<16> GetJSON() const{
+        StaticJsonDocument<16> doc;
+        doc["multiplier"]   = this->multiplier;
+        doc["value"]        = this->value;
+        return doc;
+    }
     
 };
 

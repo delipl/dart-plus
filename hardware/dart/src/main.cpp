@@ -26,9 +26,19 @@ void setup() {
     playerIds.push_back(16);
     playerIds.push_back(13);
 
- 
-    
+    Throw dupa(0,0);
+    StaticJsonDocument<16> doc;
+    doc["multiplier"] = 255;
+    doc["value"] = 16;
 
+
+    serializeJson(doc, dupa);
+    Serial.print("\nmultiplier: ");
+    Serial.println(dupa.multiplier);
+
+    serializeJson(dupa.GetJSON(), Serial);
+    
+    while(1);
     Settings set(0, playerIds.size() , 301, false, false, playerIds);
     Serial.println("Creatiing settings...");
     Game game(set);
