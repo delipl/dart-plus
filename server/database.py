@@ -79,7 +79,10 @@ class Player:
         self.nick = nick
         self.points = points
         self.attempts = attempts
-        self.throw = Throw(-1, -1)
+        self.throws = []
+
+    def addThrow(self, multiplier, value):
+        self.throws.append(Throw(multiplier, value))
 
     def getDictionary(self):
         return {
@@ -87,7 +90,7 @@ class Player:
             "nick": self.nick,
             "points": self.points,
             "attempts": self.attempts,
-            "throw": self.throw.getDictionary()
+            "throws": getDictionary(self.throws)
         }
 
 

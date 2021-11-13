@@ -1,6 +1,6 @@
 import pickle
 
-from database import get_db, Game, User, Player
+from database import get_db, Game, User, Player, getDictionary
 import pickle as p
 
 
@@ -9,7 +9,8 @@ def insert_games(id, gameStatus, numberOfThrow, startTime, throwingUserId, round
     cursor = db.cursor()
     statement = "INSERT INTO games(id, gameStatus, numberOfThrow, startTime, " \
                 "throwingUserId, round, setting, players) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
-    cursor.execute(statement, [id, gameStatus, numberOfThrow, startTime, throwingUserId, round, p.dumps(setting), p.dumps(players)])
+    cursor.execute(statement, [id, gameStatus, numberOfThrow, startTime, throwingUserId, round, p.dumps(setting),
+                               p.dumps(players)])
     db.commit()
     return True
 
@@ -36,6 +37,53 @@ def get_games():
     return games
 
 
+def get_info(id):
+    db = get_db()
+    cursor = db.cursor()
+    query = "SELECT * FROM games WHERE id = ?"
+    cursor.execute(query, [id])
+    rows = cursor.fetchall()
+    if len(rows) == 0:
+        return "Game does not exist!"
+    for i in rows:
+        game = Game(i[0], i[1], i[2], i[3], i[4], i[5], pickle.loads(i[6]), pickle.loads(i[7]))
+    player = None
+    players = []
+    dictionary = {}
+    for p in game.players:
+        if p.attempts > 0:
+            player = p
+            break
+    if player == None:
+        player = game.players[0]
+    game.players.remove(player)  # nie wiem czy zadziala xd
+    for p in game.players:
+        dict = {}
+        dict["nick"] = p.nick
+        dict["points"] = p.points
+        players.append(dict)
+
+    dictionary["nick"] = player.nick
+    dictionary["points"] = player.points
+    dictionary["attempts"] = 2
+    dictionary["lastThrow"] = player.throw.getScore()
+    dictionary["players"] = players
+    return dictionary
+
+
+def get_gameDictionary(id):
+    db = get_db()
+    cursor = db.cursor()
+    query = "SELECT * FROM games WHERE id = ?"
+    cursor.execute(query, [id])
+    rows = cursor.fetchall()
+    if len(rows) == 0:
+        return "Game does not exist!"
+    for i in rows:
+        game = Game(i[0], i[1], i[2], i[3], i[4], i[5], pickle.loads(i[6]), pickle.loads(i[7]))
+    return game.getDictionary()
+
+
 def get_game(id):
     db = get_db()
     cursor = db.cursor()
@@ -45,8 +93,8 @@ def get_game(id):
     if len(rows) == 0:
         return "Game does not exist!"
     for i in rows:
-        game = Game(i[0], i[1], i[2], i[3], i[4], i[5], pickle.loads(i[7]), pickle.loads(i[8]))
-    return game.getDictionary()
+        game = Game(i[0], i[1], i[2], i[3], i[4], i[5], pickle.loads(i[6]), pickle.loads(i[7]))
+    return game
 
 
 def get_user(id):
@@ -74,14 +122,22 @@ def get_users():
     return users
 
 
-# def update_games(id, gameStatus, maxThrow, numberOfThrow, startTime, throwingUserId, round, setting, players):
-#     db = get_db()
-#     cursor = db.cursor()
-#     statement = "UPDATE games SET gameStatus = ?, maxThrow = ?, numberOfThrow = ?, " \
-#                 "startTime = ?, throwingUserId = ?, round = ?, setting = ?, players = ? WHERE id = ?"
-#     cursor.execute(statement, [gameStatus, maxThrow, numberOfThrow, startTime, throwingUserId, round, setting, players,id])
-#     db.commit()
-#     return True
+def update_games(id, status, throwingPlayerId, multiplier, value, round, playerList):
+    db = get_db()
+    cursor = db.cursor()
+    players = get_game(id).players
+    for p in players:
+        for i in range(len(playerList)):
+            if p.id == i["id"]:
+                p.attempts = i["attempts"]
+                p.points = i["points"]
+
+    print(players)
+    statement = "UPDATE games SET gameStatus = ?, numberOfThrow = ?, " \
+                "throwingUserId = ?, round = ?, setting = ?, players = ? WHERE id = ?"
+    cursor.execute(statement, [status, throwingPlayerId, multiplier, value, round, players])
+    db.commit()
+    return True
 
 
 def update_users(id, name, nick, maxThrow, throws, average, wins, matches):
