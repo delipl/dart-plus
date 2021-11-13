@@ -11,6 +11,7 @@ import { theme } from '../core/theme'
 import { phoneValidator } from '../helpers/phoneValidator'
 import { passwordValidator } from '../helpers/passwordValidator'
 
+
 export default function LoginScreen({ navigation }) {
   const [phone, setPhone] = useState({ value: '', error: '' })
   const [password, setPassword] = useState({ value: '', error: '' })
@@ -27,6 +28,22 @@ export default function LoginScreen({ navigation }) {
       index: 0,
       routes: [{ name: 'Dashboard' }],
     })
+  }
+
+  var handleInputChange = (text) => {
+    let newText = '';
+    let numbers = '0123456789';
+
+    for (var i=0; i < text.length; i++) {
+        if(numbers.indexOf(text[i]) > -1 ) {
+            newText = newText + text[i];
+        }
+        else {
+            // your call back function
+            alert("please enter numbers only");
+        }
+    }
+    this.setState({ myNumber: newText });
   }
 
   return (

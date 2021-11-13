@@ -43,8 +43,6 @@ export default function Dashboard({ navigation }){
     getGame();
   }, []);
 
-
-
   return (
     <Background>
       <BHeader>
