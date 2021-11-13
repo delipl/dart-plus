@@ -32,17 +32,21 @@ void setup() {
 
     Settings set(0, 5 , 301, false, false, playerIds);
 
-    // Serial.println(set.amoutOfPlayers);
+    // Serial.println(set.amountOfPlayers);
     Serial.println("Creatiing settings...");
     delay(100);
     Game game(set);
     delay(100);
     Serial.println("Loading game...");
+    for(int i = 0; i < game.settings.amountOfPlayers; ++i){
+        Serial.print("Ammount: ");
+        Serial.print(game.settings.amountOfPlayers);
+        Serial.println(game.playerList[i].Serialize());
+    }
+    while(1);
     
     game.Loop();
     Serial.println("After LOOP");
-
-    game.playerList.clear();
 }
 
 void loop() {  

@@ -7,7 +7,8 @@ id{id}{
     this->attemps = attemps;
     this->json = "";
 }
-Player::Player():id{0}, nick{"\0"}, points{0}, attemps{0}{}
+Player::Player():id{0}, nick{"nick"}, points{0}, attemps{0}{
+}
 
 const ThrowStatus Player::Throwing(){
     Throw hit(0,0); 
