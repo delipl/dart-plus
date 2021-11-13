@@ -49,9 +49,9 @@ def createNewGame():
 
     # here add players from USERS database
     for i in range(numberOfPlayers):
-        players.append(Player(playersId[i]["id"], "Gracz" + str(i + 1), startPoints, 0))
+        players.append(Player(playersId[i], "Gracz" + str(i + 1), startPoints, 0))
 
-    result = controller.insert_games(id, 0, 0, date, playersId[0]["id"], 0, setting, players)
+    result = controller.insert_games(id, 0, 0, date, playersId[0], 0, setting, players)
     return jsonify(result)
 
 
@@ -122,7 +122,7 @@ def delete_user(id):
 if __name__ == "__main__":
     create_tables()
     # print(controller.insert_user("Bartosz", "Barto", 180, 33, 36.5, 12, 90))
-    print(controller.delete_users())
-    print(controller.delete_games())
+    # print(controller.delete_users())
+    # print(controller.delete_games())
     # print(controller.insert_games(1, 132, 12, datetime.now().strftime("%d/%m/%Y %H:%M:%S"), 33, 0, Settings(2, 301, False, False)))
     app.run(host='0.0.0.0', port=8000, debug=False)
