@@ -122,20 +122,18 @@ def get_users():
     return users
 
 
-def update_games(id, status, throwingPlayerId, multiplier, value, round, playerList):
+def update_game(id, status, throwingPlayerId, multiplier, value, round, playerList):
     db = get_db()
     cursor = db.cursor()
     players = get_game(id).players
     for p in players:
         for i in range(len(playerList)):
-            if p.id == i["id"]:
-                p.attempts = i["attempts"]
-                p.points = i["points"]
+            if p.id == playerList[i]["id"]:
+                p.attempts = playerList[i]["attempts"]
+                p.points = playerList[i]["points"]
 
-    print(players)
-    statement = "UPDATE games SET gameStatus = ?, numberOfThrow = ?, " \
-                "throwingUserId = ?, round = ?, setting = ?, players = ? WHERE id = ?"
-    cursor.execute(statement, [status, throwingPlayerId, multiplier, value, round, players])
+    statement = "UPDATE games SET gameStatus = ?, throwingUserId = ?, round = ?, players = ? WHERE id = ?"
+    cursor.execute(statement, [status, throwingPlayerId, round, pickle.dumps(players), id])
     db.commit()
     return True
 

@@ -61,7 +61,7 @@ def createNewGame():
 
 
 @app.route("/games", methods=["PUT"])
-def update_game(id):
+def update_game():
     game_details = request.json
     id = game_details["id"]
     status = game_details["status"]
