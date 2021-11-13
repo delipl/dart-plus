@@ -12,7 +12,7 @@ Game::Game(const Settings &set): id{set.id}, settings{set}{
     Vector<Player> vec(this->playerList);
    
     for(int i = 0; i < settings.amoutOfPlayers; ++i)
-        vec.push_back(Player(i, String("Player #") + String(i), settings.startPoints, 0));
+        vec.push_back(Player(this->settings.playersId[i], String(this->settings.playersId[i]), settings.startPoints, 0));
 }
 
 GameStatus Game::Loop(){
@@ -20,25 +20,21 @@ GameStatus Game::Loop(){
     while(this->status != GameStatus_Finished){
         for(int i = 0; i < this->settings.amoutOfPlayers; ++i){
             this->playerList[i].attemps = 3;
-            Serial.println("Throws: " + this->playerList[i].nick);
+            // Serial.println("Throws: " + this->playerList[i].nick);
             
-            Serial.println("\tPoints: "  + String(this->playerList[i].points));
+            // Serial.println("\tPoints: "  + String(this->playerList[i].points));
 
             while(this->playerList[i].attemps != 0){
                 while(this->status == GameStatus_Pause);
 
-                Serial.println("Let's throw...");
-                // while((state = this->playerList[i].Throwing()) != )
+                Serial.println("\nLet's throw...");
                 auto state = this->playerList[i].Throwing();
                 while(state != ThrowStatus_OK)
                     state = this->playerList[i].Throwing();
                 Serial.println("Hit!");
-                Serial.println("\t"+this->playerList[i].lastThrow);
 
-                // Serial.println(String("player") + this->playerList[i]);
                 if(state == ThrowStatus_ERROR){
                     Serial.println("To much");
-                    // this->playerList[i].points = this->playerList[i].points + this->playerList[i].lastThrow;
                     this->playerList[i].attemps = 0;
                 }
                 else if(state == ThrowStatus_END){
@@ -50,6 +46,14 @@ GameStatus Game::Loop(){
                     Serial.println("OK");
                     --this->playerList[i].attemps;
                 }
+
+                StaticJsonDocument<255> doc;
+                doc["id"] = this->playerList[i].id;
+                doc["nick"] = this->playerList[i].nick;
+                doc["points"] = this->playerList[i].points;
+                doc["attemps"] = this->playerList[i].attemps;
+                serializeJsonPretty(doc, Serial);
+
                 delay(100);
             }
 
