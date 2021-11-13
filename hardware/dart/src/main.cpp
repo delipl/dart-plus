@@ -6,6 +6,7 @@
 #include "ArduinoJson.h"
 #include "dartboard.h"
 Dartboard dartboard(&pins_master, &pins_slave);
+#include "player.h"
 #include "game.h"
 
 
@@ -40,7 +41,25 @@ void setup() {
 }
 
 void loop() {
-    Serial.println("\t" + dartboard.ReadThrow());
-    delay(500);
+    
+    Throw hit(0,0);
+    hit = dartboard.ReadThrow();
+    if(hit != Throw(0,0)){
+        Serial.println("" + hit);
+    }
+    delay(100);
+    //  for(uint8_t i = 0; i < NUM_LINES_MASTER; ++i) {
+    //     digitalWrite((pins_master)[i], HIGH);
+    //  }
+    //  digitalWrite((pins_master)[0], LOW);
+    //     if((pins_slave)[1] == A7){
+    //             Serial.print("TAB: ");
+    //  Serial.println((pins_master)[0]);
+    // Serial.print("Analog7 : ");
+    //  Serial.println(analogRead(A7));
+    //  Serial.print("Analog6 : ");
+    //  Serial.println(analogRead(A6));
+        // }
+     
 }
 

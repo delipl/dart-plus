@@ -67,13 +67,13 @@ Dartboard::Dartboard(const uint8_t (*pins_master)[NUM_LINES_MASTER], const uint8
 
 void Dartboard::Init(){
     for(uint8_t i = 0; i < NUM_LINES_MASTER; ++i) {
-        Serial.println((*this->pins_master)[i]);
+        // Serial.println((*this->pins_master)[i]);
         pinMode(((*this->pins_master)[i]), OUTPUT);
         digitalWrite((*this->pins_master)[i], HIGH);
     }
 
     for(uint8_t i = 0; i < NUM_LINES_SLAVE; ++i){
-        Serial.println((*this->pins_slave)[i]);
+        // Serial.println((*this->pins_slave)[i]);
         pinMode((*this->pins_slave)[i], INPUT_PULLUP);
     }
 }
@@ -84,7 +84,9 @@ const Throw Dartboard::ReadThrow(){
 
         for(uint8_t j = 0; j < NUM_LINES_SLAVE; ++j) {
             // Pins A7 and A6 in Arduino Nano doesn't have GPIO Input Interface
-            if((*this->pins_slave)[j] == A7 || (*this->pins_slave)[i] == A6){
+            // Serial.print("Sprawdzam ");
+            // Serial.println((*this->pins_slave)[j]);
+            if((*this->pins_slave)[j] == A7 || (*this->pins_slave)[j] == A6){
                 
                 if(analogRead(A6) < 500 || analogRead(A7) < 500){
                     digitalWrite((*this->pins_master)[i], HIGH);
