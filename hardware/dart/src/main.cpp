@@ -18,36 +18,34 @@ void setup() {
     dartboard.Init();
 
 
-    // uint16_t storage[MAX_PLAYERS];
-    // Vector<uint16_t> playerIds(storage);
-    // playerIds.push_back(1);
-    // playerIds.push_back(5);
-    // playerIds.push_back(15);
-    // playerIds.push_back(16);
-    // playerIds.push_back(13);
+    uint16_t storage[MAX_PLAYERS];
+    Vector<uint16_t> playerIds(storage);
+    playerIds.push_back(1);
+    playerIds.push_back(5);
+    playerIds.push_back(15);
+    playerIds.push_back(16);
+    playerIds.push_back(13);
 
  
     
 
-    // Settings set(0, playerIds.size() , 301, false, false, playerIds);
-    // Serial.println("Creatiing settings...");
-    // Game game(set);
-    // Serial.println("Loading game...");
+    Settings set(0, playerIds.size() , 301, false, false, playerIds);
+    Serial.println("Creatiing settings...");
+    Game game(set);
+    Serial.println("Loading game...");
     
-    // game.Loop();
-    // Serial.println("After LOOP");
-    // game.playerList[0].Throwing();
-    // Serial.println(String("\t") + game.playerList[0].lastThrow);
+    game.Loop();
+    Serial.println("After LOOP");
 }
 
 void loop() {
     
-    Throw hit(0,0);
-    hit = dartboard.ReadThrow();
-    if(hit != Throw(0,0)){
-        Serial.println("" + hit);
-    }
-    delay(100);
+    // Throw hit(0,0);
+    // hit = dartboard.ReadThrow();
+    // if(hit != Throw(0,0)){
+    //     Serial.println("" + hit);
+    // }
+    // delay(100);
     //  for(uint8_t i = 0; i < NUM_LINES_MASTER; ++i) {
     //     digitalWrite((pins_master)[i], HIGH);
     //  }

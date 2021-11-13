@@ -38,7 +38,7 @@ GameStatus Game::Loop(){
                 // Serial.println(String("player") + this->playerList[i]);
                 if(state == ThrowStatus_ERROR){
                     Serial.println("To much");
-                    this->playerList[i].points = this->playerList[i].points + this->playerList[i].lastThrow;
+                    // this->playerList[i].points = this->playerList[i].points + this->playerList[i].lastThrow;
                     this->playerList[i].attemps = 0;
                 }
                 else if(state == ThrowStatus_END){
