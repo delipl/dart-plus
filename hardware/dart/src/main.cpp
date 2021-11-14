@@ -25,6 +25,9 @@ void setup() {
         playerIds[i] = i;
     }
     Settings set(0, MAX_PLAYERS , UINT16_MAX, false, false, playerIds);
+    // for(int i = 0; i < MAX_PLAYERS; ++i){
+    //     playerIds[i] = i;
+    // }
 
     Serial.println(set.amountOfPlayers);
     Serial.println("Creatiing settings...");

@@ -64,10 +64,10 @@ Game::~Game(){
 
 StaticJsonDocument<SIZE_GAME_JSON> Game::Document(){
     StaticJsonDocument<SIZE_GAME_JSON> doc;
-    // doc["id"]               = this->id;
-    // doc["status"]           = this->status;
-    // doc["throwingPlayerId"] = this->throwingPlayerId;
-    // doc["round"]            = this->round;
+    doc["id"]               = this->id;
+    doc["status"]           = this->status;
+    doc["throwingPlayerId"] = this->throwingPlayerId;
+    doc["round"]            = this->round;
 
     // for(int i = 0; i < this->settings.amountOfPlayers; ++i){
     //     //TODO:
