@@ -19,12 +19,12 @@ void setup() {
     dartboard.Init();
 
 
-    uint16_t storage[MAX_PLAYERS];
-    Vector<uint16_t> playerIds(storage);
+    uint16_t playerIds[MAX_PLAYERS];
+    // Vector<uint16_t> playerIds(storage);
 
-    for(int i = 0; i < MAX_PLAYERS; ++i){
-        playerIds.push_back(i);
-    }
+    // for(int i = 0; i < MAX_PLAYERS; ++i){
+    //     playerIds.push_back(i);
+    // }
     Settings set(0, MAX_PLAYERS , UINT16_MAX, false, false, playerIds);
 
     // Serial.println(set.amountOfPlayers);

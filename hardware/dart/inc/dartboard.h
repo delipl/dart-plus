@@ -16,8 +16,6 @@
 #include "ArduinoJson.h"
 // REMOVE THIS
 #include "config.h"
-#define JSON_LENGHT
-
 /**
  * @brief 
  * 
