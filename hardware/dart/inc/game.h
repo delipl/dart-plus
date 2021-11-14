@@ -28,8 +28,9 @@ class Game{
     private:
         // String json;
     public:
+    //TODO: wyebac id
         const uint16_t id;
-        Settings settings;
+        Settings settings; 
         GameStatus status = GameStatus_Active;
         uint16_t throwingPlayerId;
         uint16_t round;

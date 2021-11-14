@@ -10,23 +10,28 @@ id{id}{
 Player::Player():id{0}, nick{"nick"}, points{0}, attemps{0}{
 }
 
+// TODO: To loop game
 const ThrowStatus Player::Throwing(){
-    Throw hit(0,0); 
-    while(hit == Throw(0,0)){
+    Throw hit; 
+    // TODO: don't make infinite loop
+    while(dartboard.ReadThrow() == Throw(0,0)){
         hit = dartboard.ReadThrow();
         // Serial.println("\t" + hit);
     }
+
+    // TODO: dont check error
     if (hit > this->points)
         return ThrowStatus_ERROR;
+
     this->points = this->points - hit;
     if(this->points == 0)
         return ThrowStatus_END;
+
     return ThrowStatus_OK;
 }
 
 Player &Player::operator=(const Player &other){
     this->id = other.id;
-    strcpy(this->nick, other.nick);
     this->points = other.points;
     this->attemps = other.attemps;
     return *this;
@@ -51,9 +56,10 @@ String Player::Serialize(){
 }
 
 void Player::Deserialize(const StaticJsonDocument<SIZE_PLAYER_JSON> &doc){
-    serializeJson(doc, this->json);
+    //TODO:
+    serializeJson(doc, this->json); // -< do wyjebania
     this->id = doc[0];
-    strcpy(this->nick, (const char*)doc[1]);
+    strcpy(this->nick, (const char*)doc[1]); // -< do wyjebania
     this->points = doc[2];
     this->attemps = doc[3];
 }

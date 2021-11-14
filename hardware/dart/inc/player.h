@@ -37,6 +37,7 @@ class Player{
         Player();
         Player(const uint16_t &id, const char nick[NICK_LENGTH], const uint16_t &points = 301, const uint8_t &attemps = 0);
         Player &operator=(const Player &other);
+        // TODO: substraing points in game
         const ThrowStatus Throwing();
 
         String Serialize();

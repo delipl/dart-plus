@@ -17,33 +17,32 @@ void setup() {
     Serial.println("\nInitiating dartboard...");
     delay(100);
     dartboard.Init();
+    delay(100);
 
 
     uint16_t playerIds[MAX_PLAYERS];
-    // Vector<uint16_t> playerIds(storage);
-
-    // for(int i = 0; i < MAX_PLAYERS; ++i){
-    //     playerIds.push_back(i);
-    // }
+    for(int i = 0; i < MAX_PLAYERS; ++i){
+        playerIds[i] = i;
+    }
     Settings set(0, MAX_PLAYERS , UINT16_MAX, false, false, playerIds);
 
-    // Serial.println(set.amountOfPlayers);
+    Serial.println(set.amountOfPlayers);
     Serial.println("Creatiing settings...");
     Game game(set);
     Serial.println("Test Serialization");
     serializeJsonPretty(game.Document(), Serial);
 
-    Serial.println("Loading game...");
-    for(int i = 0; i < game.settings.amountOfPlayers; ++i){
+    // Serial.println("Loading game...");
+    // for(int i = 0; i < game.settings.amountOfPlayers; ++i){
 
-        Serial.print(game.playerList[i].nick);
-        Serial.println(" joined the game.");
+    //     Serial.print(game.playerList[i].nick);
+    //     Serial.println(" joined the game.");
 
-    }
-    while(1);
+    // }
+    // while(1);
     
-    game.Loop();
-    Serial.println("After LOOP");
+    // game.Loop();
+    // Serial.println("After LOOP");
 }
 
 void loop() {  

@@ -1,15 +1,15 @@
 #include "game.h"
 Game::Game(const Settings &set): id{set.id}, settings{set}{   
     Serial.println(this->settings.amountOfPlayers);
-    this->playerList = new Player[this->settings.amountOfPlayers];
+    // this->playerList = new Player[this->settings.amountOfPlayers];
     // for(int i = 0; i < this->settings.amountOfPlayers; ++i){
     //     Serial.print("Loaded: ");
     //     Serial.println(this->settings.playersId[i]);
     // }
 
-    for(int i = 0; i < set.amountOfPlayers; ++i){
-        this->playerList[i] = Player(i, String("Player #" + String(i)).c_str(), settings.startPoints, UINT8_MAX);
-    }
+    // for(int i = 0; i < set.amountOfPlayers; ++i){
+    //     this->playerList[i] = Player(i, String("Player #" + String(i)).c_str(), settings.startPoints, UINT8_MAX);
+    // }
 }
 
 GameStatus Game::Loop(){
@@ -22,10 +22,11 @@ GameStatus Game::Loop(){
             // Serial.println("\tPoints: "  + String(this->playerList[i].points));
 
             while(this->playerList[i].attemps != 0){
+                //TODO: when button arrived
                 while(this->status == GameStatus_Pause);
 
                 Serial.println("\nLet's throw...");
-                auto state = this->playerList[i].Throwing();
+                ThrowStatus state = this->playerList[i].Throwing();
                 while(state != ThrowStatus_OK){
                     state = this->playerList[i].Throwing();
                     // Serial.println(sizeof(this->playerList[i].Throwing()));
@@ -48,7 +49,7 @@ GameStatus Game::Loop(){
                     --this->playerList[i].attemps;
                 }
 
-
+                //TODO: SEND UPDATE GAME
 
                 delay(100);
             }
@@ -63,20 +64,20 @@ Game::~Game(){
 
 StaticJsonDocument<SIZE_GAME_JSON> Game::Document(){
     StaticJsonDocument<SIZE_GAME_JSON> doc;
-    doc["id"]               = this->id;
-    doc["status"]           = this->status;
-    doc["throwingPlayerId"] = this->throwingPlayerId;
-    doc["round"]            = this->round;
+    // doc["id"]               = this->id;
+    // doc["status"]           = this->status;
+    // doc["throwingPlayerId"] = this->throwingPlayerId;
+    // doc["round"]            = this->round;
 
-    for(int i = 0; i < this->settings.amountOfPlayers; ++i){
-        //TODO:
-        // INSERT DOC INTO DOC
-        // for(size_t j = 0; j < this->playerList[i].Document().size(); ++j){
-            doc["playerList"][i]["id"] = this->playerList[i].Document()["id"];
-            doc["playerList"][i]["points"] = this->playerList[i].Document()["points"];
-            doc["playerList"][i]["attemps"] = this->playerList[i].Document()["attemps"];
-        // }
-    }
+    // for(int i = 0; i < this->settings.amountOfPlayers; ++i){
+    //     //TODO:
+    //     // INSERT DOC INTO DOC
+    //     // for(size_t j = 0; j < this->playerList[i].Document().size(); ++j){
+    //         doc["playerList"][i]["id"] = this->playerList[i].Document()["id"];
+    //         doc["playerList"][i]["points"] = this->playerList[i].Document()["points"];
+    //         doc["playerList"][i]["attemps"] = this->playerList[i].Document()["attemps"];
+    //     // }
+    // }
     return doc;
 }
 

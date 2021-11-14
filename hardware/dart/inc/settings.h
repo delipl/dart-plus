@@ -6,7 +6,8 @@
 
 struct Settings{
     private:
-        uint16_t tab[1];
+    //TODO:
+        uint16_t tab[1]; // -< do wyjebania
     public:
         const uint16_t id;
         uint8_t amountOfPlayers;
@@ -15,7 +16,10 @@ struct Settings{
         const bool doubleOut;
         uint16_t playersId[MAX_PLAYERS];
 
-        Settings(const uint16_t &id, const uint8_t &amountOfPlayers, const uint16_t &startPoints, const bool &doubleIn, const bool &doubleOut, uint16_t> &playersId);
+        Settings(const uint16_t &id, const uint8_t &amountOfPlayers, const uint16_t &startPoints, const bool &doubleIn, const bool &doubleOut, uint16_t *playersId);
+
+        //TODO
+        void Deserialization();
 };
 
 #endif
