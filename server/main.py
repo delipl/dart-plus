@@ -1,11 +1,17 @@
+import controller
+from errors import *
 from datetime import datetime
 from flask_cors import CORS
 from flask import Flask, jsonify, request
-import controller
-from database import create_tables, Settings, Player, getDictionary
+from database import create_tables, Settings, Player, generate_id
 
 app = Flask(__name__)
 CORS(app)
+
+
+@app.route('/info/<id>', methods=["GET"])
+def get_info(id):
+    return jsonify(controller.get_info(id))
 
 
 @app.route('/games', methods=["GET"])
@@ -13,16 +19,18 @@ def get_games():
     return jsonify(controller.get_games())
 
 
-@app.route('/info', methods=["GET"])
-def get_info():
-    return jsonify(controller.get_info(322))
+@app.route("/games/<id>", methods=["DELETE"])
+def delete_game(id):
+    result = controller.delete_game(id)
+    return jsonify(result)
 
 
-@app.route('/users', methods=["GET"])
-def get_users():
-    return jsonify(controller.get_users())
+@app.route("/game/<id>", methods=["GET"])
+def take_game(id):
+    return jsonify(controller.get_game(id).get_dictionary())
 
 
+# TODO Add online adding new game
 @app.route("/games", methods=["POST"])
 def insert_new_game():
     id = 1
@@ -33,13 +41,30 @@ def insert_new_game():
     throwingUserId = game_details["throwingUserId"]
     round = game_details["round"]
     setting = game_details["setting"]
+    players = []
 
-    result = controller.insert_games(id, gameStatus, numberOfThrow, startTime, throwingUserId, round, setting)
+    result = controller.insert_game(id, gameStatus, numberOfThrow, startTime, throwingUserId, round, setting, players)
+    return jsonify(result)
+
+
+@app.route("/games", methods=["PUT"])
+def update_game():
+    game_details = request.json
+    id = game_details["id"]
+    if controller.get_game(id) == ERROR_GAME_NOT_EXIST:
+        return "Game not exist"
+    status = game_details["status"]
+    throwingPlayerId = game_details["throwingPlayerId"]
+    lastThrow = game_details["lastThrow"]
+    round = game_details["round"]
+    playerList = game_details["playerList"]
+
+    result = controller.update_game(id, status, throwingPlayerId, lastThrow["multiplier"], lastThrow["value"], round, playerList)
     return jsonify(result)
 
 
 @app.route("/settings", methods=["POST"])
-def createNewGame():
+def create_new_game():
     setting_details = request.json
     id = setting_details["id"]
     numberOfPlayers = setting_details["numberOfPlayers"]
@@ -52,84 +77,55 @@ def createNewGame():
     date = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
     players = []
 
-    # here add players from USERS database
     for i in range(numberOfPlayers):
         players.append(Player(playersId[i], "Gracz" + str(i + 1), startPoints, 0))
 
-    result = controller.insert_games(id, 0, 0, date, playersId[0], 0, setting, players)
+    result = controller.insert_game(id, 0, 0, date, playersId[0], 0, setting, players)
     return jsonify(result)
 
 
-@app.route("/games", methods=["PUT"])
-def update_game():
-    game_details = request.json
-    id = game_details["id"]
-    status = game_details["status"]
-    throwingPlayerId = game_details["throwingPlayerId"]
-    multiplier = game_details["multiplier"]
-    value = game_details["value"]
-    round = game_details["round"]
-    playerList = game_details["playerList"]
-
-    result = controller.update_game(id, status, throwingPlayerId, multiplier, value, round, playerList)
-    return jsonify(result)
+@app.route('/users', methods=["GET"])
+def get_users():
+    return jsonify(controller.get_users())
 
 
+# TODO Add encrypt and decrypt password
+# TODO Add id to hex > TEXT
 @app.route("/users", methods=["POST"])
 def insert_user():
     user_details = request.json
+    id = generate_id()
+    password = user_details["password"]
     name = user_details["name"]
-    nick = user_details["nick"]
-    maxThrow = user_details["maxThrow"]
-    throws = user_details["throws"]
-    average = user_details["average"]
-    wins = user_details["wins"]
-    matches = user_details["matches"]
-    result = controller.insert_user(name, nick, maxThrow, throws, average, wins, matches)
+    nick = user_details["name"]
+    phone = user_details["phone"]
+    maxThrow = 0
+    throws = []
+    average = 0
+    wins = 0
+    gameIds = []
+    result = controller.insert_user(id, password, name, nick, phone, maxThrow, throws, average, wins, gameIds)
     return jsonify(result)
-
-
-# @app.route("/game/<id>", methods=["PUT"])
-# def update_game(id):
-#     game_details = request.json
-#     gameStatus = game_details["gameStatus"]
-#     maxThrow = game_details["maxThrow"]
-#     numberOfThrow = game_details["numberOfThrow"]
-#     throwingUserId = game_details["throwingUserId"]
-#     round = game_details["round"]
-#     setting = game_details["setting"]
-#     result = controller.update_game(id, gameStatus, maxThrow, numberOfThrow,
-#                                     controller.get_games()[0]["startTime"], throwingUserId, round, setting)
-#     return jsonify(result)
-
-
-@app.route("/game/<id>", methods=["GET"])
-def take_game(id):
-    return jsonify(controller.get_gameDictionary(id))
 
 
 @app.route("/user/<id>", methods=["GET"])
-def take_user(id):
-    return jsonify(controller.get_user(id))
+def get_user(id):
+    return jsonify(controller.get_user(id).get_dictionary())
 
 
-@app.route("/user/<id>", methods=["PUT"])
-def update_user(id):
+@app.route("/users", methods=["PUT"])
+def update_user():
     user_details = request.json
-    name = user_details["name"]
+    id = user_details["id"]
     nick = user_details["nick"]
-    maxThrow = user_details["maxThrow"]
-    throws = user_details["throws"]
-    average = user_details["average"]
-    wins = user_details["wins"]
-    matches = user_details["matches"]
-    result = controller.update_user(id, name, nick, maxThrow, throws, average, wins, matches)
-    return jsonify(result)
+    password = user_details["password"]
 
+    if password == "empty":
+        password = None
+    if nick == "empty":
+        nick = None
 
-@app.route("/games/<id>", methods=["DELETE"])
-def delete_game(id):
-    result = controller.delete_game(id)
+    result = controller.update_user(id, nick, password)
     return jsonify(result)
 
 
@@ -141,8 +137,6 @@ def delete_user(id):
 
 if __name__ == "__main__":
     create_tables()
-    # print(controller.insert_user("Bartosz", "Barto", 180, 33, 36.5, 12, 90))
     # print(controller.delete_users())
     # print(controller.delete_games())
-    # print(controller.insert_games(1, 132, 12, datetime.now().strftime("%d/%m/%Y %H:%M:%S"), 33, 0, Settings(2, 301, False, False)))
     app.run(host='0.0.0.0', port=8000, debug=False)

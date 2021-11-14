@@ -1,7 +1,12 @@
+import random
 import sqlite3
 from datetime import datetime
+import controller
+from errors import *
 
 DATABASE_NAME = 'database.db'
+ID_MAX = 65535
+ID_MIN = 50
 
 
 class Settings:
@@ -12,7 +17,7 @@ class Settings:
         self.doubleOut = doubleOut
         self.playersId = []
 
-    def getDictionary(self):
+    def get_dictionary(self):
         return {
             "amountOfUsers": self.amountOfUsers,
             "startPoints": self.startPoints,
@@ -22,7 +27,9 @@ class Settings:
 
 
 class Game:
-    def __init__(self, id, gameStatus, numberOfThrow, startTime, throwingUserId, round, setting, players = []):
+    def __init__(self, id, gameStatus, numberOfThrow, startTime, throwingUserId, round, setting, players=None):
+        if players is None:
+            players = []
         self.id = id
         self.gameStatus = gameStatus
         self.numberOfThrow = numberOfThrow
@@ -32,7 +39,7 @@ class Game:
         self.setting = setting
         self.players = players
 
-    def getDictionary(self):
+    def get_dictionary(self):
         return {
             "id": self.id,
             "gameStatus": self.gameStatus,
@@ -40,14 +47,15 @@ class Game:
             "startTime": self.startTime,
             "throwingUserId": self.throwingUserId,
             "round": self.round,
-            "setting": self.setting.getDictionary(),
-            "players": getDictionary(self.players)
+            "setting": self.setting.get_dictionary(),
+            "players": get_dictionary(self.players)
         }
 
 
 class User:
-    def __init__(self, id, name, nick, phone, maxThrow, throws, average, wins, matches):
+    def __init__(self, id, password, name, nick, phone, maxThrow, throws, average, wins, gameIds):
         self.id = id
+        self.password = password
         self.name = name
         self.nick = nick
         self.phone = phone
@@ -55,21 +63,21 @@ class User:
         self.throws = throws
         self.average = average
         self.wins = wins
-        self.matches = matches
+        self.gameIds = gameIds
         self.throws = []
 
-    def getDictionary(self):
+    def get_dictionary(self):
         return {
             "id": self.id,
+            "password": self.password,
             "name": self.name,
             "nick": self.nick,
             "phone": self.phone,
             "maxThrow": self.maxThrow,
-            "throws": self.throws,
             "average": self.average,
             "wins": self.wins,
-            "matches": self.matches,
-            "throws": getDictionary(self.throws)
+            "gamesId": self.gameIds,
+            "throws": get_dictionary(self.throws)
         }
 
 
@@ -86,24 +94,18 @@ class Player:
 
     def getLastThrow(self):
         if len(self.throws) == 0:
-            return Throw(0,0)
+            return Throw(0, 0)
         else:
             return self.throws[-1]
-    def getDictionary(self):
+
+    def get_dictionary(self):
         return {
             "id": self.id,
             "nick": self.nick,
             "points": self.points,
             "attempts": self.attempts,
-            "throws": getDictionary(self.throws)
+            "throws": get_dictionary(self.throws)
         }
-
-
-def getDictionary(objects: list):
-    dict = []
-    for i in objects:
-        dict.append(i.getDictionary())
-    return dict
 
 
 class Throw:
@@ -115,12 +117,26 @@ class Throw:
     def getScore(self):
         return self.multiplier * self.value
 
-    def getDictionary(self):
+    def get_dictionary(self):
         return {
             "multiplier": self.multiplier,
             "points": self.value,
             "date": self.date
         }
+
+
+def generate_id():
+    id = random.randint(ID_MIN, ID_MAX)
+    while controller.get_user(id) != ERROR_USER_NOT_EXIST:
+        id = random.randint(ID_MIN, ID_MAX)
+    return id
+
+
+def get_dictionary(objects: list):
+    dictionary = []
+    for i in objects:
+        dictionary.append(i.get_dictionary())
+    return dictionary
 
 
 def get_db():
@@ -129,10 +145,9 @@ def get_db():
 
 
 def create_tables():
-    tables = []
-    tables.append(
-                """CREATE TABLE IF NOT EXISTS users(
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
+    tables = ["""CREATE TABLE IF NOT EXISTS users(
+                id INTEGER PRIMARY KEY,
+                password TEXT NOT NULL,
                 name TEXT NOT NULL,
                 nick TEXT NOT NULL,
                 phone INTEGER NOT NULL,
@@ -140,11 +155,9 @@ def create_tables():
                 throws INTEGER NOT NULL,
                 average FLOAT NOT NULL,
                 wins INTEGER NOT NULL,
-                matches INTEGER NOT NULL
+                gameIds INTEGER NOT NULL
             )
-            """)
-    tables.append(
-                """CREATE TABLE IF NOT EXISTS games(
+            """, """CREATE TABLE IF NOT EXISTS games(
                 id INTEGER PRIMARY KEY,
                 gameStatus INTEGER NOT NULL,
                 numberOfThrow INTEGER NOT NULL,
@@ -154,10 +167,10 @@ def create_tables():
                 setting pickle NOT NULL,
                 players pickle NOT NULL
             )
-            """)
+            """]
     db = get_db()
     cursor = db.cursor()
-    # dropTableStatement = "DROP TABLE games"
+    # dropTableStatement = "DROP TABLE users"
     # cursor.execute(dropTableStatement)
     for table in tables:
         cursor.execute(table)
