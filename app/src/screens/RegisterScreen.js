@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { View, StyleSheet, TouchableOpacity } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { View, StyleSheet, TouchableOpacity, ActivityIndicator, FlatList } from 'react-native'
 import { Text } from 'react-native-paper'
 import Background from '../components/Background'
 import Logo from '../components/Logo'
@@ -11,15 +11,19 @@ import { theme } from '../core/theme'
 import { phoneValidator } from '../helpers/phoneValidator'
 import { passwordValidator } from '../helpers/passwordValidator'
 import { nameValidator } from '../helpers/nameValidator'
+import { cos } from 'react-native-reanimated'
 
 
 export default function RegisterScreen({ navigation }) {
   const [name, setName] = useState({ value: '', error: '' })
   const [phone, setPhone] = useState({ value: '', error: '' })
   const [password, setPassword] = useState({ value: '', error: '' })
+  const [isLoading, setLoading] = useState(true);
+  const [data, setData] = useState([]);
+
 
   const onSignUpPressed = () => {
-    const nameError = nameValidator(name.value)
+    var nameError = nameValidator(name.value)
     const phoneError = phoneValidator(phone.value)
     const passwordError = passwordValidator(password.value)
     if (phoneError || passwordError || nameError) {
@@ -28,38 +32,43 @@ export default function RegisterScreen({ navigation }) {
       setPassword({ ...password, error: passwordError })
       return
     }
-
-    let response = fetch('http://192.168.192.3:8000/users', {
+    const requestOptions = {
       method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        name: name.value,
-        nick: name.value,
-        maxThrow: 0,
-        throws: 0,
-        average: 0,
-        wins: 0,
-        matches: 0
-      })
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: name.value, phone: phone.value, password: password.value })
+    };
+
+    try {fetch('http://192.168.192.3:8000/users',requestOptions)
+    .then(response => response.json())
+    .then(json => {
+      if (json.message){
+        setLoading(false)
+        setData(json)
+      }
     });
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
     
+  };
 
-    if (response.status != 200) {
-      console.log(response)
-      console.log(response.status)
-      setName({ ...name, error: "Unexpected error :/" })
-      return 
-   }
-
-    navigation.reset({
-      index: 0,
-      routes: [{ name: 'Dashboard' }],
-    })
+  if (!isLoading) {
+    if (data.message == "Error") {
+      setName({ ...name, error: "Chujowo mega ziom" })
+      setLoading(true)
+      setData(1)
+      console.log("blad")
+    }
+    if (data.status == "Good") {
+      setLoading(true)
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'LoginScreen' }],
+      })
+    }
   }
-
   return (
     <Background>
       <BackButton goBack={navigation.goBack} />
