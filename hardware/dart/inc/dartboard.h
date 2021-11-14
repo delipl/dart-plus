@@ -37,6 +37,7 @@ class Throw{
 
     Throw(const uint8_t &multiplier, const uint8_t &value);
     Throw(){};
+    StaticJsonDocument<SIZE_THROW_JSON> Document() const;
 };
 uint16_t operator- (const uint16_t &points, const Throw &hit);
 uint16_t operator+ (const uint16_t &points, const Throw &hit);

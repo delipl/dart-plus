@@ -12,9 +12,6 @@ Dartboard dartboard(&pins_master, &pins_slave) PROGMEM;
 #include "player.h"
 #include "game.h"
 
-
-
-
 void setup() {
     Serial.begin(115200);
     Serial.println("\nInitiating dartboard...");
@@ -24,25 +21,24 @@ void setup() {
 
     uint16_t storage[MAX_PLAYERS];
     Vector<uint16_t> playerIds(storage);
-    playerIds.push_back(1);
-    playerIds.push_back(5);
-    playerIds.push_back(15);
-    playerIds.push_back(16);
-    playerIds.push_back(13);
 
-    Settings set(0, 5 , 301, false, false, playerIds);
+    for(int i = 0; i < MAX_PLAYERS; ++i){
+        playerIds.push_back(i);
+    }
+    Settings set(0, MAX_PLAYERS , UINT16_MAX, false, false, playerIds);
 
     // Serial.println(set.amountOfPlayers);
     Serial.println("Creatiing settings...");
-    delay(100);
     Game game(set);
-    // Serial.println(game.Serialize());
-    delay(100);
+    Serial.println("Test Serialization");
+    serializeJsonPretty(game.Document(), Serial);
+
     Serial.println("Loading game...");
     for(int i = 0; i < game.settings.amountOfPlayers; ++i){
-        Serial.print("Ammount: ");
-        Serial.print(game.settings.amountOfPlayers);
-        Serial.println(game.playerList[i].Serialize());
+
+        Serial.print(game.playerList[i].nick);
+        Serial.println(" joined the game.");
+
     }
     while(1);
     

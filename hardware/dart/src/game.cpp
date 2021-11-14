@@ -2,7 +2,7 @@
 Settings::Settings(const uint16_t &id, const uint8_t &amountOfPlayers, const uint16_t &startPoints, const bool &doubleIn, const bool &doubleOut, Vector<uint16_t> & playersId):
 id{id}, amountOfPlayers{amountOfPlayers}, startPoints{startPoints}, doubleIn{doubleIn}, doubleOut{doubleOut}, playersId{playersId}{
     for(int i = 0; i < amountOfPlayers; ++i){
-        Serial.println(String("Add player id:") + String(this->playersId[i]));
+        // Serial.println(String("Add player id:") + String(this->playersId[i]));
         delay(100);
     }
 }
@@ -10,13 +10,13 @@ id{id}, amountOfPlayers{amountOfPlayers}, startPoints{startPoints}, doubleIn{dou
 Game::Game(const Settings &set): id{set.id}, settings{set}{   
     Serial.println(this->settings.amountOfPlayers);
     this->playerList = new Player[this->settings.amountOfPlayers];
-    for(int i = 0; i < this->settings.amountOfPlayers; ++i){
-        Serial.print("Loaded: ");
-        Serial.println(this->settings.playersId[i]);
-    }
+    // for(int i = 0; i < this->settings.amountOfPlayers; ++i){
+    //     Serial.print("Loaded: ");
+    //     Serial.println(this->settings.playersId[i]);
+    // }
 
     for(int i = 0; i < set.amountOfPlayers; ++i){
-        this->playerList[i] = Player(this->settings.playersId[i], String(this->settings.playersId[i]).c_str(), settings.startPoints, 0);
+        this->playerList[i] = Player(i, String("Player #" + String(i)).c_str(), settings.startPoints, UINT8_MAX);
     }
 }
 
@@ -69,25 +69,23 @@ Game::~Game(){
     delete[] playerList;
 }
 
-String Game::Serialize(){
+StaticJsonDocument<SIZE_GAME_JSON> Game::Document(){
     StaticJsonDocument<SIZE_GAME_JSON> doc;
     doc["id"]               = this->id;
     doc["status"]           = this->status;
     doc["throwingPlayerId"] = this->throwingPlayerId;
     doc["round"]            = this->round;
-    // allocate the memory for the document
-    StaticJsonDocument<100> ar;
 
-    // create an empty array
-    JsonArray array = ar.to<JsonArray>();
     for(int i = 0; i < this->settings.amountOfPlayers; ++i){
-        array.add(this->playerList[i].Serialize());
+        //TODO:
+        // INSERT DOC INTO DOC
+        for(size_t j = 0; j < this->playerList[i].Document().size(); ++j){
+            doc["playerList"][i]["id"] = this->playerList[i].Document()["id"];
+            doc["playerList"][i]["points"] = this->playerList[i].Document()["points"];
+            doc["playerList"][i]["attemps"] = this->playerList[i].Document()["attemps"];
+        }
     }
-
-    serializeJson(ar, Serial);
-
-    serializeJson(doc, this->json);
-    return this->json;
+    return doc;
 }
 
 void Game::Deserialize(const StaticJsonDocument<SIZE_GAME_JSON> &doc){

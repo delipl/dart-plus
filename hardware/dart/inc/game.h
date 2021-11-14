@@ -39,7 +39,7 @@ struct Settings{
 
 class Game{
     private:
-        String json;
+        // String json;
     public:
         const uint16_t id;
         Settings settings;
@@ -47,12 +47,12 @@ class Game{
         uint16_t throwingPlayerId;
         uint16_t round;
         Player *playerList;
-
+        Throw lastThrow;
 
         Game(const Settings &set);
         ~Game();
 
-        String Serialize();
+        StaticJsonDocument<SIZE_GAME_JSON> Document();
         void Deserialize(const StaticJsonDocument<SIZE_GAME_JSON> &doc);
 
         GameStatus Loop();

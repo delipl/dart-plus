@@ -35,6 +35,13 @@ bool Throw::operator<(const int &other) const{
     return this->multiplier*this->value < other;
 }
 
+StaticJsonDocument<SIZE_THROW_JSON> Throw::Document() const{
+    StaticJsonDocument<SIZE_THROW_JSON> doc;
+    doc["multiplier"] = this->multiplier;
+    doc["value"] = this->value;
+    return doc;
+}
+
 uint16_t operator- (const uint16_t &points, const Throw &hit){
     return points - hit.multiplier*hit.value;
 }

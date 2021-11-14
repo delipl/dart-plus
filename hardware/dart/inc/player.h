@@ -33,7 +33,6 @@ class Player{
         char nick[NICK_LENGTH];
         uint16_t points;
         uint8_t attemps = 0;
-        Throw lastThrow = Throw(0,0);
 
         Player();
         Player(const uint16_t &id, const char nick[NICK_LENGTH], const uint16_t &points = 301, const uint8_t &attemps = 0);
@@ -41,7 +40,11 @@ class Player{
         const ThrowStatus Throwing();
 
         String Serialize();
+        StaticJsonDocument<SIZE_PLAYER_JSON> Document();
+
         void Deserialize(const StaticJsonDocument<SIZE_PLAYER_JSON> &doc);
+
+        
 };
 
 #endif
