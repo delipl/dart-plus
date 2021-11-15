@@ -3,6 +3,7 @@
 #include "Arduino.h"
 #include <stdint.h>
 #include "config.h"
+#include <ArduinoJson.h>
 
 struct Settings{
     private:
@@ -19,7 +20,8 @@ struct Settings{
         Settings(const uint16_t &id, const uint8_t &amountOfPlayers, const uint16_t &startPoints, const bool &doubleIn, const bool &doubleOut, uint16_t *playersId);
 
         //TODO
-        void Deserialization();
+        StaticJsonDocument<SIZE_PLAYER_JSON> Document();
+        void Deserialize(const StaticJsonDocument<SIZE_GAME_JSON> &doc);
 };
 
 #endif

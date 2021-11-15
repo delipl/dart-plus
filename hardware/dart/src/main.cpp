@@ -35,6 +35,9 @@ void setup() {
     Serial.println("Test Serialization");
     serializeJsonPretty(game.Document(), Serial);
 
+    serializeJsonPretty(set.Document(), Serial);
+
+
     // Serial.println("Loading game...");
     // for(int i = 0; i < game.settings.amountOfPlayers; ++i){
 
