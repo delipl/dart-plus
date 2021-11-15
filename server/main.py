@@ -1,3 +1,5 @@
+import base64
+
 import controller
 from messages import *
 from datetime import datetime
@@ -11,12 +13,12 @@ CORS(app)
 
 @app.route('/info/<id>', methods=["GET"])
 def get_info(id):
-    return generate_http_response(controller.get_info(id))
+    return jsonify(controller.get_info(id))
 
 
 @app.route('/games', methods=["GET"])
 def get_games():
-    return generate_http_response(controller.get_games())
+    return jsonify(controller.get_games())
 
 
 @app.route("/games/<id>", methods=["DELETE"])
@@ -26,7 +28,7 @@ def delete_game(id):
 
 @app.route("/game/<id>", methods=["GET"])
 def take_game(id):
-    return controller.get_game(id).get_dictionary(), OK
+    return jsonify(controller.get_game(id).get_dictionary())
 
 
 # TODO Add online adding new game
@@ -86,11 +88,9 @@ def create_new_game():
 
 @app.route('/users', methods=["GET"])
 def get_users():
-    return generate_http_response(controller.get_users())
+    return jsonify(controller.get_users())
 
 
-# TODO Add encrypt and decrypt password
-# TODO Add id to hex > TEXT
 @app.route("/users", methods=["POST"])
 def insert_user():
     user_details = request.json
@@ -118,18 +118,19 @@ def login():
     dictionary = {}
     user_details = request.json
     phone = user_details["phone"]
-    password = user_details["password"]
+    password = str(base64.b64decode(user_details["password"]))
     user = controller.get_user_phone(phone)
     if user == ERROR_USER_NOT_EXIST:
         return generate_http_response(1, "User does not exist!", NOT_ACCEPTABLE)
-    if user.password != password:
+
+    if str(base64.b64decode(user.password)) != password:
         return generate_http_response(1, "Incorrect password!", NOT_ACCEPTABLE)
     return generate_http_response(0, "Good", OK)
 
 
 @app.route("/user/<id>", methods=["GET"])
 def get_user(id):
-    return jsonify(controller.get_user(id).get_dictionary()), OK
+    return jsonify(controller.get_user(id).get_dictionary())
 
 
 @app.route("/users", methods=["PUT"])
