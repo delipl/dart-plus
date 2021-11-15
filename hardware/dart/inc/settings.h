@@ -10,18 +10,18 @@ struct Settings{
     //TODO:
         uint16_t tab[1]; // -< do wyjebania
     public:
-        const uint16_t id;
+        uint16_t id;
         uint8_t amountOfPlayers;
-        const uint16_t startPoints;
-        const bool doubleIn;
-        const bool doubleOut;
+        uint16_t startPoints;
+        bool doubleIn;
+        bool doubleOut;
         uint16_t playersId[MAX_PLAYERS];
 
         Settings(const uint16_t &id, const uint8_t &amountOfPlayers, const uint16_t &startPoints, const bool &doubleIn, const bool &doubleOut, uint16_t *playersId);
 
         //TODO
-        StaticJsonDocument<SIZE_PLAYER_JSON> Document();
-        void Deserialize(const StaticJsonDocument<SIZE_GAME_JSON> &doc);
+        StaticJsonDocument<SIZE_SETTINGS_JSON> Document();
+        void Deserialize(StaticJsonDocument<SIZE_SETTINGS_JSON> &doc);
 };
 
 #endif

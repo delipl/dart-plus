@@ -57,6 +57,7 @@ String Player::Serialize(){
 
 void Player::Deserialize(const StaticJsonDocument<SIZE_PLAYER_JSON> &doc){
     //TODO:
+    
     serializeJson(doc, this->json); // -< do wyjebania
     this->id = doc[0];
     strcpy(this->nick, (const char*)doc[1]); // -< do wyjebania

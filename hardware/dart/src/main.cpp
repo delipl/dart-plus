@@ -25,17 +25,25 @@ void setup() {
         playerIds[i] = i;
     }
     Settings set(0, MAX_PLAYERS , UINT16_MAX, false, false, playerIds);
-    // for(int i = 0; i < MAX_PLAYERS; ++i){
-    //     playerIds[i] = i;
-    // }
 
-    Serial.println(set.amountOfPlayers);
     Serial.println("Creatiing settings...");
     Game game(set);
     Serial.println("Test Serialization");
     serializeJsonPretty(game.Document(), Serial);
 
-    serializeJsonPretty(set.Document(), Serial);
+    StaticJsonDocument<SIZE_SETTINGS_JSON> settDoc = set.Document();
+    serializeJsonPretty(settDoc, Serial);
+    Serial.println("Test Deserialization");
+    set.Deserialize(settDoc);
+    serializeJsonPretty(settDoc, Serial);
+
+    // auto x = set.Document()["id"];
+
+    // if(x != 1){
+    //     Serial.println("\n");
+    //     Serial.println("tak");
+    // }
+    
 
 
     // Serial.println("Loading game...");
