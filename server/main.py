@@ -59,7 +59,8 @@ def update_game():
     round = game_details["round"]
     playerList = game_details["playerList"]
 
-    result = controller.update_game(id, status, throwingPlayerId, lastThrow["multiplier"], lastThrow["value"], round, playerList)
+    result = controller.update_game(id, status, throwingPlayerId, lastThrow["multiplier"], lastThrow["value"], round,
+                                    playerList)
     return jsonify(result)
 
 
@@ -93,19 +94,51 @@ def get_users():
 # TODO Add id to hex > TEXT
 @app.route("/users", methods=["POST"])
 def insert_user():
+    dictionary = {}
     user_details = request.json
     id = generate_id()
     password = user_details["password"]
     name = user_details["name"]
     nick = user_details["name"]
     phone = user_details["phone"]
+    if controller.get_user_phone(phone) != ERROR_USER_NOT_EXIST:
+        dictionary["status"] = 1
+        dictionary["message"] = "This phone is already use!"
+        return jsonify(dictionary), 404
     maxThrow = 0
     throws = []
     average = 0
     wins = 0
     gameIds = []
     result = controller.insert_user(id, password, name, nick, phone, maxThrow, throws, average, wins, gameIds)
-    return jsonify(result)
+    if result:
+        dictionary["status"] = 0
+        dictionary["message"] = "Good"
+        return jsonify(dictionary), 200
+    else:
+        dictionary["status"] = 1
+        dictionary["message"] = "Something wrong with our database :/"
+        return jsonify(dictionary), 404
+
+
+@app.route("/user", methods=["POST"])
+def login():
+    dictionary = {}
+    user_details = request.json
+    phone = user_details["phone"]
+    password = user_details["password"]
+    user = controller.get_user_phone(phone)
+    if user == ERROR_USER_NOT_EXIST:
+        dictionary["status"] = 1
+        dictionary["message"] = "User does not exist!"
+        return jsonify(dictionary), 404
+    if user.password != password:
+        dictionary["status"] = 1
+        dictionary["message"] = "Incorrect password!"
+        return jsonify(dictionary), 404
+    dictionary["status"] = 0
+    dictionary["message"] = "Good"
+    return jsonify(dictionary), 200
 
 
 @app.route("/user/<id>", methods=["GET"])
@@ -137,6 +170,6 @@ def delete_user(id):
 
 if __name__ == "__main__":
     create_tables()
-    # print(controller.delete_users())
-    # print(controller.delete_games())
+    #print(controller.delete_users())
+    #print(controller.delete_games())
     app.run(host='0.0.0.0', port=8000, debug=False)

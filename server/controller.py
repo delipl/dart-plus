@@ -118,7 +118,8 @@ def insert_user(id, password, name, nick, phone, maxThrow, throws, average, wins
     cursor.execute(statement, [id, password, name, nick, phone, maxThrow,
                                pickle.dumps(throws), average, wins, pickle.dumps(gameIds)])
     db.commit()
-    return True
+    dictionary = {"message": "Good"}
+    return dictionary
 
 
 def get_user(id):
@@ -126,11 +127,24 @@ def get_user(id):
     cursor = db.cursor()
     query = "SELECT * FROM users WHERE id = ?"
     cursor.execute(query, [id])
-    rows = cursor.fetchall()[0]
+    rows = cursor.fetchall()
     if len(rows) == 0:
         return ERROR_USER_NOT_EXIST
-    user = User(rows[0], rows[1], rows[2], rows[3], rows[4],
-                rows[5], pickle.loads(rows[6]), rows[7], rows[8], pickle.loads(rows[9]))
+    user = User(rows[0][0], rows[0][1], rows[0][2], rows[0][3], rows[0][4],
+                rows[0][5], pickle.loads(rows[0][6]), rows[0][7], rows[0][8], pickle.loads(rows[0][9]))
+    return user
+
+
+def get_user_phone(phone):
+    db = get_db()
+    cursor = db.cursor()
+    query = "SELECT * FROM users WHERE phone = ?"
+    cursor.execute(query, [phone])
+    rows = cursor.fetchall()
+    if len(rows) == 0:
+        return ERROR_USER_NOT_EXIST
+    user = User(rows[0][0], rows[0][1], rows[0][2], rows[0][3], rows[0][4],
+                rows[0][5], pickle.loads(rows[0][6]), rows[0][7], rows[0][8], pickle.loads(rows[0][9]))
     return user
 
 
