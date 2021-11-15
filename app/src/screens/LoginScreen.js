@@ -15,6 +15,8 @@ import { passwordValidator } from '../helpers/passwordValidator'
 export default function LoginScreen({ navigation }) {
   const [phone, setPhone] = useState({ value: '', error: '' })
   const [password, setPassword] = useState({ value: '', error: '' })
+  const [isLoading, setLoading] = useState(true);
+  const [data, setData] = useState([]);
 
   const onLoginPressed = () => {
     const phoneError = phoneValidator(phone.value)
@@ -24,12 +26,42 @@ export default function LoginScreen({ navigation }) {
       setPassword({ ...password, error: passwordError })
       return
     }
-    navigation.reset({
-      index: 0,
-      routes: [{ name: 'Dashboard' }],
-    })
+    const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ phone: phone.value, password: password.value })
+    };
+
+    try {fetch('http://192.168.192.3:8000/user',requestOptions)
+    .then(response => response.json())
+    .then(json => {
+      if (json.message){
+        setData(json)
+      }
+    });
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
   }
 
+  if (!isLoading) {
+    if (data.status == 1) {
+      console.log(data.message)
+      setPhone({ ...phone, error: data.message })
+      setData(1)
+      setLoading(true)
+    }
+    if (data.status == 0) {
+      console.log(data.message)
+      setLoading(true)
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Dashboard' }],
+      })
+    }
+  }
 
   return (
     <Background>

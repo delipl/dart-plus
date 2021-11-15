@@ -42,7 +42,6 @@ export default function RegisterScreen({ navigation }) {
     .then(response => response.json())
     .then(json => {
       if (json.message){
-        setLoading(false)
         setData(json)
       }
     });
@@ -55,13 +54,14 @@ export default function RegisterScreen({ navigation }) {
   };
 
   if (!isLoading) {
-    if (data.message == "Error") {
-      setName({ ...name, error: "Chujowo mega ziom" })
-      setLoading(true)
+    if (data.status == 1) {
+      console.log(data.message)
+      setName({ ...name, error: data.message })
       setData(1)
-      console.log("blad")
+      setLoading(true)
     }
-    if (data.status == "Good") {
+    if (data.status == 0) {
+      console.log(data.message)
       setLoading(true)
       navigation.reset({
         index: 0,
