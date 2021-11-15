@@ -33,8 +33,6 @@ GameStatus Game::Loop(){
                     // Serial.println(sizeof(this->playerList[i].Throwing()));
                 }
                 // Serial.println(sizeof(this->playerList[i].Throwing()));
-                Serial.println(this->playerList[i].Serialize());
-                Serial.println("Hit!");
 
                 if(state == ThrowStatus_ERROR){
                     Serial.println("To much");

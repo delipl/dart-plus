@@ -26,8 +26,6 @@ enum ThrowStatus {
 extern Dartboard dartboard;
 
 class Player{
-    private:
-        String json;
     public:
         uint16_t id;
         char nick[NICK_LENGTH];
@@ -39,8 +37,6 @@ class Player{
         Player &operator=(const Player &other);
         // TODO: substraing points in game
         const ThrowStatus Throwing();
-
-        String Serialize();
         StaticJsonDocument<SIZE_PLAYER_JSON> Document();
 
         void Deserialize(const StaticJsonDocument<SIZE_PLAYER_JSON> &doc);
