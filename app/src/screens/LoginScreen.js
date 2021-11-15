@@ -10,6 +10,7 @@ import BackButton from '../components/BackButton'
 import { theme } from '../core/theme'
 import { phoneValidator } from '../helpers/phoneValidator'
 import { passwordValidator } from '../helpers/passwordValidator'
+import { encrypt_password } from '../helpers/encyption'
 
 
 export default function LoginScreen({ navigation }) {
@@ -29,7 +30,7 @@ export default function LoginScreen({ navigation }) {
     const requestOptions = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ phone: phone.value, password: password.value })
+      body: JSON.stringify({ phone: phone.value, password: encrypt_password(password.value) })
     };
 
     try {fetch('http://192.168.192.3:8000/user',requestOptions)

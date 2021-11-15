@@ -9,6 +9,7 @@ import TextInput from '../components/TextInput'
 import BackButton from '../components/BackButton'
 import { theme } from '../core/theme'
 import { phoneValidator } from '../helpers/phoneValidator'
+import { encrypt_password } from '../helpers/encyption'
 import { passwordValidator } from '../helpers/passwordValidator'
 import { nameValidator } from '../helpers/nameValidator'
 import { cos } from 'react-native-reanimated'
@@ -35,7 +36,7 @@ export default function RegisterScreen({ navigation }) {
     const requestOptions = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: name.value, phone: phone.value, password: password.value })
+      body: JSON.stringify({ name: name.value, phone: phone.value, password: encrypt_password(password.value) })
     };
 
     try {fetch('http://192.168.192.3:8000/users',requestOptions)
