@@ -1,16 +1,20 @@
 #include "game.h"
 Game::Game(const Settings &set): id{set.id}, settings{set}{   
-    Serial.println(this->settings.numberOfPlayers);
-    
-    // for(int i = 0; i < this->settings.amountOfPlayers; ++i){
-    // this->playerList = new Player[i];
+    // Serial.println(this->settings.numberOfPlayers);
+
+    // // this->playerList = new Player[this->settings.numberOfPlayers];
+    // for(int i = 0; i < this->settings.numberOfPlayers; ++i){
     //     Serial.print("Loaded: ");
     //     Serial.println(this->settings.playersId[i]);
     // }
 
-    // for(int i = 0; i < set.amountOfPlayers; ++i){
-    //     this->playerList[i] = Player(i, String("Player #" + String(i)).c_str(), settings.startPoints, UINT8_MAX);
-    // }
+    for(int i = 0; i < set.numberOfPlayers; ++i){
+        this->playerList[i] = Player(i, String("Player #" + String(i)).c_str(), settings.startPoints, UINT8_MAX);
+    }
+
+    this->throwingPlayerId = this->playerList[0].id;
+    this->round = 0;
+    this->lastThrow = Throw(0,0);
 }
 
 GameStatus Game::Loop(){
@@ -58,15 +62,27 @@ GameStatus Game::Loop(){
 }
 
 Game::~Game(){
-    delete[] playerList;
+    // delete[] playerList;
 }
 
 StaticJsonDocument<SIZE_GAME_JSON> Game::Document(){
     StaticJsonDocument<SIZE_GAME_JSON> doc;
+
     doc["id"]               = this->id;
-    doc["status"]           = this->status;
+    doc["status"]           = (uint8_t)this->status;
     doc["throwingPlayerId"] = this->throwingPlayerId;
+    doc["multiplier"]       = this->lastThrow.multiplier;
+    doc["value"]            = this->lastThrow.value;
     doc["round"]            = this->round;
+
+    for(uint8_t i = 0; i < this->settings.numberOfPlayers; ++i){
+        doc["playerList"][i]["id"] = this->playerList[i].id;
+        doc["playerList"][i]["atempts"] = this->playerList[i].attemps;
+        doc["playerList"][i]["points"] = this->playerList[i].points;
+    }
+    // serializeJsonPretty(doc, Serial);
+    // Serial
+
 
     // for(int i = 0; i < this->settings.amountOfPlayers; ++i){
     //     //TODO:
@@ -81,9 +97,8 @@ StaticJsonDocument<SIZE_GAME_JSON> Game::Document(){
 }
 
 void Game::Deserialize(const StaticJsonDocument<SIZE_GAME_JSON> &doc){
-    // serializeJson(doc, this->json);
-    // this->id = doc[0];
-    // strcpy(this->nick, (const char*)doc[1]);
-    // this->points = doc[2];
-    // this->attemps = doc[3];
+    this->id               = doc["id"];
+    this->status           = doc["status"];
+    this->throwingPlayerId = doc["throwingPlayerId"];
+    this->round            = doc["round"];
 }

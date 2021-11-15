@@ -29,16 +29,16 @@ class Game{
         // String json;
     public:
     //TODO: wyebac id
-        const uint16_t id;
+        uint16_t id;
         Settings settings; 
         GameStatus status = GameStatus_Active;
         uint16_t throwingPlayerId;
-        uint16_t round;
-        Player *playerList;
+        uint16_t round = 0;
+        Player playerList[MAX_PLAYERS];
         Throw lastThrow;
 
         Game(const Settings &set);
-        ~Game();
+        ~Game(); // do wyjebania
 
         StaticJsonDocument<SIZE_GAME_JSON> Document();
         void Deserialize(const StaticJsonDocument<SIZE_GAME_JSON> &doc);

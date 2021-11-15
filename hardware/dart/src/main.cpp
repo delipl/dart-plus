@@ -28,15 +28,21 @@ void setup() {
 
     Serial.println("Creatiing settings...");
     Game game(set);
-    Serial.println("Test Serialization");
-    serializeJsonPretty(game.Document(), Serial);
-
-    StaticJsonDocument<SIZE_SETTINGS_JSON> settDoc = set.Document();
-    serializeJsonPretty(settDoc, Serial);
-    Serial.println("Test setings Deserialization");
-    set.Deserialize(settDoc);
-    serializeJsonPretty(settDoc, Serial);
     Serial.println("Test game Document");
+    StaticJsonDocument<SIZE_GAME_JSON> gameDoc = game.Document();
+    Serial.println(gameDoc.overflowed());
+    serializeJsonPretty(gameDoc, Serial);
+    
+    Serial.println("Test game Deserialization");
+    game.Deserialize(gameDoc);
+    // serializeJsonPretty(gameDoc, Serial);
+
+
+    // StaticJsonDocument<SIZE_SETTINGS_JSON> settDoc = set.Document();
+    // serializeJsonPretty(settDoc, Serial);
+    // Serial.println("Test setings Deserialization");
+    // set.Deserialize(settDoc);
+    // serializeJsonPretty(settDoc, Serial);
     
 
     // auto x = set.Document()["id"];
