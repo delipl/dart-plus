@@ -16,6 +16,7 @@ yarn install
 
 ```js
  npm run ios // npm run android
+ npm install --save js-base64
  // or
  yarn ios // yarn android
 ```
