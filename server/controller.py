@@ -1,5 +1,5 @@
 import pickle
-from errors import *
+from messages import *
 from database import get_db, Game, User
 
 

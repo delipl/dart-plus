@@ -2,7 +2,7 @@ import random
 import sqlite3
 from datetime import datetime
 import controller
-from errors import *
+from messages import *
 
 DATABASE_NAME = 'database.db'
 ID_MAX = 65535

@@ -1,5 +1,5 @@
 import controller
-from errors import *
+from messages import *
 from datetime import datetime
 from flask_cors import CORS
 from flask import Flask, jsonify, request
@@ -11,23 +11,22 @@ CORS(app)
 
 @app.route('/info/<id>', methods=["GET"])
 def get_info(id):
-    return jsonify(controller.get_info(id))
+    return generate_http_response(controller.get_info(id))
 
 
 @app.route('/games', methods=["GET"])
 def get_games():
-    return jsonify(controller.get_games())
+    return generate_http_response(controller.get_games())
 
 
 @app.route("/games/<id>", methods=["DELETE"])
 def delete_game(id):
-    result = controller.delete_game(id)
-    return jsonify(result)
+    return generate_http_response(controller.delete_game(id))
 
 
 @app.route("/game/<id>", methods=["GET"])
 def take_game(id):
-    return jsonify(controller.get_game(id).get_dictionary())
+    return controller.get_game(id).get_dictionary(), OK
 
 
 # TODO Add online adding new game
@@ -44,7 +43,7 @@ def insert_new_game():
     players = []
 
     result = controller.insert_game(id, gameStatus, numberOfThrow, startTime, throwingUserId, round, setting, players)
-    return jsonify(result)
+    return generate_http_response(result)
 
 
 @app.route("/games", methods=["PUT"])
@@ -61,7 +60,7 @@ def update_game():
 
     result = controller.update_game(id, status, throwingPlayerId, lastThrow["multiplier"], lastThrow["value"], round,
                                     playerList)
-    return jsonify(result)
+    return generate_http_response(result)
 
 
 @app.route("/settings", methods=["POST"])
@@ -82,19 +81,18 @@ def create_new_game():
         players.append(Player(playersId[i], "Gracz" + str(i + 1), startPoints, 0))
 
     result = controller.insert_game(id, 0, 0, date, playersId[0], 0, setting, players)
-    return jsonify(result)
+    return generate_http_response(result)
 
 
 @app.route('/users', methods=["GET"])
 def get_users():
-    return jsonify(controller.get_users())
+    return generate_http_response(controller.get_users())
 
 
 # TODO Add encrypt and decrypt password
 # TODO Add id to hex > TEXT
 @app.route("/users", methods=["POST"])
 def insert_user():
-    dictionary = {}
     user_details = request.json
     id = generate_id()
     password = user_details["password"]
@@ -102,9 +100,7 @@ def insert_user():
     nick = user_details["name"]
     phone = user_details["phone"]
     if controller.get_user_phone(phone) != ERROR_USER_NOT_EXIST:
-        dictionary["status"] = 1
-        dictionary["message"] = "This phone is already use!"
-        return jsonify(dictionary), 404
+        return generate_http_response(1, "This phone is already use!", NOT_ACCEPTABLE)
     maxThrow = 0
     throws = []
     average = 0
@@ -112,13 +108,9 @@ def insert_user():
     gameIds = []
     result = controller.insert_user(id, password, name, nick, phone, maxThrow, throws, average, wins, gameIds)
     if result:
-        dictionary["status"] = 0
-        dictionary["message"] = "Good"
-        return jsonify(dictionary), 200
+        return generate_http_response(0, MESSAGE_OK, OK)
     else:
-        dictionary["status"] = 1
-        dictionary["message"] = "Something wrong with our database :/"
-        return jsonify(dictionary), 404
+        return generate_http_response(1, "Something wrong with our database :/", INTERNAL_SERVER_ERROR)
 
 
 @app.route("/user", methods=["POST"])
@@ -129,21 +121,15 @@ def login():
     password = user_details["password"]
     user = controller.get_user_phone(phone)
     if user == ERROR_USER_NOT_EXIST:
-        dictionary["status"] = 1
-        dictionary["message"] = "User does not exist!"
-        return jsonify(dictionary), 404
+        return generate_http_response(1, "User does not exist!", NOT_ACCEPTABLE)
     if user.password != password:
-        dictionary["status"] = 1
-        dictionary["message"] = "Incorrect password!"
-        return jsonify(dictionary), 404
-    dictionary["status"] = 0
-    dictionary["message"] = "Good"
-    return jsonify(dictionary), 200
+        return generate_http_response(1, "Incorrect password!", NOT_ACCEPTABLE)
+    return generate_http_response(0, "Good", OK)
 
 
 @app.route("/user/<id>", methods=["GET"])
 def get_user(id):
-    return jsonify(controller.get_user(id).get_dictionary())
+    return jsonify(controller.get_user(id).get_dictionary()), OK
 
 
 @app.route("/users", methods=["PUT"])
@@ -159,17 +145,15 @@ def update_user():
         nick = None
 
     result = controller.update_user(id, nick, password)
-    return jsonify(result)
+    return generate_http_response(result)
 
 
 @app.route("/users/<id>", methods=["DELETE"])
 def delete_user(id):
     result = controller.delete_user(id)
-    return jsonify(result)
+    return generate_http_response(result)
 
 
 if __name__ == "__main__":
     create_tables()
-    #print(controller.delete_users())
-    #print(controller.delete_games())
     app.run(host='0.0.0.0', port=8000, debug=False)
