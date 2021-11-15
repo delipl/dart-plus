@@ -1,6 +1,6 @@
 #include "game.h"
 Game::Game(const Settings &set): id{set.id}, settings{set}{   
-    Serial.println(this->settings.amountOfPlayers);
+    Serial.println(this->settings.numberOfPlayers);
     
     // for(int i = 0; i < this->settings.amountOfPlayers; ++i){
     // this->playerList = new Player[i];
@@ -16,7 +16,7 @@ Game::Game(const Settings &set): id{set.id}, settings{set}{
 GameStatus Game::Loop(){
     Serial.println("Welcome to Dart-Plus");
     while(this->status != GameStatus_Finished){
-        for(int i = 0; i < this->settings.amountOfPlayers; ++i){
+        for(int i = 0; i < this->settings.numberOfPlayers; ++i){
             this->playerList[i].attemps = 3;
             // Serial.println("Throws: " + this->playerList[i].nick);
             

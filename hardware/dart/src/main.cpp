@@ -33,9 +33,11 @@ void setup() {
 
     StaticJsonDocument<SIZE_SETTINGS_JSON> settDoc = set.Document();
     serializeJsonPretty(settDoc, Serial);
-    Serial.println("Test Deserialization");
+    Serial.println("Test setings Deserialization");
     set.Deserialize(settDoc);
     serializeJsonPretty(settDoc, Serial);
+    Serial.println("Test game Document");
+    
 
     // auto x = set.Document()["id"];
 
