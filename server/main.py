@@ -118,12 +118,11 @@ def login():
     dictionary = {}
     user_details = request.json
     phone = user_details["phone"]
-    password = str(base64.b64decode(user_details["password"]))
+    password = user_details["password"]
     user = controller.get_user_phone(phone)
     if user == ERROR_USER_NOT_EXIST:
         return generate_http_response(1, "User does not exist!", NOT_ACCEPTABLE)
-
-    if str(base64.b64decode(user.password)) != password:
+    if user.password != password:
         return generate_http_response(1, "Incorrect password!", NOT_ACCEPTABLE)
     return generate_http_response(0, "Good", OK)
 
