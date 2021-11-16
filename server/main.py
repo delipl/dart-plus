@@ -56,13 +56,14 @@ def update_game():
         return "Game not exist"
     status = game_details["status"]
     throwingPlayerId = game_details["throwingPlayerId"]
-    lastThrow = game_details["lastThrow"]
+    multiplier = game_details["multiplier"]
+    value = game_details["value"]
     round = game_details["round"]
     playerList = game_details["playerList"]
 
-    result = controller.update_game(id, status, throwingPlayerId, lastThrow["multiplier"], lastThrow["value"], round,
+    result = controller.update_game(id, status, throwingPlayerId, multiplier, value, round,
                                     playerList)
-    return generate_http_response(result)
+    return generate_http_response(result, "Good PUT", 200)
 
 
 @app.route("/settings", methods=["POST"])
@@ -82,8 +83,9 @@ def create_new_game():
     for i in range(numberOfPlayers):
         players.append(Player(playersId[i], "Gracz" + str(i + 1), startPoints, 0))
 
+
     result = controller.insert_game(id, 0, 0, date, playersId[0], 0, setting, players)
-    return generate_http_response(result)
+    return generate_http_response(result, MESSAGE_OK, 200)
 
 
 @app.route('/users', methods=["GET"])
@@ -115,7 +117,6 @@ def insert_user():
 
 @app.route("/user", methods=["POST"])
 def login():
-    dictionary = {}
     user_details = request.json
     phone = user_details["phone"]
     password = user_details["password"]
@@ -156,4 +157,5 @@ def delete_user(id):
 
 if __name__ == "__main__":
     create_tables()
+    controller.delete_games()
     app.run(host='0.0.0.0', port=8000, debug=False)
