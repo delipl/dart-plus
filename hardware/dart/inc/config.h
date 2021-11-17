@@ -16,7 +16,7 @@
 #define SIZE_THROW_JSON 16
 #define SIZE_PLAYER_JSON 53
 #define SIZE_SETTINGS_JSON 256
-#define SIZE_GAME_JSON 500
+#define SIZE_GAME_JSON 512
 
 // array stored in flash memory
 // rows coresponds to order of numbers on dashboard

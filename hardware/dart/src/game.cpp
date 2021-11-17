@@ -75,6 +75,8 @@ StaticJsonDocument<SIZE_GAME_JSON> Game::Document(){
     doc["value"]            = this->lastThrow.value;
     doc["round"]            = this->round;
 
+    JsonArray data = doc.createNestedArray("playerList");
+
     for(uint8_t i = 0; i < this->settings.numberOfPlayers; ++i){
         doc["playerList"][i]["id"] = this->playerList[i].id;
         doc["playerList"][i]["atempts"] = this->playerList[i].attemps;
@@ -96,9 +98,17 @@ StaticJsonDocument<SIZE_GAME_JSON> Game::Document(){
     return doc;
 }
 
-void Game::Deserialize(const StaticJsonDocument<SIZE_GAME_JSON> &doc){
+void Game::Deserialize(const StaticJsonDocument<SIZE_GAME_JSON> &doc){ 
     this->id               = doc["id"];
     this->status           = doc["status"];
     this->throwingPlayerId = doc["throwingPlayerId"];
     this->round            = doc["round"];
+    this->lastThrow.value  = doc["value"];
+    this->round            = doc["round"];
+
+    for(uint8_t i = 0; i < this->settings.numberOfPlayers; ++i){
+        this->playerList[i].id = doc["playerList"][i]["id"];
+        this->playerList[i].attemps = doc["playerList"][i]["atempts"];
+        this->playerList[i].points =doc["playerList"][i]["points"];
+        }
 }
