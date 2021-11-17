@@ -3,7 +3,7 @@ Project idea was inspirated by Ricardo's Alves [open-darts](https://create.ardui
 
 # DartPlus Team
 - [Jakub Delicat (@delipl)](https://github.com/delipl) - Embedded programmer C++ and Project Architect 
-- [Bartosz Kwiatkowski (@xHeler](https://github.com/xHeler) - Frontend, Backend and Database programmer
+- [Bartosz Kwiatkowski (@xHeler)](https://github.com/xHeler) - Frontend, Backend and Database programmer
 - [Artur Ziółkowski (@ArturZiolkowski1999)](https://github.com/ArturZiolkowski1999) - Embedded and Frontend programmer
 
 Contributors:
