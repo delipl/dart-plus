@@ -33,11 +33,11 @@ void setup() {
     
     
     Game game(set);
-    
-    Serial.println("Test game Document");
+    game.Loop();
+    //Serial.println("Test game Document");
     // StaticJsonDocument<SIZE_GAME_JSON> gameDoc = game.Document();
     {
-    serializeJsonPretty(game.Document(), Serial);
+    //serializeJsonPretty(game.Document(), Serial);
     }
     // serializeJsonPretty(set.Document(), Serial);
     

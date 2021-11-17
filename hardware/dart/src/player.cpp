@@ -15,6 +15,7 @@ const ThrowStatus Player::Throwing(){
     // TODO: don't make infinite loop
     while(dartboard.ReadThrow() == Throw(0,0)){
         hit = dartboard.ReadThrow();
+        
         // Serial.println("\t" + hit);
     }
 

@@ -61,12 +61,17 @@ void Dartboard::Init(){
         digitalWrite((*this->pins_master)[i], HIGH);
     }
 
+    
     for(uint8_t i = 0; i < NUM_LINES_SLAVE; ++i){
         pinMode((*this->pins_slave)[i], INPUT_PULLUP);
     }
 }
 
 const Throw Dartboard::ReadThrow(){
+    // for(uint8_t i = 0; i < NUM_LINES_MASTER; ++i) {
+    //     digitalWrite((*this->pins_master)[i], HIGH);
+    // }
+
     for(uint8_t i = 0; i < NUM_LINES_MASTER; ++i) {
         digitalWrite((*this->pins_master)[i], LOW);
 
@@ -76,16 +81,21 @@ const Throw Dartboard::ReadThrow(){
                 
                 if(analogRead(A6) < 500 || analogRead(A7) < 500){
                     digitalWrite((*this->pins_master)[i], HIGH);
+                    Serial.println("\nhuj11");
                     return SETUP_MATRIX[i][j];
                 }
                 continue;
         }
         
         if(!digitalRead((*this->pins_slave)[j])){
+            Serial.println(i);
+            Serial.println("+");
+            Serial.println(j);
             return SETUP_MATRIX[i][j];
         }
     }
     digitalWrite((*this->pins_master)[i], HIGH);
   }
+  
   return Throw(0, 0);
 }

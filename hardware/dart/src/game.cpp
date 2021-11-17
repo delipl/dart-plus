@@ -32,8 +32,10 @@ GameStatus Game::Loop(){
 
                 Serial.println("\nLet's throw...");
                 ThrowStatus state = this->playerList[i].Throwing();
+                
                 while(state != ThrowStatus_OK){
                     state = this->playerList[i].Throwing();
+                    
                     // Serial.println(sizeof(this->playerList[i].Throwing()));
                 }
                 // Serial.println(sizeof(this->playerList[i].Throwing()));
@@ -75,7 +77,7 @@ StaticJsonDocument<SIZE_GAME_JSON> Game::Document(){
     doc["value"]            = this->lastThrow.value;
     doc["round"]            = this->round;
 
-    JsonArray data = doc.createNestedArray("playerList");
+    // JsonArray data = doc.createNestedArray("playerList");
 
     for(uint8_t i = 0; i < this->settings.numberOfPlayers; ++i){
         doc["playerList"][i]["id"] = this->playerList[i].id;
