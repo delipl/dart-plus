@@ -56,7 +56,7 @@ GameStatus Game::Loop(){
 
                 //TODO: SEND UPDATE GAME
 
-                delay(100);
+                delay(200);
             }
         }
     }

@@ -15,8 +15,12 @@ const ThrowStatus Player::Throwing(){
     // TODO: don't make infinite loop
     while(dartboard.ReadThrow() == Throw(0,0)){
         hit = dartboard.ReadThrow();
-        
-        // Serial.println("\t" + hit);
+        if(hit != Throw(0,0)){
+            Serial.println("multiplayer:");
+            Serial.println(hit.multiplier);
+            Serial.println("value:");
+            Serial.println(hit.value);
+        } 
     }
 
     // TODO: dont check error
