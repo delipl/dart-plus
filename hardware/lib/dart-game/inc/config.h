@@ -15,12 +15,14 @@
 
 #define SIZE_THROW_JSON 16
 #define SIZE_PLAYER_JSON 53
-#define SIZE_SETTINGS_JSON 256
-#define SIZE_GAME_JSON 512
+#define SIZE_SETTINGS_JSON 256 + 8 * MAX_PLAYERS
+#define SIZE_GAME_JSON 850
 
 // array stored in flash memory
 // rows coresponds to order of numbers on dashboard
 // columns coresponds to multipliers of rings on dashboard
-const uint8_t pins_master[NUM_LINES_MASTER]  = {2,3,4,5,6,7,8,9,10,11};
-const uint8_t pins_slave[NUM_LINES_SLAVE]  = {12, A7, A0, A6, A1, A3, A2};
+    #ifdef ARDUINO_CONFIG
+        const uint8_t pins_master[NUM_LINES_MASTER]  = {2,3,4,5,6,7,8,9,10,11};
+        const uint8_t pins_slave[NUM_LINES_SLAVE]  = {12, A7, A0, A6, A1, A3, A2};
+    #endif
 #endif

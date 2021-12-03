@@ -17,6 +17,7 @@ struct Settings{
         bool doubleOut;
         uint16_t playersId[MAX_PLAYERS];
 
+        Settings();
         Settings(const uint16_t &id, const uint8_t &numberOfPlayers, const uint16_t &startPoints, const bool &doubleIn, const bool &doubleOut, uint16_t *playersId);
 
         //TODO

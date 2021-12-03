@@ -6,6 +6,10 @@ Throw::Throw(const uint8_t &multiplier, const uint8_t &value):
     // this->json = "";
 }
 
+Throw::Throw(){
+    this->multiplier = 0;
+    this->value = 0;
+}
 Throw &Throw::operator=(const Throw &other) {
     this->multiplier = other.multiplier;
     this->value = other.value;
@@ -59,8 +63,8 @@ void Dartboard::Init(){
     for(uint8_t i = 0; i < NUM_LINES_MASTER; ++i) {
         pinMode(((*this->pins_master)[i]), OUTPUT);
         digitalWrite((*this->pins_master)[i], HIGH);
-        Serial.print("Ustawiam pin: ");
-        Serial.println((*this->pins_master)[i]);
+        // Serial.print("Ustawiam pin: ");
+        // Serial.println((*this->pins_master)[i]);
     }
 
     
