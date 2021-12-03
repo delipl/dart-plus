@@ -21,12 +21,21 @@ StaticJsonDocument<SIZE_GAME_JSON> Game::Document(){
     doc["value"]            = this->value;
     doc["round"]            = this->round;
 
+    #ifdef ARDUINO_CONFIG
+        for(uint8_t i = 0; i < this->settings.numberOfPlayers; ++i){
+            doc["playerList"][i][0] = this->playerList[i].id;
+            doc["playerList"][i][1] = this->playerList[i].attemps;
+            doc["playerList"][i][2] = this->playerList[i].points; 
+        }
+    #endif
 
-    for(uint8_t i = 0; i < this->settings.numberOfPlayers; ++i){
-        doc["playerList"][i]["id"] = this->playerList[i].id;
-        doc["playerList"][i]["atempts"] = this->playerList[i].attemps;
-        doc["playerList"][i]["points"] = this->playerList[i].points;
-    }
+    #ifdef ESP_CONFIG
+        for(uint8_t i = 0; i < this->settings.numberOfPlayers; ++i){
+            doc["playerList"][i]["id"] = this->playerList[i].id;
+            doc["playerList"][i]["attempts"] = this->playerList[i].attemps;
+            doc["playerList"][i]["points"] = this->playerList[i].points;
+        }
+    #endif
     return doc;
 }
 
@@ -39,8 +48,11 @@ void Game::Deserialize(const StaticJsonDocument<SIZE_GAME_JSON> &doc){
     this->round            = doc["round"];
 
     for(uint8_t i = 0; i < this->settings.numberOfPlayers; ++i){
-        this->playerList[i].id = doc["playerList"][i]["id"];
-        this->playerList[i].attemps = doc["playerList"][i]["atempts"];
-        this->playerList[i].points =doc["playerList"][i]["points"];
+        this->playerList[i].id = doc["playerList"][i][0];
+        this->playerList[i].attemps = doc["playerList"][i][1];
+        this->playerList[i].points =doc["playerList"][i][2];
     }
+
+
+
 }

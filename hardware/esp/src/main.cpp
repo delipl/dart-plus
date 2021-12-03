@@ -37,7 +37,7 @@ void setup()
 	settings.Deserialize(doc);
 	serializeJsonPretty(doc, Serial);
 	delay(100);
-	serverClient->SendJson(doc);
+	serverClient->SendSettings(doc);
 	
 
 	
@@ -59,6 +59,7 @@ void loop(){
 		deserializeJson(doc, get);
 		game.Deserialize(doc);
 		serializeJsonPretty(game.Document(), Serial);
-		serverClient->SendJson(doc);
+
+		serverClient->SendGame(game.Document());
 	}
 }
