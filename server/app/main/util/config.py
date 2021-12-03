@@ -2,8 +2,6 @@ import random
 
 from flask import jsonify
 
-from app.main.controller import userController
-
 ID_MAX = 65535
 ID_MIN = 50
 MESSAGE_OK = "Good"
@@ -24,9 +22,3 @@ def get_dictionary(objects: list):
         dictionary.append(i.get_dictionary())
     return dictionary
 
-
-def generate_id():
-    id = random.randint(ID_MIN, ID_MAX)
-    while userController.get_user(id) != "User does not exist!":
-        id = random.randint(ID_MIN, ID_MAX)
-    return id

@@ -4,7 +4,6 @@ class Setting:
         self.startPoints = startPoints
         self.doubleIn = doubleIn
         self.doubleOut = doubleOut
-        self.playersId = []
 
     def get_dictionary(self):
         return {

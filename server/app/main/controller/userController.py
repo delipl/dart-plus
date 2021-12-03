@@ -7,7 +7,6 @@ from app.main.model.user import User
 def insert_user(id, admin, password, name, nick, phone, wins, gameIds, throws):
     db = get_db()
     cursor = db.cursor()
-    print(id, admin, password, name, nick, phone, wins, gameIds, throws)
     statement = "INSERT INTO users(id, admin, password, name, " \
                 "nick, phone, wins, gameIds, throws) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
     cursor.execute(statement, [id, admin, password, name, nick, phone, wins, pickle.dumps(gameIds), pickle.dumps(throws)])

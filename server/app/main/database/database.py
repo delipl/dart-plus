@@ -33,7 +33,7 @@ def create_tables():
             """]
     db = get_db()
     cursor = db.cursor()
-    # dropTableStatement = "DROP TABLE games"
-    # cursor.execute(dropTableStatement)
+    dropTableStatement = "DROP TABLE games"
+    cursor.execute(dropTableStatement)
     for table in tables:
         cursor.execute(table)

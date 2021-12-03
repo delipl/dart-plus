@@ -2,7 +2,6 @@ import pickle
 
 from app.main.database.database import get_db
 from app.main.model.game import Game
-from app.main.util.config import ERROR_GAME_NOT_EXIST
 
 
 def insert_game(id, gameStatus, numberOfThrow, startTime, throwingUserId, round, setting, players):
@@ -24,7 +23,7 @@ def get_game(id):
     cursor.execute(query, [id])
     rows = cursor.fetchall()
     if len(rows) == 0:
-        return ERROR_GAME_NOT_EXIST
+        return "Game does not exist!"
     for i in rows:
         game = Game(i[0], i[1], i[2], i[3], i[4], i[5], pickle.loads(i[6]), pickle.loads(i[7]))
     return game

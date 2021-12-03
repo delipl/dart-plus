@@ -1,17 +1,20 @@
-from flask import request, jsonify
+import random
 
-from app import app
-from app.main.controller import userController, userController
-from app.main.util.config import generate_id, generate_http_response, MESSAGE_OK, OK, \
-    INTERNAL_SERVER_ERROR, NOT_ACCEPTABLE
+from flask import request, jsonify, Blueprint
+
+from app.main.controller import userController
+from app.main.util.config import generate_http_response, MESSAGE_OK, OK, \
+    INTERNAL_SERVER_ERROR, NOT_ACCEPTABLE, ID_MIN, ID_MAX
+
+userPage = Blueprint('userService', __name__, template_folder='templates')
 
 
-@app.route('/users', methods=["GET"])
+@userPage.route('/users', methods=["GET"])
 def get_users():
     return jsonify(userController.get_users())
 
 
-@app.route("/users", methods=["POST"])
+@userPage.route("/users", methods=["POST"])
 def register():
     user_details = request.json
     id = generate_id()
@@ -28,7 +31,7 @@ def register():
         return generate_http_response(1, "Something wrong with our database :/", INTERNAL_SERVER_ERROR)
 
 
-@app.route("/user", methods=["POST"])
+@userPage.route("/user", methods=["POST"])
 def login():
     user_details = request.json
     phone = user_details["phone"]
@@ -41,12 +44,12 @@ def login():
     return generate_http_response(0, "Good", OK)
 
 
-@app.route("/user/<id>", methods=["GET"])
+@userPage.route("/user/<id>", methods=["GET"])
 def get_user(id):
     return jsonify(userController.get_user(id).get_dictionary())
 
 
-@app.route("/users", methods=["PUT"])
+@userPage.route("/users", methods=["PUT"])
 def update_user():
     user_details = request.json
     id = user_details["id"]
@@ -61,7 +64,14 @@ def update_user():
     result = userController.update_user(id, nick, password)
     return generate_http_response(result)
 
-@app.route("/users/<id>", methods=["DELETE"])
+
+@userPage.route("/users/<id>", methods=["DELETE"])
 def delete_user(id):
     result = userController.delete_user(id)
     return generate_http_response(result)
+
+def generate_id():
+    id = random.randint(ID_MIN, ID_MAX)
+    while userController.get_user(id) != "User does not exist!":
+        id = random.randint(ID_MIN, ID_MAX)
+    return id
