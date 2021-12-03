@@ -1,8 +1,8 @@
-from util.config import get_dictionary
+from app.main.util.config import get_dictionary
 
 
 class User:
-    def __init__(self, id, admin, password, name, nick, phone, wins, gameIds):
+    def __init__(self, id, admin, password, name, nick, phone, wins, gameIds, throws):
         self.id = id
         self.admin = admin
         self.password = password
@@ -11,7 +11,7 @@ class User:
         self.phone = phone
         self.wins = wins
         self.gameIds = gameIds
-        self.throws = []
+        self.throws = throws
 
     def get_dictionary(self):
         return {

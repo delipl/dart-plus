@@ -1,5 +1,6 @@
 import sqlite3
-from app.main.util.config import DATABASE_NAME
+
+DATABASE_NAME = 'database.db'
 
 
 def get_db():
