@@ -1,11 +1,9 @@
-import base64
-
 import controller
 from messages import *
 from datetime import datetime
 from flask_cors import CORS
 from flask import Flask, jsonify, request
-from database import create_tables, Settings, Player, generate_id
+from database.database import create_tables, Settings, Player, generate_id
 
 app = Flask(__name__)
 CORS(app)
@@ -157,5 +155,4 @@ def delete_user(id):
 
 if __name__ == "__main__":
     create_tables()
-    controller.delete_games()
     app.run(host='0.0.0.0', port=8000, debug=False)
