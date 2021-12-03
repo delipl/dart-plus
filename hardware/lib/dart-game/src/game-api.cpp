@@ -14,7 +14,6 @@ GameStatus GameApi::Tick(){
                 //TODO: when button arrived
                 while(this->status == GameStatus_Pause);
 
-                Serial.println("\nLet's throw...");
                 Throw hit(0,0);
                 while(hit == Throw(0,0)){
                     hit = dartboard.ReadThrow();
@@ -22,17 +21,10 @@ GameStatus GameApi::Tick(){
                 this->value = hit.value;
                 this->multiplier = hit.multiplier;
 
-                // Serial.println("value:");
-                // Serial.println(hit.value);
                 
 
                 
                 if(hit > this->playerList[i].points){
-                    Serial.print("hit: \t");
-                    Serial.print(hit.value);
-                    Serial.print("points: \t");
-                    Serial.print(this->playerList[i].points);
-                    Serial.println("\tTo much");
                     this->playerList[i].attemps = 0;
                 }
                 else if(hit == this->playerList[i].points){
@@ -46,6 +38,8 @@ GameStatus GameApi::Tick(){
                     --this->playerList[i].attemps;
                 }
                 serializeJson(this->Document(), mySerial);
+                serializeJson(this->Document(), Serial);
+
                 delay(200);
             }
             

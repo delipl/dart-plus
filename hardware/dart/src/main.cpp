@@ -31,16 +31,18 @@ void loop() {
         playerIds[i] = i;
     }
     Serial.println("Loading settings...");
-    Settings set(0, MAX_PLAYERS , UINT16_MAX, false, false, playerIds);   
+    Settings set(1, MAX_PLAYERS , UINT16_MAX, false, false, playerIds);   
     Serial.println("Loading game...");
     GameApi game(set);
     Serial.println("Loaded game...");
     // Send settings
     serializeJson(game.settings.Document(), mySerial);
-    
-    delay(100);
-    Serial.println("\nWelcome to Dart-Plus");
+    delay(1000);
+    serializeJson(game.settings.Document(), Serial);
 
+    
+    delay(1000);
+    Serial.println("\nWelcome to Dart-Plus");
     while(true){
         game.Tick();
     }

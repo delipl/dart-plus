@@ -20,14 +20,14 @@ StaticJsonDocument<SIZE_SETTINGS_JSON> Settings::Document(){
     StaticJsonDocument<SIZE_SETTINGS_JSON> doc;
     
     doc["id"]                      = this->id; 
-    doc["amountOfPlayers"]         = this->numberOfPlayers;
+    doc["numberOfPlayers"]         = this->numberOfPlayers;
     doc["startPoints"]             = this->startPoints;
     doc["doubleIn"]                = this->doubleIn;
     doc["doubleOut"]               = this->doubleOut;
 
     for(int i = 0; i < this->numberOfPlayers; ++i){
-            doc["playersId"][i] = this->playersId[i];
-        }
+        doc["playersId"][i] = this->playersId[i];
+    }
 
 
     return doc;
@@ -36,7 +36,7 @@ StaticJsonDocument<SIZE_SETTINGS_JSON> Settings::Document(){
 void Settings::Deserialize(StaticJsonDocument<SIZE_SETTINGS_JSON> &doc){
     
     this->id = doc["id"];
-    this->numberOfPlayers = doc["amountOfPlayers"];
+    this->numberOfPlayers = doc["numberOfPlayers"];
     this->startPoints = doc["startPoints"];
     this->doubleIn = doc["doubleIn"];
     this->doubleOut = doc["doubleOut"];

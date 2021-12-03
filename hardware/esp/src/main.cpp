@@ -4,11 +4,11 @@
 #include <ESP8266HTTPClient.h>
 
 #include "config.h"
-// #include "settings.h"
 #include "game.h"
+#include "server-client.h"
 
 
-#define SERVER_IP "http://192.168.192.3:8000/"
+#define SERVER_IP "http://192.168.192.3:8000/games"
 
 #ifndef STASSID
 	#define STASSID "Play internet 4G LTE-D87FD9"
@@ -17,13 +17,15 @@
 
 
 Settings settings;
-
+ServerClient *serverClient;
 
 void setup()
 {
 	Serial.begin(9600);
 
 	String mess;
+	serverClient = new ServerClient(STASSID, STAPSK, SERVER_IP);
+	delay(1000);
 	// waiting for settings message
 	while (mess == String()){
 		mess = Serial.readString();
@@ -34,6 +36,9 @@ void setup()
 	deserializeJson(doc, get);
 	settings.Deserialize(doc);
 	serializeJsonPretty(doc, Serial);
+	delay(100);
+	serverClient->SendJson(doc);
+	
 
 	
 
@@ -54,5 +59,6 @@ void loop(){
 		deserializeJson(doc, get);
 		game.Deserialize(doc);
 		serializeJsonPretty(game.Document(), Serial);
+		serverClient->SendJson(doc);
 	}
 }

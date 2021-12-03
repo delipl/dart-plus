@@ -1,13 +1,5 @@
 #include "game.h"
 Game::Game(const Settings &set): id{set.id}, settings{set}{   
-    // Serial.println(this->settings.numberOfPlayers);
-
-    // // this->playerList = new Player[this->settings.numberOfPlayers];
-    // for(int i = 0; i < this->settings.numberOfPlayers; ++i){
-    //     Serial.print("Loaded: ");
-    //     Serial.println(this->settings.playersId[i]);
-    // }
-
     for(int i = 0; i < set.numberOfPlayers; ++i){
         this->playerList[i] = Player(i, String("Player #" + String(i)).c_str(), settings.startPoints, 0);
     }
