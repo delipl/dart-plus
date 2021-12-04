@@ -14,7 +14,7 @@ class GameApi : public Game{
         GameApi(const Settings &set): Game(set){
             Serial.println("Stworzono gre");
         };
-        GameStatus Tick();
+        GameStatus Loop();
 };
 
 #endif
