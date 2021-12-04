@@ -22,10 +22,10 @@ class Player{
         uint16_t id;
         char nick[NICK_LENGTH];
         uint16_t points;
-        uint8_t attemps = 0;
+        uint8_t attempts = 0;
 
         Player();
-        Player(const uint16_t &id, const char nick[NICK_LENGTH], const uint16_t &points = 301, const uint8_t &attemps = 0);
+        Player(const uint16_t &id, const char nick[NICK_LENGTH], const uint16_t &points = 301, const uint8_t &attempts = 0);
         Player &operator=(const Player &other);
 
         StaticJsonDocument<SIZE_PLAYER_JSON> Document();
