@@ -31,7 +31,7 @@ void loop() {
         playerIds[i] = i;
     }
     Serial.println("Loading settings...");
-    Settings set(1, MAX_PLAYERS , 301, false, false, playerIds);   
+    Settings set(1, 2 , 301, false, false, playerIds);   
     Serial.println("Loading game...");
     GameApi game(set);
     Serial.println("Loaded game...");
