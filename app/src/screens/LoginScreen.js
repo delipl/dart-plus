@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { TouchableOpacity, StyleSheet, View } from 'react-native'
 import { Text } from 'react-native-paper'
 import Background from '../components/Background'
@@ -46,6 +46,11 @@ export default function LoginScreen({ navigation }) {
       setLoading(false);
     }
   }
+
+  useEffect(() => {
+    onLoginPressed();
+  }, []);
+
 
   if (!isLoading) {
     if (data.status == 1) {

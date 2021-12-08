@@ -7,7 +7,12 @@ import Header from '../components/Header'
 import BHeader from '../components/BigHeader'
 import Paragraph from '../components/Paragraph'
 import BParagraph from '../components/BigParagraph'
+import MParagraph from '../components/MidParagraph'
+import MRedParagraph from '../components/MidRedParagraph'
 import Button from '../components/Button'
+import { io } from "socket.io-client";
+
+const ENDPOINT = "http://192.168.192.3:8000";
 
 function Images(props) {
   const k = props.attempts
@@ -18,30 +23,21 @@ function Images(props) {
   return render
 }
 
-export default function Dashboard({ navigation }){
-  const [isLoading, setLoading] = useState(true);
-  const [data, setData] = useState([]);
 
-  const getGame = async () => {
-     try {
-      const response = await fetch('http://192.168.192.3:8000/info', {
-        method: 'GET',
-        headers: {
-          Accept: 'application/json',    
-          'Content-Type': 'application/json'
-        }
-      });
-      const json = await response.json();
-      setData(json);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  }
+export default function Dashboard({ navigation }){
+  const [data, setData] = useState([])
+  var socket = io(ENDPOINT);
+  
   useEffect(() => {
-    getGame();
+    console.log("Connect:")
+
+    socket.on('user_activated', (data) => {
+       setData(data)
+    })
+
   }, []);
+
+  if (data.length === 0) return <div>Loading...</div>
 
   return (
     <Background>
