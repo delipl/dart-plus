@@ -4,6 +4,8 @@ Game::Game(const Settings &set): id{set.id}, settings{set}{
         this->playerList[i] = Player(i, String("Player #" + String(i)).c_str(), settings.startPoints, 255);
     }
 
+
+
     this->throwingPlayerId = this->playerList[0].id;
     this->round = 0;
     this->multiplier = 0;

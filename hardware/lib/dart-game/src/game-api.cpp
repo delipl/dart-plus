@@ -36,12 +36,16 @@ GameStatus GameApi::Loop(){
                         // Serial.println("OK");
                         --this->playerList[i].attempts;
                     }
+                    if(this->playerList[i].attempts == 0){
+                        this->playerList[i == this->settings.numberOfPlayers - 1 ? 0 : i + 1].attempts = 3;    
+                    }
                 
                     serializeJson(this->Document(), mySerial);
                     serializeJson(this->Document(), Serial);
                     if(this->playerList[i].attempts == 0)
                             this->playerList[i].attempts = 255;
 
+                    Serial.println();
                     // for(int j = 0; j < this->settings.numberOfPlayers; ++j){
                     //     Serial.print(j + String("\t"));
                     //     Serial.println(this->playerList[j].points);
