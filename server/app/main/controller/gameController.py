@@ -46,13 +46,15 @@ def update_game(id, status, throwingPlayerId, multiplier, value, round, playerLi
     db = get_db()
     cursor = db.cursor()
     players = get_game(id).players
+
     for p in players:
         for i in range(len(playerList)):
             if p.id == playerList[i]["id"]:
                 p.attempts = playerList[i]["attempts"]
                 p.points = playerList[i]["points"]
-                if 0 < p.attempts < 3:
+                if 0 <= p.attempts < 3:
                     p.addThrow(multiplier, value)
+
 
     statement = "UPDATE games SET gameStatus = ?, throwingUserId = ?, round = ?, players = ? WHERE id = ?"
     cursor.execute(statement, [status, throwingPlayerId, round, pickle.dumps(players), id])

@@ -39,8 +39,12 @@ def create_new_game():
     date = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
     players = []
 
-    for i in range(numberOfPlayers):
-        players.append(Player(playersId[i], "Gracz" + str(i + 1), startPoints, 0))
+    # TUTAJ
+    # for i in range(numberOfPlayers):
+    #     players.append(Player(playersId[i], "Gracz" + str(i + 1), startPoints, 3))
+    players.append(Player(playersId[0], "Kuba", startPoints, 3))
+    players.append(Player(playersId[1], "Bartosz", startPoints, 255))
+    players.append(Player(playersId[2], "Artur", startPoints, 255))
 
     result = gameController.insert_game(id, 0, 0, date, playersId[0], 0, setting, players)
     return generate_http_response(result, MESSAGE_OK, 200)

@@ -19,11 +19,12 @@ def get_info(id):
     players = []
     main_dictionary = {}
     for p in game.players:
-        if p.attempts > 0:
+        if 0 < p.attempts < 4:
             player = p
             break
     if player is None:
         player = game.players[0]
+
     game.players.remove(player)
     for p in game.players:
         dictionary = {"nick": p.nick, "points": p.points}
@@ -31,7 +32,11 @@ def get_info(id):
 
     main_dictionary["nick"] = player.nick
     main_dictionary["points"] = player.points
-    main_dictionary["attempts"] = 2
-    main_dictionary["lastThrow"] = player.getLastThrow().getScore()
+    main_dictionary["attempts"] = player.attempts
+    lastThrows = 0
+    for i in range(3 - player.attempts):
+        if len(player.throws) > 0:
+            lastThrows = lastThrows + player.throws[len(player.throws) -1 - i].getScore()
+    main_dictionary["lastThrows"] = lastThrows
     main_dictionary["players"] = players
     return main_dictionary

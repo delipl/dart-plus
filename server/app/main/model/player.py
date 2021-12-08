@@ -1,4 +1,4 @@
-from app.main.model.Throw import Throw
+from app.main.model.throw import Throw
 from app.main.util.config import get_dictionary
 
 
