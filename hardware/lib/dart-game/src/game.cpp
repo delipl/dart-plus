@@ -74,7 +74,7 @@ GameStatus Game::Loop(){
                 while(this->playerList[i].attempts != 255){                 
                     while(this->status == GameStatus_Pause);
 
-                    // Serial.println("\nLet's throw...");
+                    Serial.println("\nLet's throw...");
                     hit = Throw(0,0);
                     while(hit == Throw(0,0)){
                         hit = ReadDartboard();
@@ -94,7 +94,7 @@ GameStatus Game::Loop(){
                     }
                     else{
                         this->playerList[i].points = this->playerList[i].points - hit;
-                        // Serial.println("OK");
+                        Serial.println("OK");
                         --this->playerList[i].attempts;
                     }
                     if(this->playerList[i].attempts == 0){

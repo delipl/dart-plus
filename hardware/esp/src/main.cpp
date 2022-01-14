@@ -7,7 +7,7 @@
 #include "server-client.h"
 
 #include "game-api.h"
-ServerClient *serverClient;
+
 
 
 #define SERVER_IP "http://192.168.0.3:8000/test"
@@ -19,7 +19,7 @@ ServerClient *serverClient;
 
 uint16_t ids[] = {1,2,3,4};
 Settings settings(1, 4, 301, false, false, ids);
-
+ServerClient *serverClient;
 
 GameApi game(settings);
 
@@ -27,13 +27,13 @@ void setup()
 {
 	Serial.begin(9600);
 	serverClient = new ServerClient(STASSID, STAPSK, SERVER_IP);
-	serverClient->SendSettings(settings.Document());
+	// serverClient->SendSettings(settings.Document());
 
 }
 
 void loop(){
 
-	// game.Loop();
+	game.Loop();
 	// Game game(settings);
 	// while(true){
 
