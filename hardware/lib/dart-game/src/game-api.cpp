@@ -16,7 +16,7 @@ GameStatus GameApi::Loop(){
                     // Serial.println("\nLet's throw...");
                     hit = Throw(0,0);
                     while(hit == Throw(0,0)){
-                        hit = dartboard.ReadThrow();
+                        hit = ReadDartboard();
                     }
                     this->value = hit.value;
                     this->multiplier = hit.multiplier;               
@@ -40,17 +40,11 @@ GameStatus GameApi::Loop(){
                         this->playerList[i == this->settings.numberOfPlayers - 1 ? 0 : i + 1].attempts = 3;    
                     }
                 
-                    serializeJson(this->Document(), mySerial);
-                    serializeJson(this->Document(), Serial);
                     if(this->playerList[i].attempts == 0)
                             this->playerList[i].attempts = 255;
-
+                            
+                    SendToServer();
                     Serial.println();
-                    // for(int j = 0; j < this->settings.numberOfPlayers; ++j){
-                    //     Serial.print(j + String("\t"));
-                    //     Serial.println(this->playerList[j].points);
-                    // }
-                    delay(200);
                 }
                 
             }
