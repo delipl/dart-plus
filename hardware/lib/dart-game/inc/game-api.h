@@ -3,22 +3,19 @@
 #define GAMEAPI_H
 
 #include <Arduino.h>
-#include <SoftwareSerial.h>
 #include "game.h"
 #include "dartboard.h"
-
-
-
-extern SoftwareSerial EspSerial;
-extern Throw ReadDartboard();
-extern void SendToServer();
+#include "server-client.h"
 
 class GameApi : public Game {
    public:
-    GameApi(const Settings &set) : Game(set) {
+    explicit GameApi(const Settings &set) : Game(set) {
         Serial.println("Stworzono gre");
     };
-    GameStatus Loop();
+    ~GameApi(){};
+    virtual Throw ReadDartboard();
+	virtual void SendDartboard();
+    
 };
 
 #endif

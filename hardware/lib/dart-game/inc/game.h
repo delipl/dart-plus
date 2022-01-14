@@ -13,6 +13,7 @@
 #include <Arduino.h>
 
 #include "player.h"
+#include "throw.h"
 #include "settings.h"
 
 #ifndef MAX_PLAYERS
@@ -23,8 +24,6 @@ enum GameStatus{
     GameStatus_Active, GameStatus_Pause, GameStatus_Save, GameStatus_Finished
 };
 class Game{
-    private:
-        // String json;
     public:
     //TODO: wyebac id
         uint16_t id;
@@ -37,9 +36,12 @@ class Game{
         uint8_t value;
 
         Game(const Settings &set);
-
+        ~Game() {};
         StaticJsonDocument<SIZE_GAME_JSON> Document();
+        GameStatus Loop();
         void Deserialize(const StaticJsonDocument<SIZE_GAME_JSON> &doc);
+        virtual Throw ReadDartboard() = 0;
+        virtual void SendDartboard() = 0;
 
 };
 
