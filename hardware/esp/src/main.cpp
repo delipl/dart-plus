@@ -8,11 +8,11 @@
 #include "server-client.h"
 
 
-#define SERVER_IP "http://192.168.192.3:8000/games"
+#define SERVER_IP "http://192.168.0.3:8000/games"
 
 #ifndef STASSID
-	#define STASSID "Play internet 4G LTE-D87FD9"
-	#define STAPSK "1mF5yX7j"
+	#define STASSID "multimedia_plastek"
+	#define STAPSK "123454321"
 #endif
 
 
