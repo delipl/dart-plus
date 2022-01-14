@@ -40,7 +40,7 @@ GameStatus GameApi::Loop(){
                         this->playerList[i == this->settings.numberOfPlayers - 1 ? 0 : i + 1].attempts = 3;    
                     }
                 
-                    serializeJson(this->Document(), mySerial);
+                    serializeJson(this->Document(), EspSerial);
                     serializeJson(this->Document(), Serial);
                     if(this->playerList[i].attempts == 0)
                             this->playerList[i].attempts = 255;

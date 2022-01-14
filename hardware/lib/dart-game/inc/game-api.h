@@ -7,7 +7,7 @@
 #include "game.h"
 #include "dartboard.h"
 
-extern SoftwareSerial mySerial;
+extern SoftwareSerial EspSerial;
 extern Dartboard dartboard;
 class GameApi : public Game{
     public:   
