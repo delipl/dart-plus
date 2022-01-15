@@ -3,11 +3,14 @@
 Dartboard::Dartboard(const uint8_t (*pins_master)[NUM_LINES_MASTER], const uint8_t (*pins_slave)[NUM_LINES_SLAVE]){
     this->pins_master = pins_master;
     this->pins_slave = pins_slave;
+    this->button = 13;
 }
 
 void Dartboard::Init(){
     for(uint8_t i = 0; i < NUM_LINES_MASTER; ++i) {
         pinMode(((*this->pins_master)[i]), OUTPUT);
+        //przycisk zmiany gracza
+        pinMode(button, INPUT_PULLUP);
         digitalWrite((*this->pins_master)[i], HIGH);
         // Serial.print("Ustawiam pin: ");
         // Serial.println((*this->pins_master)[i]);

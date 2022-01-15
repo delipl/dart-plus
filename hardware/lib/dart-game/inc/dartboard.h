@@ -34,7 +34,7 @@
     const Throw SETUP_MATRIX[NUM_LINES_MASTER][NUM_LINES_SLAVE]  ={
     // 3x				         2x			        	1x		        		center
     // 0            1           2           3           4           5           6
-    {{3,1 },   	{3,  7}, 	{2,1 },	    {2,7 },	    {1,1},		{1,7 },		{1, 255}  },
+    {{3,1 },   	{3,  7}, 	{2,1 },	    {2,7 },	    {1,1},		{1,7 },		{1, 0}  },
     {{3,18 },   	{3, 19},	{2,18},	    {2,19},	    {1,18},		{1,19},		{1, 255}  },
     {{3,4 },	   	{3, 3 },	{2,4 },	    {2,3 },	    {1,4 },		{1,3 },		{1, 255}  },
     {{3,13 },   	{3, 17},	{2,13},	    {2,17},	    {1,13},		{1,17},		{1, 255}  },
@@ -60,6 +60,7 @@ class Dartboard{
 public:
     const uint8_t (*pins_master)[NUM_LINES_MASTER];
     const uint8_t (*pins_slave)[NUM_LINES_SLAVE];
+    uint8_t button;
 
     Dartboard(const uint8_t (*pins_master)[NUM_LINES_MASTER], const uint8_t (*pins_slave)[NUM_LINES_SLAVE]);
 

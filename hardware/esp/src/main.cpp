@@ -10,7 +10,7 @@
 
 
 
-#define SERVER_IP "http://192.168.0.3:8000/test"
+#define SERVER_IP "http://192.168.0.3:8000/games"
 
 #ifndef STASSID
 	#define STASSID "multimedia_plastek"
@@ -27,7 +27,7 @@ void setup()
 {
 	Serial.begin(9600);
 	serverClient = new ServerClient(STASSID, STAPSK, SERVER_IP);
-	// serverClient->SendSettings(settings.Document());
+	serverClient->SendSettings(settings.Document());
 
 }
 

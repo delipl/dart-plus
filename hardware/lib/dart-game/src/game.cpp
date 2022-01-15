@@ -1,10 +1,8 @@
 #include "game.h"
 Game::Game(const Settings &set): id{set.id}, settings{set}{   
     for(int i = 0; i < set.numberOfPlayers; ++i){
-        this->playerList[i] = Player(i, String("Player #" + String(i)).c_str(), settings.startPoints, 255);
+        this->playerList[i] = Player(set.playersId[i], String("Player #" + String(i)).c_str(), settings.startPoints, 255);
     }
-
-
 
     this->throwingPlayerId = this->playerList[0].id;
     this->round = 0;
@@ -80,7 +78,7 @@ GameStatus Game::Loop(){
                         hit = ReadDartboard();
                     }
                     this->value = hit.value;
-                    this->multiplier = hit.multiplier;               
+                    this->multiplier = hit.multiplier;            
 
                     
                     if(hit.value * hit.multiplier > this->playerList[i].points){
@@ -94,10 +92,14 @@ GameStatus Game::Loop(){
                     }
                     else{
                         this->playerList[i].points = this->playerList[i].points - hit;
-                        Serial.println("OK");
+                        // Serial.println("OK");
                         --this->playerList[i].attempts;
                     }
+                    // if(hit.value == 1 && hit.multiplier == 0){
+                    //     --this->playerList[i].attempts;
+                    // }
                     if(this->playerList[i].attempts == 0){
+                        // warunek na zapetlanie graczy
                         this->playerList[i == this->settings.numberOfPlayers - 1 ? 0 : i + 1].attempts = 3;    
                     }
                 
