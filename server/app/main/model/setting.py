@@ -1,3 +1,4 @@
+
 class Setting:
     def __init__(self, amountOfUsers=2, startPoints=301, doubleIn=False, doubleOut=False):
         self.amountOfUsers = amountOfUsers
