@@ -13,7 +13,7 @@ Contributors:
 ## Hardware
 ### Arduino
 Arduino is connected to the dartboard button matrix. It sends information about obtained points via UART communication protocol to Esp.
-### Esp
+### Esp - wifi module
 Esp is the main micro controller in the device. It manages Offline Games and Online Games.
 #### Esp states diagram
 ![Esp states diagram](doc/esp_diagram.jpg "Esp states diagram")
