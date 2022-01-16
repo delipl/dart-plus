@@ -4,6 +4,7 @@ from flask import request, jsonify, current_app
 from . import userPage
 from app.user import controller
 from config import generate_http_response, Config
+from app.models.user import User
 
 
 # TODO zmien nazwe na auth przepisac od zera z haslem mailem i wszystkim picus glancus
