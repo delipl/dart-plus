@@ -3,7 +3,7 @@ import random
 from flask import request, jsonify, Blueprint
 
 from app.main.controller import userController
-from app.main.util.config import generate_http_response, MESSAGE_OK, OK, \
+from config import generate_http_response, MESSAGE_OK, OK, \
     INTERNAL_SERVER_ERROR, NOT_ACCEPTABLE, ID_MIN, ID_MAX
 
 userPage = Blueprint('userService', __name__, template_folder='templates')

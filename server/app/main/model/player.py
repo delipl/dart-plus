@@ -1,14 +1,20 @@
 from app.main.model.throw import Throw
-from app.main.util.config import get_dictionary
+from config import get_dictionary
+from app import db
 
 
-class Player:
-    def __init__(self, id, nick, points, attempts):
-        self.id = id
-        self.nick = nick
-        self.points = points
-        self.attempts = attempts
-        self.throws = []
+class Player(db.Model):
+    __tablename__ = 'players'
+    id = db.Column(db.Integer, primary_key=True)
+    nick = db.Column(db.String(64))
+    points = db.Column(db.Integer)
+    attempts = db.Column(db.Integer)
+    throws_multiplier = db.Column(db.Integer, index=True)
+    throws_value = db.Column(db.Integer, index=True)
+    # Relationships
+    game_id = db.Column(db.Integer, db.ForeignKey('games.id'))
+    user_id = db.relationship('User', backref='player', lazy='dynamic')
+
 
     def addThrow(self, multiplier, value):
         self.throws.append(Throw(multiplier, value))

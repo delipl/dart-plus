@@ -1,17 +1,25 @@
-from app.main.util.config import get_dictionary
+import datetime
+from config import get_dictionary
+from app import db
+from werkzeug.security import generate_password_hash, check_password_hash
+from .game import Match
 
 
-class User:
-    def __init__(self, id, admin, password, name, nick, phone, wins, gameIds, throws):
-        self.id = id
-        self.admin = admin
-        self.password = password
-        self.name = name
-        self.nick = nick
-        self.phone = phone
-        self.wins = wins
-        self.gameIds = gameIds
-        self.throws = throws
+class User(db.Model):
+    __tablename__ = 'users'
+    id = db.Column(db.Integer, primary_key=True)
+    admin = db.Column(db.Boolean, default=False)
+    password_hash = db.Column(db.String(128))
+    name = db.Column(db.String(64), unique=True, index=True)
+    nick = db.Column(db.String(64), unique=True, index=True)
+    phone = db.Column(db.Integer)
+    wins = db.Column(db.Integer)
+    throws = db.Column(db.Integer)
+    #relacje
+    gameIds = db.relationship('Match', foreign_keys=[Match.game_id],
+                              backref=db.backref('game', lazy='joined'), lazy='dynamic',
+                              cascade='all, delete-orphan')
+    player_id = db.Column(db.Integer, db.ForeignKey('players.id'))
 
     def get_dictionary(self):
         return {
@@ -25,3 +33,15 @@ class User:
             "gamesId": self.gameIds,
             "throws": get_dictionary(self.throws)
         }
+
+    @property
+    def password(self):
+        raise AttributeError('Cannot read password attribute')
+
+    @password.setter
+    def password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def verify_password(self, password):
+        return check_password_hash(self.password_hash, password)
+

@@ -5,7 +5,7 @@ from flask import request, jsonify, Blueprint
 from app.main.controller import gameController
 from app.main.model.player import Player
 from app.main.model.setting import Setting
-from app.main.util.config import generate_http_response, MESSAGE_OK
+from config import generate_http_response, MESSAGE_OK
 
 gamePage = Blueprint('gameService', __name__, template_folder='templates')
 

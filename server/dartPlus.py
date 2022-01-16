@@ -1,11 +1,9 @@
 import os
-from flask_socketio import SocketIO, send, emit
 from flask_migrate import Migrate
 from app.main.controller.gameController import delete_games
 import time
 from threading import Thread
 from flask_socketio import SocketIO, send, emit
-from flask_sqlalchemy import SQLAlchemy
 from app import create_app, db
 from app.main.controller import infoController
 
