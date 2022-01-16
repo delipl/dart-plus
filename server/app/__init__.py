@@ -14,11 +14,15 @@ def create_app(config_name):
     config[config_name].init_app(app)
     db.init_app(app)
 
-    from app.main.service.gameService import gamePage
-    from app.main.service.infoService import infoPage
-    from app.main.service.userService import userPage
-    app.register_blueprint(userPage)
-    app.register_blueprint(infoPage)
-    app.register_blueprint(gamePage)
+    from .user import userPage as userBlueprint
+    app.register_blueprint(userBlueprint, url_prefix='/user')
+
+    from .info import infoPage as infoBlueprint
+    app.register_blueprint(infoBlueprint, url_prefix='/info')
+
+    from .game import gamePage as gameBlueprint
+    app.register_blueprint(gameBlueprint, url_prefix='/game')
+
     CORS(app)
+
     return app

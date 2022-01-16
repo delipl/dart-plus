@@ -1,13 +1,17 @@
 import os
 from flask_migrate import Migrate
-from app.main.controller.gameController import delete_games
 import time
 from threading import Thread
 from flask_socketio import SocketIO, send, emit
 from app import create_app, db
-from app.main.controller import infoController
+# do not remove any import !!!!
+from app.models.user import User
+from app.models.player import Player
+from app.models.game import Game
+from app.info import controller as infoController
 
 app = create_app(os.getenv('FLASK_CONFIG') or 'default')
+app.app_context().push()
 migrate = Migrate(app, db)
 
 
@@ -42,6 +46,7 @@ def connect():
         thread = Thread(target=background_thread)
         thread.start()
 
+
 @socketio.on('disconnect')
 def disconnect():
     emit('retrieve_active_users')
@@ -54,5 +59,11 @@ def disconnect():
 
 if __name__ == "__main__":
     # app.run(host='0.0.0.0', port=8000, debug=True)
-    delete_games()
+    # Deleting games############
+    games = Game.query.all()  #
+    for game in games:         #
+        db.session.delete(game)#
+                               #
+    db.session.commit()        #
+    ############################
     socketio.run(app, debug=True, host='0.0.0.0', port=8000)

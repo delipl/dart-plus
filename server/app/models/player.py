@@ -1,4 +1,4 @@
-from app.main.model.throw import Throw
+from app.models.throw import Throw
 from config import get_dictionary
 from app import db
 
@@ -9,12 +9,12 @@ class Player(db.Model):
     nick = db.Column(db.String(64))
     points = db.Column(db.Integer)
     attempts = db.Column(db.Integer)
+    # TODO throw zapisywać w bazie danych jako pickle, poprawić funkcje dodawania rzutu itd
     throws_multiplier = db.Column(db.Integer, index=True)
     throws_value = db.Column(db.Integer, index=True)
     # Relationships
     game_id = db.Column(db.Integer, db.ForeignKey('games.id'))
     user_id = db.relationship('User', backref='player', lazy='dynamic')
-
 
     def addThrow(self, multiplier, value):
         self.throws.append(Throw(multiplier, value))

@@ -9,6 +9,13 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY') or "hui"
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    ID_MAX = 65535
+    ID_MIN = 50
+    MESSAGE_OK = "Good"
+    MESSAGE_ERROR = "Error"
+    NOT_ACCEPTABLE = 406
+    INTERNAL_SERVER_ERROR = 500
+    OK = 200
 
     @staticmethod
     def init_app(app):
@@ -40,19 +47,7 @@ config = {
 }
 
 
-
-
-
-ID_MAX = 65535
-ID_MIN = 50
-MESSAGE_OK = "Good"
-MESSAGE_ERROR = "Error"
-NOT_ACCEPTABLE = 406
-INTERNAL_SERVER_ERROR = 500
-OK = 200
-
-
-def generate_http_response(status, message=MESSAGE_ERROR, code=NOT_ACCEPTABLE):
+def generate_http_response(status, message=Config.MESSAGE_ERROR, code=Config.NOT_ACCEPTABLE):
     dictionary = {"status": status, "message": message}
     return jsonify(dictionary), code
 

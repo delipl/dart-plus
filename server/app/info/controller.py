@@ -1,12 +1,12 @@
 import pickle
 
-from app.main.database.database import get_db
-from app.main.model.game import Game
+from app import db
+from app.models.game import Game
 
 
+# TODO Do przebudowania cale !!!!!!
 def get_info(id):
     game = None
-    db = get_db()
     cursor = db.cursor()
     query = 'SELECT * FROM games WHERE id = ?'
     cursor.execute(query, [id])

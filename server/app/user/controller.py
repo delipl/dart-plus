@@ -1,7 +1,6 @@
 import pickle
 
-from app.main.database.database import get_db
-from app.main.model.user import User
+from app.models.user import User
 
 
 def insert_user(id, admin, password, name, nick, phone, wins, gameIds, throws):

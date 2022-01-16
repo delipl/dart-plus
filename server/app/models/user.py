@@ -2,7 +2,6 @@ import datetime
 from config import get_dictionary
 from app import db
 from werkzeug.security import generate_password_hash, check_password_hash
-from .game import Match
 
 
 class User(db.Model):
@@ -16,9 +15,7 @@ class User(db.Model):
     wins = db.Column(db.Integer)
     throws = db.Column(db.Integer)
     #relacje
-    gameIds = db.relationship('Match', foreign_keys=[Match.game_id],
-                              backref=db.backref('game', lazy='joined'), lazy='dynamic',
-                              cascade='all, delete-orphan')
+    game_id = db.Column(db.Integer, db.ForeignKey('games.id'))
     player_id = db.Column(db.Integer, db.ForeignKey('players.id'))
 
     def get_dictionary(self):
