@@ -16,8 +16,6 @@ class Game(db.Model):
 
     # TODO Relacje ponizej mogą być źle, robione na szybko bez sprawdzenia
     setting_id = db.Column(db.Integer, db.ForeignKey('settings.id'))
-    users_ids = db.relationship('User', backref='game', lazy='dynamic')
-    players_ids = db.relationship('Player', backref='game', lazy='dynamic')
 
     def to_json(self):
         json_post = {

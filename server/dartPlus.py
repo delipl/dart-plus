@@ -6,7 +6,6 @@ from flask_socketio import SocketIO, send, emit
 from app import create_app, db
 # do not remove any import !!!!
 from app.models.user import User
-from app.models.player import Player
 from app.models.game import Game
 from app.info import controller as infoController
 
@@ -59,6 +58,7 @@ def disconnect():
 
 if __name__ == "__main__":
     # app.run(host='0.0.0.0', port=8000, debug=True)
+    db.create_all()
     # Deleting games############
     games = Game.query.all()  #
     for game in games:         #

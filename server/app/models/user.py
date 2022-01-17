@@ -1,5 +1,5 @@
 import datetime
-from config import get_dictionary
+
 from app import db
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -14,22 +14,13 @@ class User(db.Model):
     phone = db.Column(db.Integer)
     wins = db.Column(db.Integer)
     throws = db.Column(db.Integer)
-    #relacje
-    game_id = db.Column(db.Integer, db.ForeignKey('games.id'))
-    player_id = db.Column(db.Integer, db.ForeignKey('players.id'))
-
-    def get_dictionary(self):
-        return {
-            "id": self.id,
-            "admin": self.admin,
-            "password": self.password,
-            "name": self.name,
-            "nick": self.nick,
-            "phone": self.phone,
-            "wins": self.wins,
-            "gamesId": self.gameIds,
-            "throws": get_dictionary(self.throws)
-        }
+    # relacje
+    setting_id = db.Column(db.Integer, db.ForeignKey('settings.id'))
+    # player data
+    points = db.Column(db.Integer)
+    attempts = db.Column(db.Integer)
+    throws_multiplier = db.Column(db.Integer, index=True)
+    throws_value = db.Column(db.Integer, index=True)
 
     @property
     def password(self):
@@ -42,3 +33,20 @@ class User(db.Model):
     def verify_password(self, password):
         return check_password_hash(self.password_hash, password)
 
+    def to_json(self):
+        json_post = {
+            "id": self.id,
+            "name": self.name,
+            "phone": self.phone,
+        }
+
+    def player_to_json(self):
+        json_post = {
+            "id": self.id,
+            "nick": self.nick,
+            "points": self.points,
+            "attempts": self.attempts,
+            #TODO tu może być błąd, nie wiem jak wygląda throw w jsonie
+            "throws": [self.throws_multiplier, self.throws_value]
+        }
+        return json_post

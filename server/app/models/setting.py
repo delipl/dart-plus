@@ -9,7 +9,10 @@ class Setting(db.Model):
     startPoints = db.Column(db.Integer)
     doubleIn = db.Column(db.Boolean, default=False)
     doubleOut = db.Column(db.Boolean, default=False)
+
+    # Relacje
     game = db.relationship('Game', backref='setting', lazy='dynamic')
+    users = db.relationship('User', backref='setting', lazy='dynamic')
 
     def get_dictionary(self):
         return {
@@ -19,13 +22,3 @@ class Setting(db.Model):
             "doubleOut": self.doubleOut
         }
 
-    @staticmethod
-    def from_json(json_post):
-        game_id = json_post.get('id')
-        numberOfPlayers = json_post.get('numberOfPlayers')
-        startPoints = json_post.get('startPoints')
-        doubleIn = json_post.get('doubleIn')
-        doubleOut = json_post.get('doubleOut')
-        playersId = json_post.get('playersId')
-        return Setting(numberOfPlayers=numberOfPlayers, startPoints=startPoints, doubleIn=doubleIn,
-                       doubleOut=doubleOut, playersId=playersId, game_id=game_id)
