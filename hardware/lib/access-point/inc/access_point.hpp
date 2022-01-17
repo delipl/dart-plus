@@ -23,11 +23,17 @@ class AccessPoint {
    protected:
     const String stassid;
     const String stapsk;
+    // Static don't disturb the dragon
+    inline static std::vector<String> ssid_list;
     IPAddress ip;
     std::shared_ptr<AsyncWebServer> server;
 
-
+    void connect_to_wifi();
 
    public:
     AccessPoint(const String &name, const String &pass);
+    // Replaces placeholder with button section in your web page
+    // nie, nie wiem po co to xD
+    static String processor_callback(const String &var);
 };
+
