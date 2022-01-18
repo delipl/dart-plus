@@ -16,13 +16,13 @@ def create_app(config_name):
     db.init_app(app)
 
     from .user import userPage as userBlueprint
-    app.register_blueprint(userBlueprint, url_prefix='/user')
+    app.register_blueprint(userBlueprint, url_prefix='/users')
 
     from .info import infoPage as infoBlueprint
     app.register_blueprint(infoBlueprint, url_prefix='/info')
 
     from .game import gamePage as gameBlueprint
-    app.register_blueprint(gameBlueprint, url_prefix='/game')
+    app.register_blueprint(gameBlueprint, url_prefix='/games')
 
     CORS(app)
 

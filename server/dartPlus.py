@@ -5,7 +5,7 @@ from threading import Thread
 from flask_socketio import SocketIO, send, emit
 from app import create_app, db
 # do not remove any import !!!!
-from app.models.user import User
+from app.models.user import User, user_game
 from app.models.game import Game
 from app.info import controller as infoController
 
@@ -59,11 +59,32 @@ def disconnect():
 if __name__ == "__main__":
     # app.run(host='0.0.0.0', port=8000, debug=True)
     db.create_all()
-    # Deleting games############
-    games = Game.query.all()  #
-    for game in games:         #
-        db.session.delete(game)#
-                               #
-    db.session.commit()        #
-    ############################
+    db.session.query(User).delete()
+    db.session.query(Game).delete()
+    db.session.commit()
+    artur = User(name='Artur', phone='123456789', password='huj', throws='3', nick='louda', wins='2137')
+    bartek = User(name='Bartek', phone='123456789', password='huj', throws='3',  nick='la', wins='69')
+    kuba = User(name='Kuba', phone='123456789', password='huj', throws='3',  nick='uda', wins='420')
+    db.session.add(artur)
+    db.session.add(bartek)
+    db.session.add(kuba)
+    db.session.commit()
+    print("added users")
+    game = Game(startPoints='301')
+    db.session.add(game)
+    db.session.commit()
+    print("added set")
+    artur.active_games.append(game)
+    bartek.active_games.append(game)
+    db.session.commit()
+    for player in game.players:
+        print(player)
+
+    # # Deleting games############
+    # games = Game.query.all()   #
+    # for game in games:         #
+    #     db.session.delete(game)#
+    #                            #
+    # db.session.commit()        #
+    # ############################
     socketio.run(app, debug=True, host='0.0.0.0', port=8000)
