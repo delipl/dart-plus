@@ -11,7 +11,7 @@ import { theme } from '../core/theme'
 import { phoneValidator } from '../helpers/phoneValidator'
 import { passwordValidator } from '../helpers/passwordValidator'
 import { encrypt_password } from '../helpers/encyption'
-
+import '../helpers/global.js'
 
 export default function LoginScreen({ navigation }) {
   const [phone, setPhone] = useState({ value: '', error: '' })
@@ -33,7 +33,7 @@ export default function LoginScreen({ navigation }) {
       body: JSON.stringify({ phone: phone.value, password: encrypt_password(password.value) })
     };
 
-    try {fetch('http://192.168.192.3:8000/user',requestOptions)
+    try {fetch(global.LOGIN, requestOptions)
     .then(response => response.json())
     .then(json => {
       if (json.message){
@@ -47,11 +47,6 @@ export default function LoginScreen({ navigation }) {
     }
   }
 
-  useEffect(() => {
-    onLoginPressed();
-  }, []);
-
-
   if (!isLoading) {
     if (data.status == 1) {
       console.log(data.message)
@@ -62,6 +57,7 @@ export default function LoginScreen({ navigation }) {
     if (data.status == 0) {
       console.log(data.message)
       setLoading(true)
+      global.PHONE = String(phone.value)
       navigation.reset({
         index: 0,
         routes: [{ name: 'Dashboard' }],

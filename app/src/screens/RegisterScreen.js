@@ -13,7 +13,7 @@ import { encrypt_password } from '../helpers/encyption'
 import { passwordValidator } from '../helpers/passwordValidator'
 import { nameValidator } from '../helpers/nameValidator'
 import { cos } from 'react-native-reanimated'
-
+import '../helpers/global.js'
 
 export default function RegisterScreen({ navigation }) {
   const [name, setName] = useState({ value: '', error: '' })
@@ -39,7 +39,7 @@ export default function RegisterScreen({ navigation }) {
       body: JSON.stringify({ name: name.value, phone: phone.value, password: encrypt_password(password.value) })
     };
 
-    try {fetch('http://192.168.192.3:8000/users',requestOptions)
+    try {fetch(global.REGISTER, requestOptions)
     .then(response => response.json())
     .then(json => {
       if (json.message){
