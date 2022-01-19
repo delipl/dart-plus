@@ -18,12 +18,14 @@ class User(db.Model):
     phone = db.Column(db.Integer)
     wins = db.Column(db.Integer)
     throws = db.Column(db.Integer)
+
     # relacje z setting
     active_games = db.relationship('Game', secondary=user_game, backref='players')
     # player data
     attempts = db.Column(db.Integer)
     throws_multiplier = db.Column(db.Integer)
     throws_value = db.Column(db.Integer)
+    points = db.Column(db.Integer)
 
     # @property
     # def password(self):
@@ -46,7 +48,10 @@ class User(db.Model):
             "nick": self.nick,
             "wins": self.wins,
             "throws": self.throws,
-            "games_id": games_ids
+            "games_id": games_ids,
+            "multiplier": self.throws_multiplier,
+            "value": self.throws_value,
+            "attempts": self.attempts
         }
         return json_post
 

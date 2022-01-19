@@ -46,8 +46,10 @@ def create_new_game():
     startPoints = request.json.get('startPoints')
     doubleIn = request.json.get('doubleIn')
     doubleOut = request.json.get('doubleOut')
+    throwingUserId = users[0].id
 
-    game = Game(gameStatus=1, startPoints=startPoints, doubleIn=doubleIn, doubleOut=doubleOut)
+    game = Game(gameStatus=1, startPoints=startPoints, doubleIn=doubleIn,
+                doubleOut=doubleOut, throwingUserId=throwingUserId)
 
     for user in users:
         game.players.append(user)
@@ -57,34 +59,35 @@ def create_new_game():
     return generate_http_response(True, "OK", 200)
 
 
-@gamePage.route("/games", methods=["PUT"])
+@gamePage.route("/update_game", methods=["PUT"])
 def update_game():
-    setting = Setting.query.get_or_404(request.json.get('id'))
-    db.session.delete(setting)
-    game = Game.querry.filter_by(settig_id=request.json.get('id'))
-    db.session.delete(game)
-    game.gameStatus = request.json.get('status')
-    game.numberOfThrow = request.json.get('numberOfThrow')
-    game.throwingUserId = request.json.get('throwingUserId')
-    game.round = request.json.get('round')
+    game_id = request.json.get('id')
+    status = request.json.get('status')
+    throwingPlayerId = request.json.get('throwingPlayerId')
+    print(throwingPlayerId)
+    multiplier = request.json.get('multiplier')
+    print(multiplier)
+    value = request.json.get('value')
+    print(value)
+    round = request.json.get('round')
+    players = request.json.get('players')
+    players_id = [player['id'] for player in players]
+    players_attempts = [player['attempts'] for player in players]
+    players_points = [player['points'] for player in players]
 
-    # TODO szukanie listy playerów zrobić w osobnj metodzie
-    players_dict = request.json.get('players')
-    usersId = players_dict['id']
-    playersId = [User.query.get_or_404(userId).player_Id for userId in usersId]
-    players = [Player.querry.get_or_404(playerId) for playerId in playersId]
+    users = [User.query.get_or_404(player_id) for player_id in players_id]
+    print(users)
+    for i in range(len(users)):
+        users[i-1].attempts = players_attempts[i-1]
+        users[i-1].points = players_points[i-1]
 
-    for player in players:
-        if player.user.id == game.throwingUserId:
-            db.session.delete(player)
-            player.throws_multiplier = request.json.get('throws_multiplier')
-            player.throws_value = request.json.get('throws_value')
-            db.session.add(player)
+    users[throwingPlayerId-1].throws_multiplier = multiplier
+    users[throwingPlayerId-1].throws_value = value
 
-    # TODO może trzeba baedzie uaktualnić playerów/useróœ w relacjach
-
-    db.session.add(setting)
-    db.session.add(game)
+    game = Game.query.get_or_404(game_id)
+    game.gameStatus = status
+    game.throwingUserId = throwingPlayerId
+    game.round = round
 
     db.session.commit()
     return generate_http_response(True, "Good PUT", 200)
