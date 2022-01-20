@@ -5,6 +5,7 @@ from app import db
 from . import gamePage
 from app.models.user import User
 from app.models.game import Game
+from app.models.throw import Throw
 from config import generate_http_response, config
 
 
@@ -64,11 +65,8 @@ def update_game():
     game_id = request.json.get('id')
     status = request.json.get('status')
     throwingPlayerId = request.json.get('throwingPlayerId')
-    print(throwingPlayerId)
     multiplier = request.json.get('multiplier')
-    print(multiplier)
     value = request.json.get('value')
-    print(value)
     round = request.json.get('round')
     players = request.json.get('players')
     players_id = [player['id'] for player in players]
@@ -76,13 +74,14 @@ def update_game():
     players_points = [player['points'] for player in players]
 
     users = [User.query.get_or_404(player_id) for player_id in players_id]
-    print(users)
     for i in range(len(users)):
         users[i-1].attempts = players_attempts[i-1]
         users[i-1].points = players_points[i-1]
 
     users[throwingPlayerId-1].throws_multiplier = multiplier
     users[throwingPlayerId-1].throws_value = value
+    throw = Throw(value=value, multiplier=multiplier, player=users[throwingPlayerId-1])
+    db.session.add(throw)
 
     game = Game.query.get_or_404(game_id)
     game.gameStatus = status

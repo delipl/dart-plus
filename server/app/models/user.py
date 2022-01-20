@@ -2,6 +2,9 @@ import datetime
 
 from app import db
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask_login import UserMixin, AnonymousUserMixin
+from .. import login_manager
+
 
 user_game = db.Table('user_game',
                      db.Column('user_id', db.Integer, db.ForeignKey('users.id')),
@@ -15,22 +18,24 @@ class User(db.Model):
     password = db.Column(db.String(128))
     name = db.Column(db.String(64), unique=True, index=True)
     nick = db.Column(db.String(64), unique=True, index=True)
-    phone = db.Column(db.Integer)
+    phone = db.Column(db.Integer, unique=True)
     wins = db.Column(db.Integer)
-    throws = db.Column(db.Integer)
+
+    # member_since = db.Column(db.DateTime(), default=datetime.datetime.utcnow)
+
 
     # relacje z setting
     active_games = db.relationship('Game', secondary=user_game, backref='players')
+    # relacja z throw
+    throws = db.relationship('Throw', backref='player', lazy='dynamic')
     # player data
     attempts = db.Column(db.Integer)
-    throws_multiplier = db.Column(db.Integer)
-    throws_value = db.Column(db.Integer)
     points = db.Column(db.Integer)
 
     # @property
     # def password(self):
     #     raise AttributeError('Cannot read password attribute')
-    #
+
     # @password.setter
     # def password(self, password):
     #     self.password_hash = generate_password_hash(password)
@@ -47,21 +52,8 @@ class User(db.Model):
             "password": self.password,
             "nick": self.nick,
             "wins": self.wins,
-            "throws": self.throws,
+            "throws": [throw.getScore() for throw in self.throws],
             "games_id": games_ids,
-            "multiplier": self.throws_multiplier,
-            "value": self.throws_value,
-            "attempts": self.attempts
-        }
-        return json_post
-
-    def player_to_json(self):
-        json_post = {
-            "id": self.id,
-            "nick": self.nick,
-            "points": self.points,
             "attempts": self.attempts,
-            #TODO tu może być błąd, nie wiem jak wygląda throw w jsonie
-            "throws": [self.throws_multiplier, self.throws_value]
         }
         return json_post

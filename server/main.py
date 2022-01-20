@@ -7,6 +7,7 @@ from app import create_app, db
 # do not remove any import !!!!
 from app.models.user import User, user_game
 from app.models.game import Game
+from app.models.throw import Throw
 from app.info import controller as infoController
 
 app = create_app(os.getenv('FLASK_CONFIG') or 'default')
@@ -62,9 +63,9 @@ if __name__ == "__main__":
     db.session.query(User).delete()
     db.session.query(Game).delete()
     db.session.commit()
-    artur = User(name='Artur', phone='123456789', password='huj', throws='3', nick='louda', wins='2137')
-    bartek = User(name='Bartek', phone='123456789', password='huj', throws='3',  nick='la', wins='69')
-    kuba = User(name='Kuba', phone='123456789', password='huj', throws='3',  nick='uda', wins='420')
+    artur = User(name='Artur', phone='123456780', password='huj', nick='louda', wins='2137')
+    bartek = User(name='Bartek', phone='123456789', password='huj', nick='la', wins='69')
+    kuba = User(name='Kuba', phone='123456788', password='huj', nick='uda', wins='420')
     db.session.add(artur)
     db.session.add(bartek)
     db.session.add(kuba)

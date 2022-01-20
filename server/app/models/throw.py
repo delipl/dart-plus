@@ -1,18 +1,14 @@
 from datetime import datetime
+from app import db
 
 
-class Throw:
-    def __init__(self, multiplier, value):
-        self.multiplier = multiplier
-        self.value = value
-        self.date = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+class Throw(db.Model):
+    __tablename__ = 'throws'
+    id = db.Column(db.Integer, primary_key=True)
+    multiplier = db.Column(db.Integer)
+    value = db.Column(db.Integer)
+    player_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
     def getScore(self):
         return self.multiplier * self.value
 
-    def get_dictionary(self):
-        return {
-            "multiplier": self.multiplier,
-            "points": self.value,
-            "date": self.date
-        }
