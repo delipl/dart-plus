@@ -1,7 +1,6 @@
 import datetime
 from config import get_dictionary
 from app import db
-from app.models.player import Player
 
 
 class Game(db.Model):
@@ -31,19 +30,3 @@ class Game(db.Model):
             "users_id": players_id
         }
         return json_post
-
-# TODO value i multiplier muszą byc dodawane, jak nie tu, to w playerze w funkcji typu update_from_json
-    def update_from_json(self, json_post):
-        self.gameStatus = json_post.get('status')
-        self.numberOfThrow = json_post.get('numberOfThrow')
-        self.throwingUserId = json_post.get('throwingUserId')
-        self.round = json_post.get('round')
-
-
-        # multiplier = game_details["multiplier"]
-        # value = game_details["value"]
-        # playerList = game_details["playerList"]
-        # TODO dodaj relacyjne argumenty [players] konstruktora game
-        #setting_id = json_post.get('setting_id')
-
-        return self

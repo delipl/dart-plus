@@ -70,16 +70,13 @@ if __name__ == "__main__":
     db.session.add(bartek)
     db.session.add(kuba)
     db.session.commit()
-    print("added users")
     game = Game(startPoints='301')
     db.session.add(game)
     db.session.commit()
-    print("added set")
+
     artur.active_games.append(game)
     bartek.active_games.append(game)
     db.session.commit()
-    for player in game.players:
-        print(player)
 
     # # Deleting games############
     # games = Game.query.all()   #

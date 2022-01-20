@@ -11,7 +11,6 @@ from app.models.user import User
 @userPage.route('/get_users', methods=["GET"])
 def get_users():
     users = User.query.all()
-    print("huj")
     return jsonify({'users': [user.to_json() for user in users]})
 
 
