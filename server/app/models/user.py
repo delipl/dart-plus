@@ -23,11 +23,12 @@ class User(db.Model):
 
     # member_since = db.Column(db.DateTime(), default=datetime.datetime.utcnow)
 
-
     # relacje z setting
     active_games = db.relationship('Game', secondary=user_game, backref='players')
     # relacja z throw
     throws = db.relationship('Throw', backref='player', lazy='dynamic')
+    # relacja z dartboard
+    board_id = db.Column(db.Integer, db.ForeignKey('dartBoards.id'))
     # player data
     attempts = db.Column(db.Integer)
     points = db.Column(db.Integer)

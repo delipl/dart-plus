@@ -7,6 +7,7 @@ from app import create_app, db
 # do not remove any import !!!!
 from app.models.user import User, user_game
 from app.models.game import Game
+from app.models.dart_board import DartBoard
 from app.models.throw import Throw
 from app.info import controller as infoController
 
@@ -62,10 +63,13 @@ if __name__ == "__main__":
     db.create_all()
     db.session.query(User).delete()
     db.session.query(Game).delete()
+    db.session.query(DartBoard).delete()
     db.session.commit()
-    artur = User(name='Artur', phone='123456780', password='huj', nick='louda', wins='2137')
-    bartek = User(name='Bartek', phone='123456789', password='huj', nick='la', wins='69')
-    kuba = User(name='Kuba', phone='123456788', password='huj', nick='uda', wins='420')
+    dartBoard = DartBoard()
+    db.session.add(dartBoard)
+    artur = User(name='Artur', phone='123456780', password='huj', nick='louda', wins='2137', board=dartBoard)
+    bartek = User(name='Bartek', phone='123456789', password='huj', nick='la', wins='69', board=dartBoard)
+    kuba = User(name='Kuba', phone='123456788', password='huj', nick='uda', wins='420', board=dartBoard)
     db.session.add(artur)
     db.session.add(bartek)
     db.session.add(kuba)
@@ -77,6 +81,8 @@ if __name__ == "__main__":
     artur.active_games.append(game)
     bartek.active_games.append(game)
     db.session.commit()
+
+    # print(bartek.dart_board.id)
 
     # # Deleting games############
     # games = Game.query.all()   #
