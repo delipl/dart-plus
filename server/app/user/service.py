@@ -8,7 +8,7 @@ from app.models.user import User
 
 
 # TODO zmien nazwe na auth przepisac od zera z haslem mailem i wszystkim picus glancus
-@userPage.route('/get_users', methods=["GET"])
+@userPage.route('/', methods=["GET"])
 def get_users():
     users = User.query.all()
     return jsonify({'users': [user.to_json() for user in users]})
@@ -45,7 +45,7 @@ def login():
     return generate_http_response(0, "Good", current_app.config['OK'])
 
 
-@userPage.route("/user/<id>", methods=["GET"])
+@userPage.route("/<id>", methods=["GET"])
 def get_user(id):
     return jsonify(controller.get_user(id).get_dictionary())
 

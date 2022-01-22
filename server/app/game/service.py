@@ -9,13 +9,13 @@ from app.models.throw import Throw
 from config import generate_http_response, config
 
 
-@gamePage.route('/get_games', methods=["GET"])
+@gamePage.route('/', methods=["GET"])
 def get_games():
     games = Game.query.all()
     return jsonify({'games': [game.to_json() for game in games]})
 
 
-@gamePage.route('/delete_games', methods=["DELETE"])
+@gamePage.route('/', methods=["DELETE"])
 def delete_games():
     games = Game.query.all()
     for game in games:
@@ -25,21 +25,21 @@ def delete_games():
     return generate_http_response(True, "DELETE GAMES", 200)
 
 
-@gamePage.route("/delete_game/<id>", methods=["DELETE"])
+@gamePage.route("/<id>", methods=["DELETE"])
 def delete_game(id):
     game = Game.query.get_or_404(id)
     db.session.delete(game)
     return generate_http_response(True, "DELETE GAME", 200)
 
 
-@gamePage.route("/get_game/<id>", methods=["GET"])
+@gamePage.route("/<id>", methods=["GET"])
 def take_game(id):
     game = Game.query.get_or_404(id)
     return jsonify(game.to_json())
 
 
 # Creating game with players from settings
-@gamePage.route("/create_game", methods=["POST"])
+@gamePage.route("/", methods=["GET", "POST"])
 def create_new_game():
     usersId = request.json.get('playersId')
     users = [User.query.get_or_404(user_id) for user_id in usersId]
@@ -60,7 +60,7 @@ def create_new_game():
     return generate_http_response(True, "OK", 200)
 
 
-@gamePage.route("/update_game", methods=["PUT"])
+@gamePage.route("/", methods=["GET", "PUT"])
 def update_game():
     game_id = request.json.get('id')
     status = request.json.get('status')

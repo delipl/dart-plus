@@ -21,7 +21,7 @@ class Game(db.Model):
         json_post = {
             "id": self.id,
             "gameStatus": self.gameStatus,
-            "startTime": self.startTime,
+            "startTime": self.startTime.strftime("%m/%d/%Y, %H:%M:%S"),
             "throwingUserId": self.throwingUserId,
             "round": self.round,
             "startPoints": self.startPoints,
