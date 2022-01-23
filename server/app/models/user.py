@@ -1,11 +1,8 @@
-import datetime
-
 from flask import current_app
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from app import db
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin, AnonymousUserMixin
-from .. import login_manager
-
 
 user_game = db.Table('user_game',
                      db.Column('user_id', db.Integer, db.ForeignKey('users.id')),
@@ -44,6 +41,19 @@ class User(db.Model):
 
     def verify_password(self, password):
         return check_password_hash(self.password_hash, password)
+
+    def generate_confirmation_token(self, expiration=3600):
+        s = Serializer(current_app.config['SECRET_KEY'], expiration)
+        return s.dumps({'confirm': self.id}).decode('utf-8')
+
+    def verify_auth_token(self, token):
+        s = Serializer(current_app.config['SECRET_KEY'])
+        try:
+            data = s.loads(token.encode('utf-8'))
+        except:
+            return False
+        db.session.add(self)
+        return True
 
     def to_json(self):
         games_ids = [game.id for game in self.active_games]

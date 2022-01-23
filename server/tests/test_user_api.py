@@ -7,7 +7,7 @@ from app.models.game import Game
 from app.models.dart_board import DartBoard
 
 
-class GameApiTestCase(unittest.TestCase):
+class UserApiTestCase(unittest.TestCase):
     def setUp(self):
         self.app = create_app('testing')
         self.app_context = self.app.app_context()
@@ -38,7 +38,7 @@ class GameApiTestCase(unittest.TestCase):
     def test_get_users(self):
         response = self.client.get('/users/')
         self.assertEqual(response.status_code, 200)
-        print(response.get_data(as_text=True))
+
         # self.assertEqual(response.get_data(as_text=True),
         #                 '{\"users\":[{\"attempts\":null,\"games_id\":[1],\"id\":1,\"name\":\"Artur\",\"nick\":\"louda\",\"password\":\"pbkdf2:sha256:150000$lfpJBpY9$baa59aa09ce609e2c7bfc4042ca17118581c698946a0428734fe298c05af6f8c\",\"phone\":123456780,\"throws\":[],\"wins\":2137},{\"attempts\":null,\"games_id\":[1],\"id\":2,\"name\":\"Bartek\",\"nick\":\"la\",\"password\":\"pbkdf2:sha256:150000$92nvX7tq$21d06a0f58eb2fa1d0317a348f8d8e41e4fef50b6525e62b5f39eda7b376c47a\",\"phone\":123456789,\"throws\":[],\"wins\":69},{\"attempts\":null,\"games_id\":[],\"id\":3,\"name\":\"Kuba\",\"nick\":\"uda\",\"password\":\"pbkdf2:sha256:150000$VbsIm207$018ff98917644f1b723a23e0db1552fbbc297464cbf3e01907e0987fdad293eb\",\"phone\":123456788,\"throws\":[],\"wins\":420}]}')
 

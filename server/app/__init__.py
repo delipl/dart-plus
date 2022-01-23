@@ -7,7 +7,7 @@ from config import config
 
 
 db = SQLAlchemy()
-login_manager = LoginManager()
+
 
 def create_app(config_name):
     app = Flask(__name__)
@@ -23,6 +23,9 @@ def create_app(config_name):
 
     from .game import gamePage as gameBlueprint
     app.register_blueprint(gameBlueprint, url_prefix='/games')
+
+    from .mobile_app_api import mobileApp as mobileAppBlueprint
+    app.register_blueprint(mobileAppBlueprint, url_prefix='/mobileApp')
 
     CORS(app)
 
