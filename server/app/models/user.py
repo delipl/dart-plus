@@ -3,6 +3,13 @@ from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from app import db
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin, AnonymousUserMixin
+from .. import login_manager
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
+
 
 user_game = db.Table('user_game',
                      db.Column('user_id', db.Integer, db.ForeignKey('users.id')),
@@ -10,7 +17,7 @@ user_game = db.Table('user_game',
                      )
 
 
-class User(db.Model):
+class User(UserMixin, db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
     password_hash = db.Column(db.String(128))
@@ -69,3 +76,10 @@ class User(db.Model):
             "attempts": self.attempts,
         }
         return json_post
+
+
+class AnonymousUser(AnonymousUserMixin):
+    pass
+
+
+login_manager.anonymous_user = AnonymousUser

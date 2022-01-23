@@ -35,8 +35,7 @@ def auth_error():
 @mobileApp.before_request
 @auth.login_required
 def before_request():
-    if not g.current_user.is_anonymous and \
-            not g.current_user.confirmed:
+    if not g.current_user.is_anonymous:
         return forbidden('Account has not been authorize')
 
 
@@ -46,3 +45,10 @@ def get_token():
         return unauthorized('Incorrect login data')
     return jsonify({'token': g.current_user.generate_auth_token(expiration=3600),
                     'expiration': 3600})
+
+
+@mobileApp.route('/', methods=["GET"])
+@auth.login_required
+def get_games():
+    games = Game.query.all()
+    return jsonify({'games': [game.to_json() for game in games]})
