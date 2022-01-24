@@ -15,6 +15,8 @@ class Game(db.Model):
     doubleIn = db.Column(db.Boolean, default=False)
     doubleOut = db.Column(db.Boolean, default=False)
     # players is in user_game relationship
+    # relationship with dartBoard
+    board_id = db.Column(db.Integer, db.ForeignKey('dartBoards.id'))
 
     def to_json(self):
         players_id = [player.id for player in self.players]

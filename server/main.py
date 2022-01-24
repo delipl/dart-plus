@@ -75,6 +75,7 @@ if __name__ == "__main__":
     db.session.add(kuba)
     db.session.commit()
     game = Game(startPoints='301')
+    game.board = dartBoard
     db.session.add(game)
     db.session.commit()
 

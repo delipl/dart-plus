@@ -25,6 +25,7 @@ class GameApiTestCase(unittest.TestCase):
         db.session.add(bartek)
         db.session.add(kuba)
         game = Game(startPoints='301')
+        game.board = dartBoard
         db.session.add(game)
         artur.active_games.append(game)
         bartek.active_games.append(game)

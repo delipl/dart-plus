@@ -1,11 +1,7 @@
-import datetime
-
-import jwt
 from flask import render_template, current_app, url_for, request, g, jsonify
 
 import app
 from app import db
-import os
 from . import mobileApp
 from ..models.user import User
 from flask_login import login_user, logout_user, login_required, current_user
@@ -17,10 +13,7 @@ def login():
     user = User.query.filter_by(phone=request.json.get('phone')).first()
     if user is not None and user.verify_password(request.json.get('password')):
         login_user(user)
-        token = jwt.encode({'user': user.name, 'exp': datetime.datetime.utcnow() +
-                           datetime.timedelta(minutes=30)}, current_app.config['SECRET_KEY'])
-        return jsonify({'token': token})
-
+        return generate_http_response(True, "OK", 200)
     return generate_http_response(False, "Unsuccesful login", 401)
 
 
