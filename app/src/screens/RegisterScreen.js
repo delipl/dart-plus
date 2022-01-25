@@ -55,13 +55,13 @@ export default function RegisterScreen({ navigation }) {
   };
 
   if (!isLoading) {
-    if (data.status == 1) {
+    if (data.status == 0) {
       console.log(data.message)
       setName({ ...name, error: data.message })
       setData(1)
       setLoading(true)
     }
-    if (data.status == 0) {
+    if (data.status == 1) {
       console.log(data.message)
       setLoading(true)
       navigation.reset({

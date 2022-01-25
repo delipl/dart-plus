@@ -9,6 +9,7 @@ import TextInput from '../components/TextInput'
 import BackButton from '../components/BackButton'
 import { theme } from '../core/theme'
 import { phoneValidator } from '../helpers/phoneValidator'
+import { getBoardId } from '../helpers/getBoardId'
 import { passwordValidator } from '../helpers/passwordValidator'
 import { encrypt_password } from '../helpers/encyption'
 import '../helpers/global.js'
@@ -18,6 +19,8 @@ export default function LoginScreen({ navigation }) {
   const [password, setPassword] = useState({ value: '', error: '' })
   const [isLoading, setLoading] = useState(true);
   const [data, setData] = useState([]);
+
+  global.BOARDID = getBoardId(window.location.href)
 
   const onLoginPressed = () => {
     const phoneError = phoneValidator(phone.value)
@@ -30,7 +33,7 @@ export default function LoginScreen({ navigation }) {
     const requestOptions = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ phone: phone.value, password: encrypt_password(password.value) })
+      body: JSON.stringify({ phone: phone.value, password: password.value })
     };
 
     try {fetch(global.LOGIN, requestOptions)
@@ -48,20 +51,27 @@ export default function LoginScreen({ navigation }) {
   }
 
   if (!isLoading) {
-    if (data.status == 1) {
+    if (data.status == 0) {
       console.log(data.message)
       setPhone({ ...phone, error: data.message })
       setData(1)
       setLoading(true)
     }
-    if (data.status == 0) {
+    if (data.status == 1) {
       console.log(data.message)
       setLoading(true)
       global.PHONE = String(phone.value)
-      navigation.reset({
-        index: 0,
-        routes: [{ name: 'Dashboard' }],
-      })
+      if (global.BOARDID != 0){
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'Game' }],
+        })
+      } else {
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'Dashboard' }],
+        })
+      }
     }
   }
 

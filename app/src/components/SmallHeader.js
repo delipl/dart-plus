@@ -9,9 +9,10 @@ export default function Header(props) {
 
 const styles = StyleSheet.create({
   header: {
-    fontSize: 14,
+    fontSize: 12,
     color: theme.colors.primary,
     fontWeight: 'bold',
+    textAlign: 'right',
     marginBottom: 6,
     marginTop: 6,
   },

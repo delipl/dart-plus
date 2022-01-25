@@ -1,84 +1,90 @@
-import React, { useRef, useEffect, useState} from 'react';
-import { AppState, ActivityIndicator, FlatList, Text, View } from 'react-native';
+import React, { useState, useEffect } from 'react'
+import { TouchableOpacity, StyleSheet, View } from 'react-native'
+import { Text } from 'react-native-paper'
 import Background from '../components/Background'
 import Logo from '../components/Logo'
-import DartLogo from '../components/DartLogo'
 import Header from '../components/Header'
-import BHeader from '../components/BigHeader'
-import Paragraph from '../components/Paragraph'
-import BParagraph from '../components/BigParagraph'
-import SParagraph from '../components/SmallParagraph'
-import SHeader from '../components/SmallHeader'
-import MParagraph from '../components/MidParagraph'
-import MRedParagraph from '../components/MidRedParagraph'
 import Button from '../components/Button'
-import { io } from "socket.io-client";
-import '../helpers/global.js'
+import TextInput from '../components/TextInput'
+import BackButton from '../components/BackButton'
 import { theme } from '../core/theme'
+import { phoneValidator } from '../helpers/phoneValidator'
+import { getBoardId } from '../helpers/getBoardId'
+import { passwordValidator } from '../helpers/passwordValidator'
+import { encrypt_password } from '../helpers/encyption'
+import '../helpers/global.js'
+import BParagraph from '../components/BigParagraph'
 
-function Images(props) {
-  const k = props.attempts
-  let render = []
-  for (let i = 0; i < k; i++) {
-    render.push(<DartLogo></DartLogo>)
+
+export default function Dashboard({ navigation }) {
+  const [status, setStatus] = useState({ value: '', error: '' })
+  const [isLoading, setLoading] = useState(true);
+  const [data, setData] = useState([]);
+
+  const onGamePressed = () => {
+    // Are you in game ? 
+    const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ phone: global.PHONE})
+    };
+
+    try {fetch(global.GAME_CHECK, requestOptions)
+      .then(response => response.json())
+      .then(json => {
+        if (json.message){
+          setData(json)
+        }
+      });
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
   }
-  return render
-}
 
-
-
-export default function Dashboard({ navigation }){
-  const [data, setData] = useState([])
-  
-  useEffect(() => {
-    const socket = io(global.IP);
-
-    socket.on(global.PHONE, (data) => {
-      setData(data)
-    })
-    socket.emit("test", global.PHONE)
-  }, []);
-
-  if (data.length === 0) return <div>Loading...</div>
+  if (!isLoading) {
+    if (data.status == 1) {
+      console.log(data.message)
+      setPhone({ ...phone, error: data.message })
+      setData(1)
+      setLoading(true)
+    }
+    if (data.status == 0) {
+      console.log(data.message)
+      setLoading(true)
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Dashboard' }],
+      })
+    }
+  }
 
   return (
-    <View
-      style={{
-        flexDirection: "row",
-        paddingTop: 115
-      }}>
-      <View style={{flex: 4, alignSelf: 'center',
-    alignItems: 'center',
-    justifyContent: 'center'}}> 
-        
-        <BHeader>
-          {data.points}
-        </BHeader>
-        <BParagraph>
-          {data.nick}
-        </BParagraph>
-        <Header>
-        <Images attempts={data.attempts}/>
-        </Header>
-      </View>
-
-      <View style={{flex: 1, alignSelf: 'center',
-    alignItems: 'center',
-    justifyContent: 'center',}}>
-      <Paragraph>
-        <FlatList
-            data={data.players}
-            keyExtractor={({ id }, index) => id}
-            renderItem={({ item }) => (
-              <View style={{flexDirection: "row",flexWrap: "wrap", marginRight: 10}}>
-                <SParagraph>{item.nick} </SParagraph>
-                <SHeader>{item.points}</SHeader>
-              </View>
-            )}
-          />
-        </Paragraph>
-      </View>
-    </View>
-    
-  );
+    <Background>
+      <Header>Dart-Plus.APP</Header>
+      <Button mode="contained"onPress={() => navigation.navigate('LoginScreen')}>Profile</Button>      
+      <Button mode="contained"onPress={onGamePressed}>Game</Button>      
+      <Button mode="outlined"onPress={() => navigation.navigate('RegisterScreen')}>Logout</Button>
+    </Background>
+  )
 }
+  const styles = StyleSheet.create({
+    forgotPassword: {
+      width: '100%',
+      alignItems: 'flex-end',
+      marginBottom: 24,
+    },
+    row: {
+      flexDirection: 'row',
+      marginTop: 4,
+    },
+    forgot: {
+      fontSize: 13,
+      color: theme.colors.secondary,
+    },
+    link: {
+      fontWeight: 'bold',
+      color: theme.colors.primary,
+    },
+})
