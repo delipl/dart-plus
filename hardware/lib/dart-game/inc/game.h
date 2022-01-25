@@ -42,11 +42,11 @@ class Game {
     Game(const Settings &set);
     ~Game(){};
     StaticJsonDocument<SIZE_GAME_JSON> Document() const;
-    GameStatus Loop();
+    void loop();
     bool Deserialize(const StaticJsonDocument<SIZE_GAME_JSON> &doc);
 
-    virtual Throw ReadDartboard() = 0;
-    virtual void SendDartboard() = 0;
+    virtual Throw ReadDartboard() const = 0;
+    virtual void SendDartboard() const = 0;
     virtual void RequestGameLoop() = 0;
 };
 

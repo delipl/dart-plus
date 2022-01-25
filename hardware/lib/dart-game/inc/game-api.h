@@ -8,15 +8,17 @@
 #include "game.h"
 #include "server-client.h"
 
+extern std::shared_ptr<ServerClient> client;
 class GameApi : public Game {
    public:
+    
     GameApi(const Settings &set) : Game(set) {
         Serial.println("Stworzono gre");
     };
     ~GameApi(){};
-    virtual Throw ReadDartboard() const;
-    virtual void SendDartboard() const;
-    virtual void RequestGameLoop();
+    Throw ReadDartboard() const;
+    void SendDartboard() const;
+    void RequestGameLoop();
 };
 
 #endif

@@ -19,8 +19,8 @@ struct Settings{
         std::vector<std::shared_ptr<Player>> players;
         Settings(const uint16_t &id, const uint16_t &startPoints, const bool &doubleIn, const bool &doubleOut, const std::initializer_list<std::shared_ptr<Player>> &list);
 
-        // StaticJsonDocument<SIZE_SETTINGS_JSON> Document();
-        void Deserialize(StaticJsonDocument<SIZE_SETTINGS_JSON> &doc);
+        StaticJsonDocument<SIZE_SETTINGS_JSON> Document();
+        Settings(const StaticJsonDocument<SIZE_SETTINGS_JSON> &doc);
 };
 
 #endif

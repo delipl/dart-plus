@@ -41,5 +41,5 @@ const size_t SIZE_GAME_JSON PROGMEM =   JSON_OBJECT_SIZE(7) +  JSON_ARRAY_SIZE(M
 
 
     //todo: compilation for every this_board_id
-    constexpr uint8_t this_board_id = 0x0001;
+    constexpr uint16_t this_board_id = 0x0001;
 #endif

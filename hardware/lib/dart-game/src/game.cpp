@@ -52,8 +52,7 @@ bool Game::Deserialize(const StaticJsonDocument<SIZE_GAME_JSON> &doc) {
     return true;
 }
 
-GameStatus Game::Loop() {
-    while (status != GameStatus_Finished) {
+void Game::loop() {
         Throw hit(0, 0);
         for (auto &player : settings.players) {
             if(player->board_id != this_board_id){
@@ -94,6 +93,4 @@ GameStatus Game::Loop() {
             }
         }
         ++round;
-    }
-    return status;
 }

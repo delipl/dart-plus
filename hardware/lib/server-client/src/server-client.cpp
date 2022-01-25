@@ -15,12 +15,14 @@ stassid{stassid}, stapsk{stapsk}, server_ip{server_ip}, server_port{server_port}
     }
 
     String ip = WiFi.localIP().toString();
-    USE_SERIAL.printf("[SETUP] WiFi Connected %s\n", ip.c_str());
+    USE_SERIAL.printf("[SETUP] WiFi Connected %s\n", ip.c_str());;
+    USE_SERIAL.printf("[WEBSOCKETIO] Host ip: %s", server_ip.c_str());
+
     socketIO.begin(server_ip, server_port, "/socket.io/?EIO=4");
     socketIO.onEvent(event_callback);
 }
 
-StaticJsonDocument<SIZE_SETTINGS_JSON> ServerClient::RequestSettings(const uint8_t &board_id) {
+String ServerClient::RequestSettings(const uint8_t &board_id) {
     if ((WiFi.status() == WL_CONNECTED)) {
         WiFiClient client;
         HTTPClient http;
@@ -43,13 +45,13 @@ StaticJsonDocument<SIZE_SETTINGS_JSON> ServerClient::RequestSettings(const uint8
                 USE_SERIAL.println("received payload:\n<<");
                 USE_SERIAL.println(payload);
                 USE_SERIAL.println(">>");
-                return StaticJsonDocument<SIZE_SETTINGS_JSON>();
+                return payload;
             }
         } else {
             USE_SERIAL.printf("[HTTP] POST... failed, error: %s\n", http.errorToString(httpCode).c_str());
         }
     }
-    return StaticJsonDocument<SIZE_SETTINGS_JSON>();
+    return String();
 }
 
 bool ServerClient::JoinGame(const uint8_t &game_id){
@@ -68,6 +70,18 @@ bool ServerClient::JoinGame(const uint8_t &game_id){
 }
 
 RequestError ServerClient::SendGame(StaticJsonDocument<SIZE_GAME_JSON> doc) {
+    JsonArray array = doc.to<JsonArray>();
+
+    // add evnet name
+    // Hint: socket.on('event_name', ....
+    array.add("game_loop");
+
+    // add payload (parameters) for the event
+    String doc_raw;
+    serializeJson(doc, doc_raw);
+    String out = "{ \"game_loop\" :[" + doc_raw +"]}";
+    // JSON to String (serializion)
+    // socketIO.sendEVENT(out);
     return RequestError_OK;
 }
 
@@ -82,11 +96,11 @@ void ServerClient::event_callback(socketIOmessageType_t type, uint8_t *payload, 
             USE_SERIAL.printf("[IOc] Connected to url: %s\n", payload);
 
             // join default namespace (no auto join in Socket.IO V3)
-            socketIO.send(sIOtype_CONNECT, "/");
+            socketIO.send(sIOtype_CONNECT, "/esp");
             break;
         case sIOtype_EVENT:
             USE_SERIAL.printf("[IOc] get event: %s\n", payload);
-
+            //todo: if gevent is "game_loop"
             break;
         case sIOtype_ACK:
             USE_SERIAL.printf("[IOc] get ack: %u\n", length);
@@ -131,9 +145,9 @@ String make_event(String event, std::vector<std::pair<String, second>> list) {
 
 void ServerClient::loop(){
     socketIO.loop();
-    if(not connection_initialied and status == sIOtype_CONNECT){
-        connection_initialied = true;
-        String out = make_event<int>("begin", {{"game_id", 1}});
-        socketIO.sendEVENT(out);
-    }
+    // if(not connection_initialied and status == sIOtype_CONNECT){
+    //     connection_initialied = true;
+    //     String out = make_event<int>("begin", {{"game_id", game_id}});
+    //     // socketIO.sendEVENT(out);
+    // }
 }

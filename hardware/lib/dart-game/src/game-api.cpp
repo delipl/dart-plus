@@ -5,8 +5,9 @@ Throw GameApi::ReadDartboard() const{
     uint8_t multiplier = 0;
     uint8_t value = 0;
     while (multiplier == 0 && value == 0){
+        client->loop();
         multiplier = (Serial.readStringUntil('\t')).toInt();
-	    value = (Serial.readStringUntil('\n')).toInt();
+        value = (Serial.readStringUntil('\n')).toInt();
     }
 
     Serial.println(multiplier);
@@ -15,9 +16,9 @@ Throw GameApi::ReadDartboard() const{
     // const uint8_t value = 3;
 	return Throw(multiplier,value);
 }
-extern ServerClient *serverClient; 
+
 void GameApi::SendDartboard() const{
-	serverClient->SendGame(this->Document());
+	client->SendGame(this->Document());
 }
 
 void GameApi::RequestGameLoop(){

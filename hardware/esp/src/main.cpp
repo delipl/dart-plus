@@ -13,15 +13,14 @@
 #include <Hash.h>
 #include <SocketIOclient.h>
 #include <WebSocketsClient.h>
+#include "game-api.h"
 #include "server-client.h"
-#include "settings.h"
-
 void error_handler(const size_t &error_nr) {
 }
 
-
-
 std::shared_ptr<ServerClient> client;
+std::shared_ptr<GameApi> game;
+
 
 void setup() {
     // USE_SERIAL.begin(921600);
@@ -33,26 +32,43 @@ void setup() {
     USE_SERIAL.println();
     USE_SERIAL.println();
     USE_SERIAL.println();
-    
+
     for (uint8_t t = 4; t > 0; t--) {
         USE_SERIAL.printf("[SETUP] BOOT WAIT %d...\n", t);
         USE_SERIAL.flush();
         delay(1000);
     }
 
-    client = std::make_shared<ServerClient>("multimedia_plastek", "123454321", "192.168.0.7", 8000);
     delay(1000);
     // Settings set;
     // set.
-    client->RequestSettings(1);
-    USE_SERIAL.println();
-    
-    // if (not client->JoinGame(1)) {
-    //     USE_SERIAL.println("[ERROR] Could not join to the room");
-    //     error_handler(1);
-    // }
 }
-
+bool first = true;
 void loop() {
-    client->loop();
+    if (first) {
+        first = false;
+        client = std::make_shared<ServerClient>("multimedia_plastek", "123454321", "192.168.0.7", 8000);
+        USE_SERIAL.print("[HTTP] Requesting setting...");
+        auto raw_settings = client->RequestSettings(this_board_id);
+        while (raw_settings == String()) {
+            USE_SERIAL.print(".");
+            raw_settings = client->RequestSettings(this_board_id);
+            delay(500);
+        }
+        StaticJsonDocument<SIZE_SETTINGS_JSON> doc;
+        deserializeJson(doc, raw_settings);
+        Settings set(doc);
+
+        USE_SERIAL.println("==============================================");
+
+        game = std::make_shared<GameApi>(set);
+        client->game_id = game->id;
+        USE_SERIAL.println();
+        USE_SERIAL.println("[GAME] Game Initialized");
+    }
+    while (game->status != GameStatus_Finished) {
+        client->loop();
+        // game->loop();
+    }
+    // game->loop();
 }
