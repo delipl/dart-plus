@@ -10,7 +10,7 @@
 #define MATRIX_10x7 true
 #define MAX_PLAYERS 10
 #define NICK_LENGTH 20 + 1
-
+#define USE_SERIAL Serial
 // TODO:
 // MAKE SIZE OF DOCUMENTS
 

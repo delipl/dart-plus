@@ -20,7 +20,7 @@ struct Settings{
         Settings(const uint16_t &id, const uint16_t &startPoints, const bool &doubleIn, const bool &doubleOut, const std::initializer_list<std::shared_ptr<Player>> &list);
 
         // StaticJsonDocument<SIZE_SETTINGS_JSON> Document();
-        // void Deserialize(StaticJsonDocument<SIZE_SETTINGS_JSON> &doc);
+        void Deserialize(StaticJsonDocument<SIZE_SETTINGS_JSON> &doc);
 };
 
 #endif

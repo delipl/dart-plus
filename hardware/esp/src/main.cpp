@@ -1,55 +1,58 @@
+/*
+ * WebSocketClientSocketIO.ino
+ *
+ *  Created on: 06.06.2016
+ *
+ */
+
 #include <Arduino.h>
 #include <ArduinoJson.h>
-#include <ESP8266WiFi.h>
 #include <ESP8266HTTPClient.h>
-
-#include "config.h"
+#include <ESP8266WiFi.h>
+#include <ESP8266WiFiMulti.h>
+#include <Hash.h>
+#include <SocketIOclient.h>
+#include <WebSocketsClient.h>
 #include "server-client.h"
+#include "settings.h"
 
-#include "game-api.h"
-
-
-
-#define SERVER_IP "http://192.168.0.3:8000/games"
-
-#ifndef STASSID
-	#define STASSID "multimedia_plastek"
-	#define STAPSK "123454321"
-#endif
-
-uint16_t ids[] = {1,2,3,4};
-Settings settings(1, 4, 301, false, false, ids);
-ServerClient *serverClient;
-
-GameApi game(settings);
-
-void setup()
-{
-	Serial.begin(9600);
-	serverClient = new ServerClient(STASSID, STAPSK, SERVER_IP);
-	serverClient->SendSettings(settings.Document());
-
+void error_handler(const size_t &error_nr) {
 }
 
-void loop(){
 
-	game.Loop();
-	// Game game(settings);
-	// while(true){
 
-	// 	String mess;
-	// 	// waiting for settings message
-	// 	while (mess == String()){
-	// 		mess = Serial.readString();
-	// 	}		
+std::shared_ptr<ServerClient> client;
 
-	// 	const char *get = mess.c_str();
-	// 	StaticJsonDocument<SIZE_GAME_JSON> doc;
-	// 	deserializeJson(doc, get);
-	// 	game.Deserialize(doc);
-	// 	serializeJsonPretty(game.Document(), Serial);
+void setup() {
+    // USE_SERIAL.begin(921600);
+    USE_SERIAL.begin(9600);
 
-	// 	serverClient->SendGame(game.Document());
-	// }
+    // Serial.setDebugOutput(true);
+    USE_SERIAL.setDebugOutput(true);
+
+    USE_SERIAL.println();
+    USE_SERIAL.println();
+    USE_SERIAL.println();
+    
+    for (uint8_t t = 4; t > 0; t--) {
+        USE_SERIAL.printf("[SETUP] BOOT WAIT %d...\n", t);
+        USE_SERIAL.flush();
+        delay(1000);
+    }
+
+    client = std::make_shared<ServerClient>("multimedia_plastek", "123454321", "192.168.0.7", 8000);
+    delay(1000);
+    // Settings set;
+    // set.
+    client->RequestSettings(1);
+    USE_SERIAL.println();
+    
+    // if (not client->JoinGame(1)) {
+    //     USE_SERIAL.println("[ERROR] Could not join to the room");
+    //     error_handler(1);
+    // }
 }
 
+void loop() {
+    client->loop();
+}
