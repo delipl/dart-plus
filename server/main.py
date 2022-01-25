@@ -9,11 +9,12 @@ from app.models.user import User, user_game
 from app.models.game import Game
 from app.models.dart_board import DartBoard
 from app.models.throw import Throw
-from app.info import controller as infoController
 
 app = create_app(os.getenv('FLASK_CONFIG') or 'default')
 app.app_context().push()
 migrate = Migrate(app, db)
+thread = None
+socketio = SocketIO(app, cors_allowed_origins='*', async_mode='threading')
 
 
 @app.shell_context_processor
@@ -27,35 +28,6 @@ def test():
     import unittest
     tests = unittest.TestLoader().discover('tests')
     unittest.TextTestRunner(verbosity=2).run(tests)
-
-
-thread = None
-socketio = SocketIO(app, cors_allowed_origins='*', async_mode='threading')
-
-
-# todo zeby nie napierdalac sprawdzaj czy sie cos zmienilo w danych
-def background_thread():
-    while True:
-        time.sleep(0.06)
-        socketio.emit('user_activated', infoController.get_info(1), broadcast=True)
-
-
-@socketio.on('connect')
-def connect():
-    global thread
-    if thread is None:
-        thread = Thread(target=background_thread)
-        thread.start()
-
-
-@socketio.on('disconnect')
-def disconnect():
-    emit('retrieve_active_users')
-
-
-# @socketio.on('activate_user')
-# def on_active_user(data):
-#     pass
 
 
 if __name__ == "__main__":

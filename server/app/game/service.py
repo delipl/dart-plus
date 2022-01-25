@@ -39,7 +39,7 @@ def take_game(id):
 
 
 # Creating game with players from settings
-@gamePage.route("/", methods=["GET", "POST"])
+@gamePage.route("/", methods=["POST"])
 def create_new_game():
     usersId = request.json.get('playersId')
     users = [User.query.get_or_404(user_id) for user_id in usersId]
@@ -60,7 +60,7 @@ def create_new_game():
     return generate_http_response(True, "OK", 200)
 
 
-@gamePage.route("/", methods=["GET", "PUT"])
+@gamePage.route("/", methods=["PUT"])
 def update_game():
     game_id = request.json.get('id')
     status = request.json.get('status')

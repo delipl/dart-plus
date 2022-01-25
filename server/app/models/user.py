@@ -26,13 +26,11 @@ class User(UserMixin, db.Model):
     phone = db.Column(db.Integer, unique=True)
     wins = db.Column(db.Integer)
 
-    # member_since = db.Column(db.DateTime(), default=datetime.datetime.utcnow)
-
-    # relacje z setting
+    # relationship with setting
     active_games = db.relationship('Game', secondary=user_game, backref='players')
-    # relacja z throw
+    # relationship with throw
     throws = db.relationship('Throw', backref='player', lazy='dynamic')
-    # relacja z dartboard
+    # relationship with dartboard
     board_id = db.Column(db.Integer, db.ForeignKey('dartBoards.id'))
     # player data
     attempts = db.Column(db.Integer)
@@ -48,10 +46,6 @@ class User(UserMixin, db.Model):
 
     def verify_password(self, password):
         return check_password_hash(self.password_hash, password)
-
-    def generate_confirmation_token(self, expiration=3600):
-        s = Serializer(current_app.config['SECRET_KEY'], expiration)
-        return s.dumps({'confirm': self.id}).decode('utf-8')
 
     def generate_auth_token(self, expiration):
         s = Serializer(current_app.config['SECRET_KEY'],
@@ -79,6 +73,14 @@ class User(UserMixin, db.Model):
             "throws": [throw.getScore() for throw in self.throws],
             "games_id": games_ids,
             "attempts": self.attempts,
+        }
+        return json_post
+
+    def player_to_json_setting(self):
+        json_post = {
+            "id": self.id,
+            "nick": self.nick,
+            "board_id": self.board_id
         }
         return json_post
 

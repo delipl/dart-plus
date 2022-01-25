@@ -1,6 +1,6 @@
 from flask import jsonify
 from app.exceptions import ValidationError
-from . import mobileApp
+from app.dart_board_api import dartBordApi
 
 
 def bad_request(message):
@@ -21,11 +21,11 @@ def forbidden(message):
     return response
 
 
-@mobileApp.errorhandler(ValidationError)
+@dartBordApi.errorhandler(ValidationError)
 def validation_error(e):
     return bad_request(e.args[0])
 
 
-@mobileApp.errorhandler(ValidationError)
+@dartBordApi.errorhandler(ValidationError)
 def validation_error(e):
     return bad_request(e.args[0])

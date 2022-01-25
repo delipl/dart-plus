@@ -32,3 +32,15 @@ class Game(db.Model):
             "users_id": players_id
         }
         return json_post
+
+    def get_settings_to_json(self):
+        players_id = [player.id for player in self.players]
+        json_post = {
+            "id": self.id,
+            "startPoints": self.startPoints,
+            "doubleIn": self.doubleIn,
+            "doubleOut": self.doubleOut,
+            "players": [player.player_to_json_setting() for player in self.players]
+        }
+        return json_post
+

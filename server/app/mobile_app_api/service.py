@@ -1,16 +1,8 @@
-from flask import g, jsonify, request
-from flask_httpauth import HTTPBasicAuth
-from flask_login import login_user, logout_user, login_required, current_user
+from flask import jsonify
 
-from app import db
 from . import mobileApp
-from flask_login import login_required, current_user
-from app.models.user import User
+from flask_login import login_required
 from app.models.game import Game
-from app.models.throw import Throw
-from config import generate_http_response, config
-from .errors import unauthorized, forbidden
-from config import generate_http_response
 
 
 # auth = HTTPBasicAuth()

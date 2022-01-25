@@ -9,7 +9,6 @@ class Throw(db.Model):
     value = db.Column(db.Integer)
     player_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
-
     def getScore(self):
         return self.multiplier * self.value
 

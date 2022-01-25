@@ -1,3 +1,5 @@
+from socket import SocketIO
+
 from flask import Flask
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
@@ -20,14 +22,14 @@ def create_app(config_name):
     from .user import userPage as userBlueprint
     app.register_blueprint(userBlueprint, url_prefix='/users')
 
-    from .info import infoPage as infoBlueprint
-    app.register_blueprint(infoBlueprint, url_prefix='/info')
-
     from .game import gamePage as gameBlueprint
     app.register_blueprint(gameBlueprint, url_prefix='/games')
 
     from .mobile_app_api import mobileApp as mobileAppBlueprint
     app.register_blueprint(mobileAppBlueprint, url_prefix='/mobileApp')
+
+    from .dart_board_api import dartBordApi as dartBoardApiBlueprint
+    app.register_blueprint(dartBoardApiBlueprint, url_prefix='/dartBoard')
 
     CORS(app)
 

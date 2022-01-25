@@ -1,4 +1,8 @@
+from flask import current_app
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+
 from app import db
+from app.models.user import User
 
 
 class DartBoard(db.Model):
@@ -7,4 +11,14 @@ class DartBoard(db.Model):
     # relationship with user
     users = db.relationship('User', backref='board', lazy='dynamic')
     games = db.relationship('Game', backref='board', lazy='dynamic')
+
+    # JWT authorization
+    @staticmethod
+    def verify_auth_token(token):
+        s = Serializer(current_app.config['SECRET_KEY'])
+        try:
+            data = s.loads(token)
+        except:
+            return None
+        return DartBoard.query.get(data['id'])
 
