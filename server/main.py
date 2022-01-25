@@ -9,12 +9,14 @@ from app.models.user import User, user_game
 from app.models.game import Game
 from app.models.dart_board import DartBoard
 from app.models.throw import Throw
+from app.dart_board_api.game_socket_room import GameSocketRoom
 
 app = create_app(os.getenv('FLASK_CONFIG') or 'default')
 app.app_context().push()
 migrate = Migrate(app, db)
 thread = None
 socketio = SocketIO(app, cors_allowed_origins='*', async_mode='threading')
+socketio.on_namespace(GameSocketRoom('/test'))
 
 
 @app.shell_context_processor
