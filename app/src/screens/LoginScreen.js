@@ -33,7 +33,7 @@ export default function LoginScreen({ navigation }) {
     const requestOptions = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ phone: phone.value, password: password.value })
+      body: JSON.stringify({ phone: phone.value, password: encrypt_password(password.value) })
     };
 
     try {fetch(global.LOGIN, requestOptions)
