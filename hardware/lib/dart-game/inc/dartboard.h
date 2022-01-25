@@ -16,7 +16,7 @@
 #include "ArduinoJson.h"
 // REMOVE THIS
 #include "config.h"
-#include "throw.h" 
+#include "throw.h"
 
 
 #ifdef ARDUINO_CONFIG
@@ -60,7 +60,6 @@ class Dartboard{
 public:
     const uint8_t (*pins_master)[NUM_LINES_MASTER];
     const uint8_t (*pins_slave)[NUM_LINES_SLAVE];
-    uint8_t button;
 
     Dartboard(const uint8_t (*pins_master)[NUM_LINES_MASTER], const uint8_t (*pins_slave)[NUM_LINES_SLAVE]);
 

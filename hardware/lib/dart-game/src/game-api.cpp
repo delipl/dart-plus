@@ -1,6 +1,6 @@
 #include "game-api.h"
 
-Throw GameApi::ReadDartboard(){
+Throw GameApi::ReadDartboard() const{
 	//while (Serial.available()==0) {} //Wait for user input
     uint8_t multiplier = 0;
     uint8_t value = 0;
@@ -16,7 +16,10 @@ Throw GameApi::ReadDartboard(){
 	return Throw(multiplier,value);
 }
 extern ServerClient *serverClient; 
-void GameApi::SendDartboard(){
+void GameApi::SendDartboard() const{
 	serverClient->SendGame(this->Document());
 }
 
+void GameApi::RequestGameLoop(){
+    // serverClient
+}

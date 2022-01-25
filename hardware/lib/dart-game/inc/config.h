@@ -38,4 +38,8 @@ const size_t SIZE_GAME_JSON PROGMEM =   JSON_OBJECT_SIZE(7) +  JSON_ARRAY_SIZE(M
         const uint8_t pins_master[NUM_LINES_MASTER]  = {2,3,4,5,6,7,8,9,10,11};
         const uint8_t pins_slave[NUM_LINES_SLAVE]  = {12, A7, A0, A6, A1, A3, A2};
     #endif
+
+
+    //todo: compilation for every this_board_id
+    constexpr uint8_t this_board_id = 0x0001;
 #endif
