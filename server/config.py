@@ -16,6 +16,7 @@ class Config:
     NOT_ACCEPTABLE = 406
     INTERNAL_SERVER_ERROR = 500
     OK = 200
+    ROOM_NAME = "/game/"
 
     @staticmethod
     def init_app(app):

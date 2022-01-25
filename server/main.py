@@ -16,7 +16,7 @@ app.app_context().push()
 migrate = Migrate(app, db)
 thread = None
 socketio = SocketIO(app, cors_allowed_origins='*', async_mode='threading')
-socketio.on_namespace(GameSocketRoom('/test'))
+socketio.on_namespace(GameSocketRoom('/esp'))
 
 
 @app.shell_context_processor
