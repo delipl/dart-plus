@@ -10,6 +10,9 @@ from config import config
 
 class GameSocketRoom(Namespace):
 
+    def run(self):
+        pass
+
     def on_connect(self):
         print("connected with", request.sid)
 
@@ -21,7 +24,7 @@ class GameSocketRoom(Namespace):
         gameid = str(data["game_id"])
         room_name = current_app.config['ROOM_NAME'] + gameid
         join_room(room_name)
-        print(sid + 'has entered the room.')
+        print(sid + ' has enter the room.')
         send(sid + 'has entered the room.', to=room_name)
 
     def on_leave_room(self, data):
@@ -33,6 +36,7 @@ class GameSocketRoom(Namespace):
         send(sid + 'has left the room.', to=room_name)
 
     def on_game_loop(self, data):
+        print(data)
         gameid = str(data["id"])
 
         print(f"game id is {gameid}.")
@@ -49,8 +53,8 @@ class GameSocketRoom(Namespace):
         players = data['players']
         players_id = [player['id'] for player in players]
         players_attempts = [player['attempts'] for player in players]
-        # players_nick = [player['nick'] for player in players]
-        # players_board_id = [player['board_id'] for player in players]
+        players_nick = [player['nick'] for player in players]
+        players_board_id = [player['board_id'] for player in players]
         players_points = [player['points'] for player in players]
 
         users = [User.query.get_or_404(player_id) for player_id in players_id]

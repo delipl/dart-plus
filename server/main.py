@@ -15,7 +15,7 @@ app = create_app(os.getenv('FLASK_CONFIG') or 'default')
 app.app_context().push()
 migrate = Migrate(app, db)
 thread = None
-socketio = SocketIO(app, cors_allowed_origins='*', async_mode='threading')
+socketio = SocketIO(app, cors_allowed_origins='*', logger=True, engineio_logger=True, ping_timeout=10, ping_interval=5)
 socketio.on_namespace(GameSocketRoom('/esp'))
 
 
