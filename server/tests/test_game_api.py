@@ -17,18 +17,24 @@ class GameApiTestCase(unittest.TestCase):
         self.client = self.app.test_client(use_cookies=True)
 
         dartBoard = DartBoard()
+        dartboard2 = DartBoard()
         db.session.add(dartBoard)
-        artur = User(name='Artur', phone='123456780', password='huj', nick='louda', wins='2137', board=dartBoard)
-        bartek = User(name='Bartek', phone='123456789', password='huj', nick='la', wins='69', board=dartBoard)
-        kuba = User(name='Kuba', phone='123456788', password='huj', nick='uda', wins='420', board=dartBoard)
+        artur = User(name='Artur', phone='123456780', password='huja', nick='louda', wins='2137', board=dartBoard)
+        bartek = User(name='Bartek', phone='123456789', password='huja', nick='la', wins='69', board=dartBoard)
+        kuba = User(name='Kuba', phone='123456788', password='huja', nick='uda', wins='420', board=dartboard2)
         db.session.add(artur)
         db.session.add(bartek)
         db.session.add(kuba)
+        db.session.commit()
         game = Game(startPoints='301')
-        game.board = dartBoard
+        game.boards.append(dartBoard)
+        game.boards.append(dartboard2)
         db.session.add(game)
+        db.session.commit()
+
         artur.active_games.append(game)
         bartek.active_games.append(game)
+        kuba.active_games.append(game)
         db.session.commit()
 
     def tearDown(self):
@@ -41,7 +47,7 @@ class GameApiTestCase(unittest.TestCase):
         game = Game.query.first()
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.get_data(as_text=True),
-                        '{\"games\":[{\"doubleIn\":false,\"doubleOut\":false,\"gameStatus\":null,\"id\":1,\"round\":null,\"startPoints\":301,\"startTime\":' + "\"" + game.startTime.strftime("%m/%d/%Y, %H:%M:%S") + "\"" + ',\"throwingUserId\":null,\"users_id\":[1,2]}]}\n')
+                        '{\"games\":[{\"doubleIn\":false,\"doubleOut\":false,\"gameStatus\":null,\"id\":1,\"round\":null,\"startPoints\":301,\"startTime\":' + "\"" + game.startTime.strftime("%m/%d/%Y, %H:%M:%S") + "\"" + ',\"throwingUserId\":null,\"users_id\":[1,2,3]}]}\n')
 
     def test_delete_games(self):
         self.assertTrue(len(Game.query.all()) != 0)
@@ -54,7 +60,7 @@ class GameApiTestCase(unittest.TestCase):
         game = Game.query.first()
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.get_data(as_text=True),
-                        '{\"doubleIn\":false,\"doubleOut\":false,\"gameStatus\":null,\"id\":1,\"round\":null,\"startPoints\":301,\"startTime\":' + "\"" + game.startTime.strftime("%m/%d/%Y, %H:%M:%S") + "\"" + ',\"throwingUserId\":null,\"users_id\":[1,2]}\n')
+                        '{\"doubleIn\":false,\"doubleOut\":false,\"gameStatus\":null,\"id\":1,\"round\":null,\"startPoints\":301,\"startTime\":' + "\"" + game.startTime.strftime("%m/%d/%Y, %H:%M:%S") + "\"" + ',\"throwingUserId\":null,\"users_id\":[1,2,3]}\n')
 
     def test_create_new_game(self):
         data = json.dumps(

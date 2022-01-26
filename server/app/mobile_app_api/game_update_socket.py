@@ -9,7 +9,7 @@ from app.models.user import User
 from config import config
 
 
-class GameUpdateSocket(Namespace):
+class GameSocketApp(Namespace):
 
     def run(self):
         pass

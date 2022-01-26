@@ -10,7 +10,8 @@ class DartBoard(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     # relationship with user
     users = db.relationship('User', backref='board', lazy='dynamic')
-    games = db.relationship('Game', backref='board', lazy='dynamic')
+
+    game_id = db.Column(db.Integer, db.ForeignKey('games.id'))
 
     # JWT authorization
     @staticmethod

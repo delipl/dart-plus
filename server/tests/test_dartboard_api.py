@@ -4,7 +4,7 @@ import unittest
 from flask_socketio import SocketIO
 
 from app import create_app, db
-from app.dart_board_api.game_socket_room import GameSocketRoom
+from app.dart_board_api.game_socket_esp import GameSocketEsp
 from app.models.user import User, user_game
 from app.models.game import Game
 from app.models.dart_board import DartBoard
@@ -14,7 +14,7 @@ class DartboardApiTestCase(unittest.TestCase):
     def setUp(self):
         self.app = create_app('testing')
         socketio = SocketIO(self.app, cors_allowed_origins='*')
-        socketio.on_namespace(GameSocketRoom('/esp'))
+        socketio.on_namespace(GameSocketEsp('/esp'))
         self.app_context = self.app.app_context()
         self.app_context.push()
         db.create_all()
@@ -22,18 +22,24 @@ class DartboardApiTestCase(unittest.TestCase):
         self.client = self.app.test_client(use_cookies=True)
 
         dartBoard = DartBoard()
+        dartboard2 = DartBoard()
         db.session.add(dartBoard)
-        artur = User(name='Artur', phone='123456780', password='huj', nick='louda', wins='2137', board=dartBoard)
-        bartek = User(name='Bartek', phone='123456789', password='huj', nick='la', wins='69', board=dartBoard)
-        kuba = User(name='Kuba', phone='123456788', password='huj', nick='uda', wins='420', board=dartBoard)
+        artur = User(name='Artur', phone='123456780', password='huja', nick='louda', wins='2137', board=dartBoard)
+        bartek = User(name='Bartek', phone='123456789', password='huja', nick='la', wins='69', board=dartBoard)
+        kuba = User(name='Kuba', phone='123456788', password='huja', nick='uda', wins='420', board=dartboard2)
         db.session.add(artur)
         db.session.add(bartek)
         db.session.add(kuba)
+        db.session.commit()
         game = Game(startPoints='301')
-        game.board = dartBoard
+        game.boards.append(dartBoard)
+        game.boards.append(dartboard2)
         db.session.add(game)
+        db.session.commit()
+
         artur.active_games.append(game)
         bartek.active_games.append(game)
+        kuba.active_games.append(game)
         db.session.commit()
 
     def tearDown(self):
@@ -51,7 +57,7 @@ class DartboardApiTestCase(unittest.TestCase):
 
         response = self.client.post('/dartBoard/settings', headers=headers, data=data)
         self.assertEqual(response.status_code, 200)
-        game = DartBoard.query.get_or_404(1).games[0]
+        game = DartBoard.query.get_or_404(1).game
         self.assertEqual(game.id, response.json.get('id'))
         self.assertEqual(game.doubleIn, response.json.get('doubleIn'))
         self.assertEqual(game.doubleOut, response.json.get('doubleOut'))
@@ -71,6 +77,7 @@ class DartboardApiTestCase(unittest.TestCase):
         #     "players": [player.player_to_json_setting() for player in self.players]
         # }
 
+    def test_game_socket_room(self):
 
     #
     # def test_delete_games(self):

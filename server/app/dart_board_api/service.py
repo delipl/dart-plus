@@ -28,7 +28,7 @@ def get_settings():
         return generate_http_response(False, "No json in post", 500)
     if dartBoardId is None:
         return generate_http_response(False, "Get no id", 401)
-    game = Game.query.filter_by(board_id=dartBoardId).first()
+    game = DartBoard.query.get_or_404(dartBoardId).game
     if game is None:
         return generate_http_response(False, "Unknown id", 401)
     return jsonify(game.get_settings_to_json())

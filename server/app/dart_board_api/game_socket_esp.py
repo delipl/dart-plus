@@ -8,7 +8,7 @@ from app.models.user import User
 from config import config
 
 
-class GameSocketRoom(Namespace):
+class GameSocketEsp(Namespace):
 
     def run(self):
         pass

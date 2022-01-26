@@ -24,8 +24,3 @@ def forbidden(message):
 @dartBordApi.errorhandler(ValidationError)
 def validation_error(e):
     return bad_request(e.args[0])
-
-
-@dartBordApi.errorhandler(ValidationError)
-def validation_error(e):
-    return bad_request(e.args[0])
