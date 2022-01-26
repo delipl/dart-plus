@@ -1,12 +1,7 @@
 from flask_login import current_user
 from flask_socketio import send, Namespace, emit, join_room, leave_room
 from flask import request, current_app
-
-from app import db
 from app.models.game import Game
-from app.models.throw import Throw
-from app.models.user import User
-from config import config
 
 
 class GameSocketApp(Namespace):

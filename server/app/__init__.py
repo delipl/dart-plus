@@ -1,10 +1,11 @@
 from socket import SocketIO
-
+from flask_socketio import SocketIO, send, emit
 from flask import Flask
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from config import config
+
 
 
 db = SQLAlchemy()
@@ -18,6 +19,15 @@ def create_app(config_name):
     config[config_name].init_app(app)
     db.init_app(app)
     login_manager.init_app(app)
+
+    socketio = SocketIO(app, cors_allowed_origins='*', logger=True, engineio_logger=True, ping_timeout=10,
+                        ping_interval=5)
+
+    from app.dart_board_api.game_socket_esp import GameSocketEsp
+    socketio.on_namespace(GameSocketEsp('/esp'))
+
+    from app.mobile_app_api.game_update_socket import GameSocketApp
+    socketio.on_namespace(GameSocketApp('/app'))
 
     from .user import userPage as userBlueprint
     app.register_blueprint(userBlueprint, url_prefix='/users')
@@ -33,4 +43,4 @@ def create_app(config_name):
 
     CORS(app)
 
-    return app
+    return app, socketio

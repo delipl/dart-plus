@@ -12,7 +12,7 @@ from app.models.dart_board import DartBoard
 
 class DartboardApiTestCase(unittest.TestCase):
     def setUp(self):
-        self.app = create_app('testing')
+        self.app, self.socketio = create_app('testing')
         socketio = SocketIO(self.app, cors_allowed_origins='*')
         socketio.on_namespace(GameSocketEsp('/esp'))
         self.app_context = self.app.app_context()
@@ -78,77 +78,46 @@ class DartboardApiTestCase(unittest.TestCase):
         # }
 
     def test_game_socket_room(self):
+        client = self.socketio.test_client(self.app, namespace='/esp')
+        payload = {'game_id': 1}
+        client.connect()
+        data = {
+            "id": 1,
+            "status": 1,
+            "round": 1,
+            "value": 10,
+            "multiplier": 2,
+            "throwingPlayerId": 1,
+            "throwingUserId": 1,
+            "players": [
+                {
+                    "id": 1,
+                    "attempts": 1,
+                    "points": 229,
+                    "nick": "jj",
+                    "board_id": 1
+                },
+                {
+                    "id": 2,
+                    "nick": "jj",
+                    "board_id": 1,
+                    "attempts": 3,
+                    "points": 259
+                }
+            ]
+        }
+        client.emit('game_loop', data, namespace='/esp')
+        game = Game.query.get_or_404(1)
 
-    #
-    # def test_delete_games(self):
-    #     self.assertTrue(len(Game.query.all()) != 0)
-    #     response = self.client.delete('/games/1')
-    #     self.assertEqual(response.status_code, 200)
-    #     self.assertTrue(len(Game.query.all()) == 0)
-    #
-    # def test_get_game_by_id(self):
-    #     response = self.client.get('/games/1')
-    #     game = Game.query.first()
-    #     self.assertEqual(response.status_code, 200)
-    #     self.assertEqual(response.get_data(as_text=True),
-    #                     '{\"doubleIn\":false,\"doubleOut\":false,\"gameStatus\":null,\"id\":1,\"round\":null,\"startPoints\":301,\"startTime\":' + "\"" + game.startTime.strftime("%m/%d/%Y, %H:%M:%S") + "\"" + ',\"throwingUserId\":null,\"users_id\":[1,2]}\n')
-    #
-    # def test_create_new_game(self):
-    #     data = json.dumps(
-    #         {
-    #             "startPoints": 301,
-    #             "doubleOut": False,
-    #             "doubleIn": True,
-    #             "playersId": [1, 2]
-    #         })
-    #
-    #     headers = {'Content-Type': 'application/json'}
-    #
-    #     response = self.client.post('/games/', headers=headers, data=data)
-    #     self.assertEqual(response.status_code, 200)
-    #     game = Game.query.get_or_404(2)
-    #     self.assertEqual(game.startPoints, 301)
-    #     self.assertEqual([player.id for player in game.players], [1, 2])
-    #     self.assertEqual(game.doubleIn, True)
-    #     self.assertEqual(game.doubleOut, False)
-    #
-    # def test_update_game(self):
-    #     data = json.dumps(
-    #         {
-    #             "id": 1,
-    #             "status": 1,
-    #             "round": 1,
-    #             "value": 10,
-    #             "multiplier": 2,
-    #             "throwingPlayerId": 1,
-    #             "throwingUserId": 1,
-    #             "players": [
-    #                 {
-    #                     "id": 1,
-    #                     "attempts": 1,
-    #                     "points": 229
-    #                 },
-    #                 {
-    #                     "id": 2,
-    #                     "attempts": 5,
-    #                     "points": 259
-    #                 }
-    #             ]
-    #         })
-    #
-    #     headers = {'Content-Type': 'application/json'}
-    #     response = self.client.put('/games/', headers=headers, data=data)
-    #     self.assertEqual(response.status_code, 200)
-    #     game = Game.query.get_or_404(1)
-    #     player_1 = User.query.get_or_404(1)
-    #     player_2 = User.query.get_or_404(2)
-    #     self.assertEqual(game.startPoints, 301)
-    #     self.assertEqual(player_1.throws[0].value, 10)
-    #     self.assertEqual(player_1.throws[0].multiplier, 2)
-    #     self.assertEqual(player_1.points, 229)
-    #     self.assertEqual(player_2.points, 259)
-    #
-    #     response = self.client.put('/games/', headers=headers, data=data)
-    #     self.assertEqual(player_1.throws[1].value, 10)
-    #     self.assertEqual(player_1.throws[1].multiplier, 2)
+        self.assertEqual(game.gameStatus, 1)
+        self.assertEqual(game.throwingUserId, 1)
+        self.assertEqual(game.round, 1)
+
+        player1 = User.query.get_or_404(1)
+        self.assertEqual(player1.points, 229)
+        self.assertEqual(player1.attempts, 1)
+
+        player2 = User.query.get_or_404(2)
+        self.assertEqual(player2.points, 259)
+        self.assertEqual(player2.attempts, 3)
 
