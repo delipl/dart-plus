@@ -1,24 +1,17 @@
 #include "game-api.h"
 
 Throw GameApi::ReadDartboard() const{
-	//while (Serial.available()==0) {} //Wait for user input
-    uint8_t multiplier = 0;
-    uint8_t value = 0;
-    while (multiplier == 0 && value == 0){
-        client->loop();
-        multiplier = (Serial.readStringUntil('\t')).toInt();
-        value = (Serial.readStringUntil('\n')).toInt();
-    }
 
-    Serial.println(multiplier);
-    Serial.println(value);
-    // const uint8_t multiplier = 3;
-    // const uint8_t value = 3;
-	return Throw(multiplier,value);
+    auto x = Throw(rand()%3 +1,rand()%10+1);
+    delay(2000);
+    // USE_SERIAL.printf("[GAMELOOP] Thowing [%d, %d]\n", x.multiplier, x.value);
+    return x;
 }
 
 void GameApi::SendDartboard() const{
-	client->SendGame(this->Document());
+    String raw;
+    serializeJson(Document(), raw);
+    client->SendGame(raw);
 }
 
 void GameApi::RequestGameLoop(){

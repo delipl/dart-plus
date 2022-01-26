@@ -69,19 +69,14 @@ bool ServerClient::JoinGame(const uint8_t &game_id){
     return true;
 }
 
-RequestError ServerClient::SendGame(StaticJsonDocument<SIZE_GAME_JSON> doc) {
-    JsonArray array = doc.to<JsonArray>();
+void ServerClient::send_event(const String &event_name, const String &json, const String &name_space) {
+    String out = name_space + ",[\"" + event_name + "\"," + json + "]";
+    USE_SERIAL.printf("[WEBSOCKETIO] Sending: \n>>>==============\n%s\n==============<<<\n", out.c_str());
+    socketIO.sendEVENT(out);
+}
 
-    // add evnet name
-    // Hint: socket.on('event_name', ....
-    array.add("game_loop");
-
-    // add payload (parameters) for the event
-    String doc_raw;
-    serializeJson(doc, doc_raw);
-    String out = "{ \"game_loop\" :[" + doc_raw +"]}";
-    // JSON to String (serializion)
-    // socketIO.sendEVENT(out);
+RequestError ServerClient::SendGame(const String &doc) {
+    send_event("game_loop", doc, "/esp");
     return RequestError_OK;
 }
 
@@ -97,6 +92,7 @@ void ServerClient::event_callback(socketIOmessageType_t type, uint8_t *payload, 
 
             // join default namespace (no auto join in Socket.IO V3)
             socketIO.send(sIOtype_CONNECT, "/esp");
+            // USE_SERIAL.printf("[WEBSOCKETIO] First connection message: %s.\n", out.c_str());
             break;
         case sIOtype_EVENT:
             USE_SERIAL.printf("[IOc] get event: %s\n", payload);
@@ -121,33 +117,10 @@ void ServerClient::event_callback(socketIOmessageType_t type, uint8_t *payload, 
     }
 }
 
-template <typename second>
-String make_event(String event, std::vector<std::pair<String, second>> list) {
-    // creat JSON message for Socket.IO (event)
-    DynamicJsonDocument doc(1024);
-    JsonArray array = doc.to<JsonArray>();
-
-    // add evnet name
-    // Hint: socket.on('event_name', ....
-    array.add(event);
-
-    // add payload (parameters) for the event
-    JsonObject param1 = array.createNestedObject();
-    for (const auto &elem : list) {
-        param1[elem.first] = elem.second;
-    }
-
-    // JSON to String (serializion)
-    String output;
-    serializeJson(doc, output);
-    return output;
-}
-
 void ServerClient::loop(){
     socketIO.loop();
-    // if(not connection_initialied and status == sIOtype_CONNECT){
-    //     connection_initialied = true;
-    //     String out = make_event<int>("begin", {{"game_id", game_id}});
-    //     // socketIO.sendEVENT(out);
-    // }
+    if(not connection_initialied and status == sIOtype_CONNECT){
+        connection_initialied = true;
+        send_event("join_room", "{\"game_id\":" + String(game_id) + "}", "/esp");
+    }
 }

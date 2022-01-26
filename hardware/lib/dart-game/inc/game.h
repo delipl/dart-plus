@@ -38,6 +38,7 @@ class Game {
     uint16_t round = 0;
     uint8_t multiplier;
     uint8_t value;
+    uint8_t throwing = 0;
 
     Game(const Settings &set);
     ~Game(){};

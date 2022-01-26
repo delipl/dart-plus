@@ -38,16 +38,12 @@ void setup() {
         USE_SERIAL.flush();
         delay(1000);
     }
-
-    delay(1000);
-    // Settings set;
-    // set.
 }
 bool first = true;
 void loop() {
     if (first) {
         first = false;
-        client = std::make_shared<ServerClient>("multimedia_plastek", "123454321", "192.168.0.7", 8000);
+        client = std::make_shared<ServerClient>("multimedia_plastek", "123454321", "192.168.0.21", 8000);
         USE_SERIAL.print("[HTTP] Requesting setting...");
         auto raw_settings = client->RequestSettings(this_board_id);
         while (raw_settings == String()) {
@@ -68,7 +64,7 @@ void loop() {
     }
     while (game->status != GameStatus_Finished) {
         client->loop();
-        // game->loop();
+        game->loop();
     }
-    // game->loop();
+    // first = true;
 }

@@ -31,6 +31,8 @@ class ServerClient{
         StaticJsonDocument<SIZE_GAME_JSON> ReadGame(uint8_t *payload);
         StaticJsonDocument<SIZE_SETTINGS_JSON> ReadSettings(uint8_t *payload);
 
+        void send_event(const String &event_name, const String &json, const String &name_space = "/");
+
        public:
         inline static socketIOmessageType_t status;
         inline static bool connection_initialied = false;
@@ -40,7 +42,7 @@ class ServerClient{
         String RequestSettings(const uint8_t &board_id);
         bool JoinGame(const uint8_t &game_id);
 
-        RequestError SendGame(StaticJsonDocument<SIZE_GAME_JSON> doc);
+        RequestError SendGame(const String &doc);
 
         void loop();
 };
