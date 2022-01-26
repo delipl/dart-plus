@@ -54,18 +54,22 @@ String ServerClient::RequestSettings(const uint8_t &board_id) {
     return String();
 }
 
-bool ServerClient::JoinGame(const uint8_t &game_id){
-    USE_SERIAL.print("[WEBSOCKETIO] Joining to the game room...");
+bool ServerClient::JoinedGame(){
+    
     
 
     int tries = 0;
-    while (status != sIOtype_CONNECT) {
-        USE_SERIAL.print(".");
-        ++tries;
-        delay(500);
-        if (tries == 20) return false;
+    if (status == sIOtype_DISCONNECT){
+        USE_SERIAL.print("[WEBSOCKETIO] Joining to the game room...");
+        while (status == sIOtype_DISCONNECT) {
+            loop();
+            USE_SERIAL.print(".");
+            ++tries;
+            delay(500);
+        }
+        USE_SERIAL.println();
     }
-
+    
     return true;
 }
 

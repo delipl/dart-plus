@@ -40,7 +40,7 @@ class ServerClient{
         uint16_t game_id = 0;
         ServerClient(const String &stassid, const String &stapsk, const String &server_ip, const uint16 server_port, const String &url = "/socket.io/?EIO=4");
         String RequestSettings(const uint8_t &board_id);
-        bool JoinGame(const uint8_t &game_id);
+        bool JoinedGame();
 
         RequestError SendGame(const String &doc);
 

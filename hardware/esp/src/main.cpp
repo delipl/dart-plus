@@ -62,9 +62,12 @@ void loop() {
         USE_SERIAL.println();
         USE_SERIAL.println("[GAME] Game Initialized");
     }
+    
     while (game->status != GameStatus_Finished) {
+        if (not client->JoinedGame()) return;
         client->loop();
         game->loop();
+      
     }
     // first = true;
 }

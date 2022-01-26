@@ -3,6 +3,9 @@ Game::Game(const Settings &set) : id{set.id}, settings{set} {
     this->round = 0;
     this->multiplier = 0;
     this->value = 0;
+    if(set.players.size() > 0){
+        set.players[0]->attempts = 3;
+    }
 }
 
 StaticJsonDocument<SIZE_GAME_JSON> Game::Document() const {
@@ -54,13 +57,13 @@ bool Game::Deserialize(const StaticJsonDocument<SIZE_GAME_JSON> &doc) {
 
 void Game::loop() {
     Throw hit(0, 0);
+    
     auto &player = settings.players[throwing];
     if (player->board_id != this_board_id) {
         RequestGameLoop();
         return;
     }
 
-    player->attempts = 3;
     throwingPlayerId = player->id;
 
     if (status == GameStatus_Pause) {
@@ -77,22 +80,31 @@ void Game::loop() {
     multiplier = hit.multiplier;
 
     if (player->points == settings.startPoints && settings.doubleIn == true && hit.multiplier != 2) {
+        USE_SERIAL.printf("[GAMELOOP]\n user: %s throw: %d doublein is bad.\n", player->nick.c_str(), hit.multiplier*hit.value);
         --player->attempts;
     } else if (hit.value * hit.multiplier > player->points) {
         player->attempts = 0;
+        USE_SERIAL.printf("[GAMELOOP]\nuser: %s throw: %d to much checkout.\n", player->nick.c_str(), hit.multiplier * hit.value);
+
     } else if (hit.value * hit.multiplier == player->points && settings.doubleOut == false) {
+        USE_SERIAL.printf("[GAMELOOP]\nuser: %s throw: %d won game without doubleout.\n", player->nick.c_str(), hit.multiplier * hit.value);
+
         this->status = GameStatus_Finished;
         player->attempts = 0;
     } else if (hit.value * hit.multiplier == player->points && settings.doubleOut == true && hit.multiplier == 2) {
         this->status = GameStatus_Finished;
+        USE_SERIAL.printf("[GAMELOOP]\nuser: %s throw: %d won game doubleout.\n", player->nick.c_str(), hit.multiplier * hit.value);
+
         player->attempts = 0;
     } else {
         player->points = player->points - hit;
-        --player->attempts;
+        player->attempts = player->attempts - 1;
+        USE_SERIAL.printf("[GAMELOOP]\nuser: %s throw: %d normal throw least attempts: %d\n.", player->nick.c_str(), hit.multiplier * hit.value, player->attempts);
     }
     SendDartboard();
     if (player->attempts == 0) {
-        USE_SERIAL.println("[GAMELOOP]");
         throwing = throwing != settings.players.size() - 1 ? throwing + 1 : 0;
+        settings.players[throwing]->attempts = 3;
+        USE_SERIAL.printf("[GAMELOOP] thrownig after update: %d.\n", throwing);
     }
 }
