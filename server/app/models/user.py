@@ -84,6 +84,13 @@ class User(UserMixin, db.Model):
         }
         return json_post
 
+    def player_to_json_game_update(self):
+        json_post = {
+            "nick": self.nick,
+            "points": self.points
+        }
+        return json_post
+
 
 class AnonymousUser(AnonymousUserMixin):
     pass

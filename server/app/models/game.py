@@ -43,4 +43,3 @@ class Game(db.Model):
             "players": [player.player_to_json_setting() for player in self.players]
         }
         return json_post
-

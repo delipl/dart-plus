@@ -10,6 +10,7 @@ from app.models.game import Game
 from app.models.dart_board import DartBoard
 from app.models.throw import Throw
 from app.dart_board_api.game_socket_room import GameSocketRoom
+from app.mobile_app_api.game_update_socket import GameUpdateSocket
 
 app = create_app(os.getenv('FLASK_CONFIG') or 'default')
 app.app_context().push()
@@ -17,6 +18,7 @@ migrate = Migrate(app, db)
 thread = None
 socketio = SocketIO(app, cors_allowed_origins='*', logger=True, engineio_logger=True, ping_timeout=10, ping_interval=5)
 socketio.on_namespace(GameSocketRoom('/esp'))
+socketio.on_namespace(GameUpdateSocket('/app'))
 
 
 @app.shell_context_processor
@@ -40,10 +42,11 @@ if __name__ == "__main__":
     db.session.query(DartBoard).delete()
     db.session.commit()
     dartBoard = DartBoard()
+    dartboard2 = DartBoard()
     db.session.add(dartBoard)
     artur = User(name='Artur', phone='123456780', password='huja', nick='louda', wins='2137', board=dartBoard)
     bartek = User(name='Bartek', phone='123456789', password='huja', nick='la', wins='69', board=dartBoard)
-    kuba = User(name='Kuba', phone='123456788', password='huja', nick='uda', wins='420', board=dartBoard)
+    kuba = User(name='Kuba', phone='123456788', password='huja', nick='uda', wins='420', board=dartboard2)
     db.session.add(artur)
     db.session.add(bartek)
     db.session.add(kuba)
@@ -55,6 +58,7 @@ if __name__ == "__main__":
 
     artur.active_games.append(game)
     bartek.active_games.append(game)
+    kuba.active_games.append(game)
     db.session.commit()
 
     # print(bartek.dart_board.id)
