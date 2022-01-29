@@ -1,3 +1,4 @@
+import base64
 import json
 import unittest
 from unittest.mock import patch
@@ -40,11 +41,15 @@ class GameApiTestCase(unittest.TestCase):
         self.app_context.pop()
 
     def test_login_success(self):
+        # password = "huj".encode("utf-8")
+        # password = base64.b64encode(password)
+        # print(password)
         data = json.dumps(
             {
                 "phone": 123456789,
                 "password": 'huj'
             })
+
 
         headers = {'Content-Type': 'application/json'}
 

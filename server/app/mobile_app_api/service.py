@@ -1,8 +1,10 @@
-from flask import jsonify
+import flask_login
+from flask import jsonify, g
 
 from . import mobileApp
-from flask_login import login_required
 from app.models.game import Game
+from flask_login import login_user, logout_user, login_required, current_user
+from .auth import auth
 
 
 # auth = HTTPBasicAuth()
@@ -29,17 +31,21 @@ from app.models.game import Game
 #     return unauthorized('Incorrect login data')
 #
 #
-# @mobileApp.route('/tokens/', methods=['POST'])
-# def get_token():
-#     print("get token")
-#     if g.current_user.is_anonymous or g.token_used:
-#         return unauthorized('Incorrect login data')
-#     return jsonify({'token': g.current_user.generate_auth_token(expiration=3600),
-#                     'expiration': 3600})
-#
+
+@mobileApp.route('/game', methods=['GET'])
+@auth.login_required
+def is_user_in_games():
+    print('33333333')
+    print(g.current_user)
+    print(g.current_user.active_games[0])
+    if current_user.active_games[0] is not None:
+        print(current_user.active_games[0].get_settings_to_json())
+        return jsonify(current_user.active_games[0].get_settings_to_json())
+    return jsonify({'id': 0})
+
 
 @mobileApp.route('/', methods=["GET"])
-@login_required
+@auth.login_required
 def get_games():
     games = Game.query.all()
     return jsonify({'games': [game.to_json() for game in games]})
