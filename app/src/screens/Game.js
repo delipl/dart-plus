@@ -30,15 +30,16 @@ function Images(props) {
 
 export default function Game({ navigation }){
   const [data, setData] = useState([])
-  
-  useEffect(() => {
-    const socket = io(global.IP);
+  const socket = io(global.IP);
 
-    socket.on(global.PHONE, (data) => {
+  useEffect(() => {
+    socket.emit("join_room")
+    socket.emit("game_update")
+    socket.on("game_update", (data) => {
+      console.log(data)
       setData(data)
     })
-    var data = [global.PHONE, global.BOARDID]
-    socket.emit("test", data)
+
   }, []);
 
   if (data.length === 0) return <div>Loading...</div>

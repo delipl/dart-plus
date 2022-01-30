@@ -14,6 +14,7 @@ import { passwordValidator } from '../helpers/passwordValidator'
 import { encrypt_password } from '../helpers/encyption'
 import '../helpers/global.js'
 import BParagraph from '../components/BigParagraph'
+import { Base64 } from 'js-base64';
 
 
 export default function Dashboard({ navigation }) {
@@ -22,18 +23,21 @@ export default function Dashboard({ navigation }) {
   const [data, setData] = useState([]);
 
   const onGamePressed = () => {
-    // Are you in game ? 
+    var headers = new Headers();
+    headers.set('Authorization', 'Basic ' + Base64.encode(localStorage.getItem('token') + ":"));
+
     const requestOptions = {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ phone: global.PHONE})
+      method: 'GET',
+      headers: headers
     };
 
     try {fetch(global.GAME_CHECK, requestOptions)
       .then(response => response.json())
       .then(json => {
+        console.log(json);
         if (json.message){
           setData(json)
+          console.log(json);
         }
       });
       } catch (error) {
@@ -43,15 +47,21 @@ export default function Dashboard({ navigation }) {
       }
   }
 
+  const onLogoutPress = () => {
+    localStorage.removeItem("token");
+    navigation.navigate('StartScreen2');
+  };
+
   if (!isLoading) {
-    if (data.status == 1) {
-      console.log(data.message)
+    if (data.id == 0) {
+      console.log("Gra NIE istnieje: ")
+      console.log(data)
       setPhone({ ...phone, error: data.message })
       setData(1)
       setLoading(true)
-    }
-    if (data.status == 0) {
-      console.log(data.message)
+    } else if (data.id > 0) {
+      console.log("Gra istnieje: ")
+      console.log(data)
       setLoading(true)
       navigation.reset({
         index: 0,
@@ -64,8 +74,8 @@ export default function Dashboard({ navigation }) {
     <Background>
       <Header>Dart-Plus.APP</Header>
       <Button mode="contained"onPress={() => navigation.navigate('LoginScreen')}>Profile</Button>      
-      <Button mode="contained"onPress={onGamePressed}>Game</Button>      
-      <Button mode="outlined"onPress={() => navigation.navigate('RegisterScreen')}>Logout</Button>
+      <Button mode="contained" onPress={onGamePressed}>Game</Button>      
+      <Button mode="outlined"onPress={onLogoutPress}>Logout</Button>
     </Background>
   )
 }

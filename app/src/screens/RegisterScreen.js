@@ -36,7 +36,7 @@ export default function RegisterScreen({ navigation }) {
     const requestOptions = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: name.value, phone: phone.value, password: encrypt_password(password.value) })
+      body: JSON.stringify({ name: name.value, phone: phone.value, password: password.value })
     };
 
     try {fetch(global.REGISTER, requestOptions)

@@ -6,13 +6,16 @@ import Logo from '../components/Logo'
 import Header from '../components/Header'
 import Button from '../components/Button'
 import TextInput from '../components/TextInput'
+import { Base64 } from 'js-base64';
 import BackButton from '../components/BackButton'
 import { theme } from '../core/theme'
 import { phoneValidator } from '../helpers/phoneValidator'
 import { getBoardId } from '../helpers/getBoardId'
 import { passwordValidator } from '../helpers/passwordValidator'
 import { encrypt_password } from '../helpers/encyption'
+import useToken from '../components/useToken'
 import '../helpers/global.js'
+import axios from "axios";
 
 export default function LoginScreen({ navigation }) {
   const [phone, setPhone] = useState({ value: '', error: '' })
@@ -22,32 +25,17 @@ export default function LoginScreen({ navigation }) {
 
   global.BOARDID = getBoardId(window.location.href)
 
-  const onLoginPressed = () => {
-    const phoneError = phoneValidator(phone.value)
-    const passwordError = passwordValidator(password.value)
-    if (phoneError || passwordError) {
-      setPhone({ ...phone, error: phoneError })
-      setPassword({ ...password, error: passwordError })
-      return
-    }
-    const requestOptions = {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ phone: phone.value, password: encrypt_password(password.value) })
-    };
+  function onLoginPressed(event) {
+    var headers = new Headers();
+    headers.set('Authorization', 'Basic ' + Base64.encode("123456789:chuja"));
 
-    try {fetch(global.LOGIN, requestOptions)
+    fetch(global.LOGIN, {method:'GET',
+        headers: headers,
+       })
     .then(response => response.json())
     .then(json => {
-      if (json.message){
-        setData(json)
-      }
+      localStorage.setItem('token', json.token);
     });
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
   }
 
   if (!isLoading) {
@@ -67,10 +55,7 @@ export default function LoginScreen({ navigation }) {
           routes: [{ name: 'Game' }],
         })
       } else {
-        navigation.reset({
-          index: 0,
-          routes: [{ name: 'Dashboard' }],
-        })
+        navigation.navigate('Dashboard2');
       }
     }
   }
