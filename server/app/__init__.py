@@ -20,8 +20,7 @@ def create_app(config_name):
     db.init_app(app)
     login_manager.init_app(app)
 
-    socketio = SocketIO(app, cors_allowed_origins='*', logger=True, engineio_logger=True, ping_timeout=10,
-                        ping_interval=5)
+    socketio = SocketIO(app, cors_allowed_origins='*', logger=True, engineio_logger=True)
 
     from app.dart_board_api.game_socket_esp import GameSocketEsp
     socketio.on_namespace(GameSocketEsp('/esp'))

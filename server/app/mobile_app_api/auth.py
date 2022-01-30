@@ -20,13 +20,11 @@ def verify_password(phone_or_token, password):
         return False
     if password == '':
         g.current_user = User.verify_auth_token(phone_or_token)
-        g.token_used = True
         return g.current_user is not None
     user = User.query.filter_by(phone=phone_or_token.lower()).first()
     if not user:
         return False
     g.current_user = user
-    g.token_used = False
     return user.verify_password(password)
 
 
@@ -35,15 +33,16 @@ def auth_error():
     return unauthorized('Invalid credentials')
 
 
-@mobileApp.route('/tokens', methods=['POST'])
+@mobileApp.route('/token', methods=['GET', 'POST'])
+@auth.login_required
 def get_token():
-    if g.current_user.is_anonymous or g.token_used:
+    if g.current_user.is_anonymous:
         return unauthorized('Invalid credentials')
     return jsonify({'token': g.current_user.generate_auth_token(
         expiration=3600), 'expiration': 3600})
 
 
-
+# dezaktywacja
 
 # @mobileApp.route('/login', methods=['GET', 'POST'])
 # def login():
