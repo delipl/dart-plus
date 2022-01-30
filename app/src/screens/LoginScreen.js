@@ -27,14 +27,18 @@ export default function LoginScreen({ navigation }) {
 
   function onLoginPressed(event) {
     var headers = new Headers();
-    headers.set('Authorization', 'Basic ' + Base64.encode("123456789:chuja"));
+    console.log(phone.value)
+    console.log(password.value)
+    headers.set('Authorization', 'Basic ' + Base64.encode(phone.value + ":" + password.value));
 
     fetch(global.LOGIN, {method:'GET',
         headers: headers,
        })
     .then(response => response.json())
     .then(json => {
+      setData(json)
       localStorage.setItem('token', json.token);
+      setLoading(false);
     });
   }
 
