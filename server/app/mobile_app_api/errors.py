@@ -10,7 +10,7 @@ def bad_request(message):
 
 
 def unauthorized(message):
-    response = jsonify({'error': 'unauthorized', 'message': message})
+    response = jsonify({'error': 'unauthorized', 'message': message, 'status': 0})
     response.status_code = 401
     return response
 

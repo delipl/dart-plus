@@ -15,13 +15,15 @@ class GameSocketApp(Namespace):
     def on_disconnect(self):
         pass
 
-    def on_join_room(self):
+    def on_join_room(self, data):
+        print(data)
         sid = request.sid
-        gameid = '1'
+        gameid = str(data["game_id"])
+        print(gameid)
         room_name = '/' + gameid
         join_room(room_name)
         print(sid + ' has enter the room.')
-        game = Game.query.get_or_404(1)
+        game = Game.query.get_or_404(gameid)
         payload = game.get_settings_to_json()
         send(payload, to=room_name)
 
@@ -36,6 +38,7 @@ class GameSocketApp(Namespace):
         emit(payload, to=room_name)
 
     def on_game_update(self):
+        # current user we do not know
         players_without_current = []
         for player in Game.query.get_or_404(1).players:
             if player.id != current_user.id:
@@ -50,4 +53,9 @@ class GameSocketApp(Namespace):
         print(payload)
 
         send(payload, to=request.sid)
+
+    def on_start_game(self):
+        user = User()
+
+        pass
 

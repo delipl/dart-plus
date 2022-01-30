@@ -20,7 +20,7 @@ def create_app(config_name):
     db.init_app(app)
     login_manager.init_app(app)
 
-    socketio = SocketIO(app, cors_allowed_origins='*', logger=True, engineio_logger=True)
+    socketio = SocketIO(app, cors_allowed_origins='*')
 
     from app.dart_board_api.game_socket_esp import GameSocketEsp
     socketio.on_namespace(GameSocketEsp('/esp'))
@@ -35,10 +35,10 @@ def create_app(config_name):
     app.register_blueprint(gameBlueprint, url_prefix='/games')
 
     from .mobile_app_api import mobileApp as mobileAppBlueprint
-    app.register_blueprint(mobileAppBlueprint, url_prefix='/mobileApp')
+    app.register_blueprint(mobileAppBlueprint, url_prefix='/app')
 
     from .dart_board_api import dartBordApi as dartBoardApiBlueprint
-    app.register_blueprint(dartBoardApiBlueprint, url_prefix='/dartBoard')
+    app.register_blueprint(dartBoardApiBlueprint, url_prefix='/dartboard')
 
     CORS(app)
 

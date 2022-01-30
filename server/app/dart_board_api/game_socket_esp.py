@@ -19,14 +19,15 @@ class GameSocketEsp(Namespace):
     def on_disconnect(self):
         print("disconect with", request.sid)
 
-
     def on_join_room(self, data):
         sid = request.sid
         gameid = str(data["game_id"])
+        game = Game.query.get_or_404(gameid)
         room_name = current_app.config['ROOM_NAME'] + gameid
         join_room(room_name)
         print(sid + ' has enter the room.')
-        send(sid + 'has entered the room.', to=room_name)
+        payload = game.get_settings_to_json()
+        send(payload, to=request.sid)
 
     def on_leave_room(self, data):
         sid = request.sid
@@ -57,21 +58,21 @@ class GameSocketEsp(Namespace):
         players_nick = [player['nick'] for player in players]
         players_board_id = [player['board_id'] for player in players]
         players_points = [player['points'] for player in players]
-        #
-        # users = [User.query.get_or_404(player_id) for player_id in players_id]
-        # for i in range(len(users)):
-        #     users[i - 1].attempts = players_attempts[i - 1]
-        #     users[i - 1].points = players_points[i - 1]
-        #
-        # users[throwingPlayerId - 1].throws_multiplier = multiplier
-        # users[throwingPlayerId - 1].throws_value = value
-        # throw = Throw(value=value, multiplier=multiplier, player=users[throwingPlayerId - 1])
-        # db.session.add(throw)
-        # game = Game.query.get_or_404(game_id)
-        # game.gameStatus = status
-        # game.throwingUserId = throwingPlayerId
-        # game.round = round
-        # db.session.commit()
+
+        users = [User.query.get_or_404(player_id) for player_id in players_id]
+        for i in range(len(users)):
+            users[i - 1].attempts = players_attempts[i - 1]
+            users[i - 1].points = players_points[i - 1]
+
+        users[throwingPlayerId - 1].throws_multiplier = multiplier
+        users[throwingPlayerId - 1].throws_value = value
+        throw = Throw(value=value, multiplier=multiplier, player=users[throwingPlayerId - 1])
+        db.session.add(throw)
+        game = Game.query.get_or_404(game_id)
+        game.gameStatus = status
+        game.throwingUserId = throwingPlayerId
+        game.round = round
+        db.session.commit()
 
         send(data, to=room_name, skip_sid=request.sid)
 

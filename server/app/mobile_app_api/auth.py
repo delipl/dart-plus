@@ -9,7 +9,7 @@ from ..models.user import User
 from flask_login import login_user, logout_user, login_required, current_user
 from config import generate_http_response
 from .errors import unauthorized, forbidden
-
+import base64
 
 auth = HTTPBasicAuth()
 
@@ -39,10 +39,32 @@ def get_token():
     if g.current_user.is_anonymous:
         return unauthorized('Invalid credentials')
     return jsonify({'token': g.current_user.generate_auth_token(
-        expiration=3600), 'expiration': 3600})
+        expiration=3600), 'expiration': 3600, 'status': 1, 'message': ''})
 
 
 # dezaktywacja
+
+@mobileApp.route('/register', methods=['POST'])
+def register():
+    # phone = request.json.get('phone')
+    phone = base64.b64decode(request.json.get('phone')).decode('utf-8')
+    # password = request.json.get('password')
+    password = base64.b64decode(request.json.get('password')).decode('utf-8')
+    name = request.json.get('name')
+    nick = request.json.get('nick')
+
+    if User.query.filter_by(phone=phone).first() is not None:
+        return generate_http_response(False, "PHONE NUMBER IS ALREADY USED", 400)
+
+    if User.query.filter_by(name=name).first() is not None:
+        return generate_http_response(False, "NAME IS ALREADY USED", 400)
+
+    user = User(phone=phone, name=name, password=password, nick=name)
+
+    db.session.add(user)
+    db.session.commit()
+    return generate_http_response(True, "OK", 200)
+
 
 # @mobileApp.route('/login', methods=['GET', 'POST'])
 # def login():
@@ -66,22 +88,3 @@ def get_token():
 #     return generate_http_response(True, "OK", 200)
 #
 #
-# @mobileApp.route('/register', methods=['GET', 'POST'])
-# def register():
-#     phone = request.json.get('phone')
-#     password = request.json.get('password')
-#     # password = base64.b64decode(request.json.get('password')).decode('utf-8')
-#     name = request.json.get('name')
-#     nick = request.json.get('nick')
-#
-#     if User.query.filter_by(phone=phone).first() is not None:
-#         return generate_http_response(False, "PHONE NUMBER IS ALREADY USED", 400)
-#
-#     if User.query.filter_by(name=name).first() is not None:
-#         return generate_http_response(False, "NAME IS ALREADY USED", 400)
-#
-#     user = User(phone=phone, name=name, password=password, nick=nick)
-#
-#     db.session.add(user)
-#     db.session.commit()
-#     return generate_http_response(True, "OK", 200)
