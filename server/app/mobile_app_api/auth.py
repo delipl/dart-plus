@@ -39,7 +39,7 @@ def get_token():
     if g.current_user.is_anonymous:
         return unauthorized('Invalid credentials')
     return jsonify({'token': g.current_user.generate_auth_token(
-        expiration=3600), 'expiration': 3600, 'status': 1, 'message': ''})
+        expiration=360000), 'expiration': 360000, 'status': 1, 'message': ''})
 
 
 # dezaktywacja
@@ -59,7 +59,7 @@ def register():
     if User.query.filter_by(name=name).first() is not None:
         return generate_http_response(False, "NAME IS ALREADY USED", 400)
 
-    user = User(phone=phone, name=name, password=password, nick=name)
+    user = User(phone=phone, name=name, password=password, nick=name, attempts=0, points=301)
 
     db.session.add(user)
     db.session.commit()

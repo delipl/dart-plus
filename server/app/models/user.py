@@ -87,7 +87,18 @@ class User(UserMixin, db.Model):
     def player_to_json_game_update(self):
         json_post = {
             "nick": self.nick,
-            "points": self.points
+            "points": self.points,
+            'attempts': self.attempts
+        }
+        return json_post
+
+    def player_to_json_game_loop(self):
+        json_post = {
+            "nick": self.nick,
+            "points": self.points,
+            'id': self.id,
+            'board_id': self.board_id,
+            'attempts': self.attempts
         }
         return json_post
 
@@ -97,3 +108,4 @@ class AnonymousUser(AnonymousUserMixin):
 
 
 login_manager.anonymous_user = AnonymousUser
+

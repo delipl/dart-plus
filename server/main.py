@@ -40,16 +40,20 @@ if __name__ == "__main__":
     dartBoard = DartBoard()
     dartboard2 = DartBoard()
     db.session.add(dartBoard)
-    artur = User(name='Artur', phone='123456780', password='chuja', nick='louda', wins='2137', board=dartBoard)
-    bartek = User(name='Bartek', phone='123456789', password='chuja', nick='la', wins='69', board=dartBoard)
-    kuba = User(name='Kuba', phone='123456788', password='chuja', nick='uda', wins='420', board=dartboard2)
-    ziom = User(name='ziom', phone='500100100', password='qwerty', nick='udaty', wins='420')
+    artur = User(name='Artur', phone='123456780', password='chuja', nick='louda',
+                 wins='2137', board=dartBoard, attempts=0, points=301)
+    bartek = User(name='Bartek', phone='123456789', password='chuja', nick='la', wins='69', board=dartBoard,
+                  attempts=0, points=301)
+    kuba = User(name='Kuba', phone='123456788', password='chuja', nick='uda', wins='420', board=dartboard2,
+                attempts=0, points=301)
+    ziom = User(name='ziom', phone='500100100', password='qwerty', nick='udaty', wins='420',
+                attempts=0, points=301)
     db.session.add(ziom)
     db.session.add(artur)
     db.session.add(bartek)
     db.session.add(kuba)
     db.session.commit()
-    game = Game(startPoints='301')
+    game = Game(startPoints='301', throwingUserId=1, round=0, gameStatus=1)
     game.boards.append(dartBoard)
     game.boards.append(dartboard2)
     db.session.add(game)

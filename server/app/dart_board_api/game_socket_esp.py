@@ -26,8 +26,23 @@ class GameSocketEsp(Namespace):
         room_name = current_app.config['ROOM_NAME'] + gameid
         join_room(room_name)
         print(sid + ' has enter the room.')
-        payload = game.get_settings_to_json()
-        send(payload, to=request.sid)
+        print(game.throwingUserId)
+
+        current_player = User.query.get_or_404(game.throwingUserId)
+        payload = {
+            'id': game.id,
+            'status': game.gameStatus,
+            'throwingPlayerId': current_player.id,
+            'multiplier': 0,
+            'value': 0,
+            'startPoints': game.startPoints,
+            'doubleIn': game.doubleIn,
+            "doubleOut": game.doubleOut,
+            'round': game.round,
+            'players': [player.player_to_json_game_loop() for player in game.players]}
+
+        emit('game_loop', payload, to=request.sid)
+        # send(payload, to=request.sid)
 
     def on_leave_room(self, data):
         sid = request.sid
@@ -35,7 +50,6 @@ class GameSocketEsp(Namespace):
         room_name = current_app.config['ROOM_NAME'] + gameid
         leave_room(room_name)
         print(sid + 'has left the room.')
-        send(sid + 'has left the room.', to=room_name)
 
     def on_game_loop(self, data):
         print(data)
@@ -74,5 +88,19 @@ class GameSocketEsp(Namespace):
         game.round = round
         db.session.commit()
 
-        send(data, to=room_name, skip_sid=request.sid)
+        room_name_app = '/' + gameid
+        current_player = User.query.get_or_404(game.throwingUserId)
+        players_without_current = []
+        for player in game.players:
+            if player.id != current_player.id:
+                players_without_current.append(player)
+        payload = {
+            'attempts': current_player.attempts,
+            'points': current_player.points,
+            'nick': current_player.nick,
+            'players': [player.player_to_json_game_update() for player in players_without_current]}
+
+        emit('game_loop', payload, to=room_name_app, namespace="/app")
+        emit('game_loop', data, to=room_name, skip_sid=request.sid)
+        # send(data, to=room_name, skip_sid=request.sid)
 
