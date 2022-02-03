@@ -22,11 +22,8 @@ def create_app(config_name):
 
     socketio = SocketIO(app, cors_allowed_origins='*')
 
-    from app.dart_board_api.game_socket_esp import GameSocketEsp
-    socketio.on_namespace(GameSocketEsp('/esp'))
-
-    from app.mobile_app_api.game_update_socket import GameSocketApp
-    socketio.on_namespace(GameSocketApp('/app'))
+    from app.socket_game_comunication.socket_game_loop import GameLoopSocket
+    socketio.on_namespace(GameLoopSocket('/gameLoop'))
 
     from .user import userPage as userBlueprint
     app.register_blueprint(userBlueprint, url_prefix='/users')
