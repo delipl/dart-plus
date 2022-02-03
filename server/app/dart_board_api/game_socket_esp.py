@@ -1,5 +1,5 @@
 from flask_socketio import send, Namespace, emit, join_room, leave_room
-from flask import request, current_app
+from flask import request, current_app, g
 
 from app import db
 from app.models.game import Game
@@ -100,7 +100,29 @@ class GameSocketEsp(Namespace):
             'nick': current_player.nick,
             'players': [player.player_to_json_game_update() for player in players_without_current]}
 
-        emit('game_loop', payload, to=room_name_app, namespace="/app")
         emit('game_loop', data, to=room_name, skip_sid=request.sid)
         # send(data, to=room_name, skip_sid=request.sid)
+
+    def on_game_update(self, data):
+        # current user we do not know
+        gameid = str(data['game_id'])
+        room_name = '/' + gameid
+        phone = str(data['phone'])
+        g.current_payer = User.query.filter_by(phone=phone).first()
+        game = Game.query.get_or_404(gameid)
+
+        players_without_current = []
+        for player in game.players:
+            if player.id != g.current_user.id:
+                players_without_current.append(player)
+
+        payload = {
+            "attempts": g.current_user.attempts,
+            "points": g.current_user.points,
+            "nick": g.current_user.nick,
+            "players": [player.player_to_json_game_update() for player in players_without_current]
+        }
+        print(payload)
+
+        emit('game_update', payload, to=room_name)
 
