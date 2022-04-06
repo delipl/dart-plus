@@ -115,7 +115,7 @@ class GameLoopSocket(Namespace):
             'nick': current_player.nick,
             'players': [player.player_to_json_game_update() for player in players_without_current]}
 
-        emit('game_loop_app', payload, to=room_name_app)
+        emit('game_loop_app', payload, to=room_name)
         emit('game_loop_esp', data, to=room_name, skip_sid=request.sid)
         # send(data, to=room_name, skip_sid=request.sid)
 

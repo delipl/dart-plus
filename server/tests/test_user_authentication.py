@@ -54,7 +54,7 @@ class GameApiTestCase(unittest.TestCase):
         headers = {'Content-Type': 'application/json'}
 
         with self.client:
-            response = self.client.post('/mobileApp/login', headers=headers, data=data)
+            response = self.client.post('/app/login', headers=headers, data=data)
             self.assertEqual(current_user.name, 'Bartek')
             self.assertEqual(response.status_code, 200)
 
@@ -68,7 +68,7 @@ class GameApiTestCase(unittest.TestCase):
         headers = {'Content-Type': 'application/json'}
 
         with self.client:
-            response = self.client.post('/mobileApp/login', headers=headers, data=data)
+            response = self.client.post('/app/login', headers=headers, data=data)
             self.assertEqual(response.status_code, 401)
 
     def test_registration_success(self):
@@ -83,7 +83,7 @@ class GameApiTestCase(unittest.TestCase):
         headers = {'Content-Type': 'application/json'}
 
         with self.client:
-            response = self.client.post('/mobileApp/register', headers=headers, data=data)
+            response = self.client.post('/app/register', headers=headers, data=data)
             self.assertEqual(response.status_code, 200)
             user = User.query.filter_by(name='jan').first()
             self.assertEqual(user.name, 'jan')
@@ -100,7 +100,7 @@ class GameApiTestCase(unittest.TestCase):
         headers = {'Content-Type': 'application/json'}
 
         with self.client:
-            response = self.client.post('/mobileApp/register', headers=headers, data=data)
+            response = self.client.post('/app/register', headers=headers, data=data)
             self.assertEqual(response.status_code, 400)
 
     def test_login_required(self):
@@ -114,8 +114,8 @@ class GameApiTestCase(unittest.TestCase):
                 })
 
             headers = {'Content-Type': 'application/json'}
-            response = self.client.post('/mobileApp/login', headers=headers, data=data)
-            response = self.client.get('/mobileApp/')
+            response = self.client.post('/app/login', headers=headers, data=data)
+            response = self.client.get('/app/')
             self.assertEqual(response.status_code, 200)
 
 
