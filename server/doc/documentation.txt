@@ -1,0 +1,74 @@
+Po uruchomieniu serwera dostępne są następujące obiekty:
+
+    Użytkownicy:
+    artur = User(name='Artur', phone='123456780', password='chuja', nick='louda',
+                     wins='2137', board=dartBoard, attempts=0, points=301) Id 1
+    bartek = User(name='Bartek', phone='123456789', password='chuja', nick='la', wins='69', board=dartBoard,
+                  attempts=0, points=301) Id 2
+    kuba = User(name='Kuba', phone='123456788', password='chuja', nick='uda', wins='420', board=dartboard2,
+                attempts=0, points=301) Id 3
+    ziom = User(name='ziom', phone='500100100', password='qwerty', nick='udaty', wins='420',
+                attempts=0, points=301) Id 4
+    Tarcze:
+    dartBoard = DartBoard() id 1
+    dartboard2 = DartBoard() id 2
+
+    Gry:
+    game = Game(startPoints='301', throwingUserId=1, round=0, gameStatus=1), id 1,
+                gracze: Artur (id 1), Bartek (id 2), Kuba (id 3), tarcze: 1,2
+
+
+Komunikacja z serwerem dla ESP:
+    Jak otrzymć "game settings":
+        Wyślij żądanie "POST" protokołu Http na adres /dartBordApi/settings z załadowanym JSON-em
+        przykład poprawnego JSON-a: { "board_id": 1 }
+        poprawne headery żądania: {'Content-Type': 'application/json'}
+
+    Jak aktualizować postęp gry,tak aby, zarówno serwer jak i aplikacja mobilna miały do tego dostęp:
+        1. Połącz się za pomocą SocketIO z serwerem na 'namespace' -> '/gameLoop', zdarzenie -> 'connect'
+            przykład w pythonie : @sio.on('connect', namespace='/gameLoop')
+        2. Dołącz do pokoju gry przez podanie jej id, dołącz JSONa. 'namespace' -> '/gameLoop', zdarzenie -> 'join_room'
+            przykład w pythonie: sio.emit('join_room', payload, namespace='/gameLoop'),
+                                 payload = {'game_id': 1, 'is_esp': True}
+        3. Aktualizuj gre, za pomoca JSON-a 'namespace' -> '/gameLoop', zdarzenie -> 'game_loop_esp'
+            przykład w pythonie: sio.emit('game_loop_esp', data, namespace='/gameLoop'),
+                                 data = {
+                                            "id": 1,
+                                            "status": 1,
+                                            "round": 1,
+                                            "value": 10,
+                                            "multiplier": 2,
+                                            "throwingPlayerId": 1,
+                                            "throwingUserId": 1,
+                                            "players": [
+                                                {
+                                                    "id": 1,
+                                                    "attempts": 1,
+                                                    "points": 229,
+                                                    "nick": "jj",
+                                                    "board_id": 1
+                                                },
+                                                {
+                                                    "id": 2,
+                                                    "nick": "jj",
+                                                    "board_id": 1,
+                                                    "attempts": 5,
+                                                    "points": 259
+                                                }
+                                            ]
+                                        }
+        4. Opuść pokój, gry przez podanie jej id, dołącz JSONa. 'namespace' -> '/gameLoop', zdarzenie -> 'leave_room'
+            przykład w pythonie: sio.emit('leave_room', payload, namespace='/gameLoop'),
+                                 payload = {'game_id': 1}
+        5. Rozłącz się z serwerem, 'namespace' -> '/gameLoop', zdarzenie -> 'disconnect'
+            przykład w pythonie : @sio.on('disconnect', namespace='/gameLoop')
+
+Komunikacja z serwerem dla aplikacji mobilnej:
+
+    Aby mieć dostęp do następujących usług należy być zalogowanym:
+        '/app/game' <- zwraca status gry, 1 jeśli urzytkownik ma aktywną grę
+        '/app/' <- zwraca wszystkie gry (dostępne wyłącznie dla debugowania, zostanie z czasem usunięte)
+        '/app/joinBoard' <- dołącza do tarczy i toworzy grę z wszystkimi graczami podpiętymi pod tarczę
+        '/app/startGame' <- tworzy grę
+    Korzystanie z SocketIO takie samo jak dla ESP
+    to be continued...
