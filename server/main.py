@@ -73,4 +73,11 @@ if __name__ == "__main__":
     #                            #
     # db.session.commit()        #
     # ############################
+    # # Deleting users############
+    # players = User.query.all()
+    # for player in players:
+    #     db.session.delete(player)
+    #
+    # db.session.commit()
+
     socketio.run(app, debug=True, host='0.0.0.0', port=8000)

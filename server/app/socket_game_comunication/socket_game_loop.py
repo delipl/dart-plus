@@ -20,12 +20,16 @@ class GameLoopSocket(Namespace):
         print("disconect with", request.sid)
 
     def on_join_room(self, data):
+        print('room has been joined')
+
+        print(data)
+
         is_esp = data["is_esp"]
         sid = request.sid
-        gameid = str(data["game_id"])
+        gameid = data["game_id"]
 
         game = Game.query.get_or_404(gameid)
-        room_name = current_app.config['ROOM_NAME'] + gameid
+        room_name = current_app.config['ROOM_NAME'] + str(gameid)
         join_room(room_name)
         print(sid + ' has enter the esp_room.')
         if is_esp:
@@ -38,7 +42,7 @@ class GameLoopSocket(Namespace):
                 'value': 0,
                 'startPoints': game.startPoints,
                 'doubleIn': game.doubleIn,
-                "doubleOut": game.doubleOut,
+                'doubleOut': game.doubleOut,
                 'round': game.round,
                 'players': [player.player_to_json_game_loop() for player in game.players]}
 

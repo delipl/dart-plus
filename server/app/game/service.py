@@ -35,7 +35,7 @@ def delete_game(id):
 @gamePage.route("/<id>", methods=["GET"])
 def take_game(id):
     game = Game.query.get_or_404(id)
-    return jsonify(game.to_json())
+    return jsonify(game.get_settings_to_json())
 
 
 # Creating game with players from settings
